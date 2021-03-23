@@ -21,18 +21,12 @@ const routes = [
   {
     path: '/inscription',
     name: 'inscription',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/inscription.vue')
+    component: () => import(/* webpackChunkName: "inscription" */ '../views/inscription.vue')
   },
   {
     path: '/mur',
     name: 'mur',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/mur.vue')
+    component: () => import(/* webpackChunkName: "mur" */ '../views/mur.vue')
   }
 ]
 

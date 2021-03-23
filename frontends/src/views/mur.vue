@@ -11,7 +11,7 @@
                 <button @click="displayBoxUpdate( mess.idMESSAGES)"> modifier le message </button>
             </div>
         </div>
-           <boxUpdate v-if="modifie === true" :id="this.id"/>
+           <boxUpdate v-if="modifie === true " :id="this.id"/>
         <footer>
             <h3>poster votre message : </h3>
             <input type="text" class="inputMessage" id="message">
@@ -73,12 +73,10 @@ export default {
                 this.modifie = false
             }
         },
-        
-
     },
     beforeMount(){
         this.recupApi()
-    }
+    },
 }
 </script>
 

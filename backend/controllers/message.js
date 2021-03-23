@@ -1,13 +1,13 @@
 const db = require("../sqlConfig");
 const Message = require("../models/messageSQL");
 
-exports.displayMessages = (req,res) => {
-    const mess = 'SELECT * FROM message LIMIT 3';
-    db.query(mess,(err,succ) => {
-        res.status(200).json(succ)
-    })
-}
 
+// avec promise
+exports.displayMessages = (req,res) => {
+    Message.findAll() 
+    .then(result => res.status(200).json(result))
+    .catch(()=> res.status(400).json({ message : "Impossible de renvoyer les données demandé " }))
+ }
 
 // exports.postMessage = (req,res) => {
 
@@ -29,9 +29,11 @@ exports.displayMessages = (req,res) => {
 //     })
 // }
 
+
+//avec callback
 exports.postMessage = (req,res) => {
     const obj = req.body
-    let message = new Message(obj);         //Aurélien avait mis cette ligne mais ca n'est pas déclarer !!!
+    let message = new Message(obj);        
     Message.create(message, (err,succ) => {
         if(err){
             throw err
@@ -41,16 +43,18 @@ exports.postMessage = (req,res) => {
     })
 }
 
+
+// avec CallBack
 exports.upDateMessage = (req,res) => {
-    const id = req.body.idMESSAGES
-    const message = req.body.message
-    const sql = `UPDATE message SET message = "${message}" WHERE idMESSAGES = ${id}`
-    db.query(sql,(err,succ) => {
-        console.log("J'ai bien recu l'id du message qui est le : " + id + " et le message est ")
-    })
-    res.status(201).json({ message : "ok pour la route update"})
+    Message.update(req.body.message, req.body.idMESSAGES, () => {
+        res.status(202).json({ message : " le message à bien été modifié...!"})
+   })
 }
 
+// avec promise
 exports.deleteMessage = (req,res) => {
-    res.status(201).json({ message : "mar route pour le delete est ok ... !"})
+    Message.delete(req.body.idMESSAGES)
+    .then(()=> res.status(200).json( { message : `Le message à bien été supprimer `}))
+    .catch(() => res.status(400).json({ message : "impossible de supprimer le message...!"}))
+    
 }

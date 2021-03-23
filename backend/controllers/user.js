@@ -16,15 +16,12 @@ exports.signUp = (req,res) => {
     .then(hash => {
 
         const obj = {
-             idUser : req.body.idUser,
-             email :req.body.email,
+            ...req.body,
              password : hash,
-            //  prenom : req.body.prenom,
-            //  message : req.body.message
         }
     
-        //let message = new message(obj);         Aurélien avait mis cette ligne mais ca n'est pas déclarer !!!
-        User.create(obj, (err,succ) => {
+        let newUser = new User(obj);        
+        User.create(newUser, (err,succes) => {
             if(err){
                 throw err
             }
@@ -36,22 +33,42 @@ exports.signUp = (req,res) => {
 }
 
 
+// exports.login = ( req, res) => {
+//      const email = req.body.email
+//      const sql = `SELECT * FROM users WHERE email = "${email}" `
+//      console.log("le mail envoyé depuis le login est :" + email)
+
+//     db.query(sql,(err,succ) =>{
+//         if(err)
+//         console.log("utilisateur non trouvé...!")
+//         if (succ.length != 0)
+//         {
+//             console.log("l'utilisateur a été touver dans la base : " )
+//             res.status(200).json(succ)
+//         }
+//         else {
+//             console.log("l'utilisteur n'existe pas dans la base")
+//         }
+//     })   
+// }
+
 exports.login = ( req, res) => {
-     const email = req.body.email
-     const sql = `SELECT * FROM users WHERE email = "${email}" `
+    const email = req.body.email
+    const password = req.body.password
 
-    db.query(sql,(err,succ) =>{
-        if(err)
-        {throw err}
-        console.log("l'utilisateur est : " + succ[0].email)
-        res.status(200).json(succ)
-    })
-
-    
-    // bcrypt.compare( req.body.password, User.password)
-    // .then( valid =>{
-    //     if(!valid){
-    //         return res.status(400).json({ message : "le mot de passe n'est pas correct" })
-    //     }
-    // })
+    User.findOne(email,password)
+    .then( result  => res.status(200).json( result))
+    .catch(() => res.status(400).json( { message : "problème que je pige pas...!"} ))
+  
 }
+
+
+
+
+
+// bcrypt.compare( req.body.password, User.password)
+// .then( valid =>{
+//     if(!valid){
+//         return res.status(400).json({ message : "le mot de passe n'est pas correct" })
+//     }
+// })

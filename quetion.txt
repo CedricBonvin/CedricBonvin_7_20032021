@@ -1,0 +1,19 @@
+
+                    QUESTION A VOIR AVEC AURELIEN
+
+FRONTEND
+---------
+
+    1.- dans upDateMessage dans les composants, comment faire pour pré-remplire le text-area avec l'ancien message ? 
+        Je ne peut pas mettre de moustache entre les balises text-area car j'utilise v-model... Y a-t-il une solution ? 
+
+    2.- Pour raffraichir la vue après modification genre avec " upDateMessage - deleteMessage " etc.. // 
+        si je repace la fonction d'affichage de base, il se passe une fuite de memoire et impossible à l'arrêter !! Après les modifs 
+        je dois toujours raffraichir la page pour quelle soit pris en compte .
+
+    3.- addmettons que je récupère l'api d'un module que je met sur une Vue. comment faire sur la vue pour récuprer des infos et les passer
+        dans un autre module qui est ou sera sur la Vue.
+
+
+BACKEND
+-------
