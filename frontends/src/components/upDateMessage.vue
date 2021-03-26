@@ -44,27 +44,28 @@
                     .then(response => response.json()) 
                     .then(() =>{ 
                         console.log("Le nouveau message à bien été envoyer...!  ")         
-                
-                });
-                
-            },
-            deleteMessage(id){
-                console.log("l'id du message que je veut supprimer est :" + id)
-                this.cancel = false
-                const obj = {
-                    idMESSAGES : id
-                }
-                fetch('http://localhost:8080/api/message/delete', {
-                    method: "POST",
-                    body: JSON.stringify(obj),
-                    headers: {"Content-type": "application/json; charset=UTF-8"}
-                    })
-                    .then(response => response.json()) 
-                    .then(() =>{ 
-                        console.log("l'id du message à supprimer à bien été envoyé, id : " + id)         
                 });
             },
-        },    
+ 
+        
+          deleteMessage(id){
+              console.log("l'id du message que je veut supprimer est :" + id)
+              this.cancel = false
+              const obj = {
+                  idMESSAGES : id
+              }
+              fetch('http://localhost:8080/api/message/delete', {
+                  method: "POST",
+                  body: JSON.stringify(obj),
+                  headers: {"Content-type": "application/json; charset=UTF-8"}
+                  })
+                  .then(response => response.json()) 
+                  .then(() =>{ 
+                      console.log("l'id du message à supprimer à bien été envoyé, id : " + id) 
+              });
+          },
+        },
+       
     }
 
     

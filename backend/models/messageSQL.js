@@ -12,9 +12,9 @@ const db = require("../sqlConfig");
 function Message (message) { // Pour que ca fonctionne j'ai du mettre une fonction et pas fleché 
     this.idMESSAGES = message.idMESSAGES ? message.idMESSAGES : null;
     this.idUSERS = message.idUSERS ? message.idUSERS : null;
-    this.nom = message.nom ? message.nom : null;
-    this.prenom = message.prenom ? message.prenom : null;
     this.message = message.message ? message.message : null;
+    this.pseudoUser = message.pseudoUser ? message.pseudoUser : null;
+
 }
 
 Message.create = (newMessage, callback) => {
@@ -39,7 +39,7 @@ Message.create = (newMessage, callback) => {
                                                              /// Les 2 methodes fonctionnent, je suis trop content
 Message.findAll = () => {
     return new Promise((resolve,reject) =>{
-        const sql = `SELECT * FROM message LIMIT 3`
+        const sql = `SELECT * FROM message`
         db.query(sql, (err,succ) => {
             if (err) {
                 throw err

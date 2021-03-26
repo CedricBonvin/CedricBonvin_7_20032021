@@ -26,7 +26,7 @@ exports.signUp = (req,res) => {
                 throw err
             }
             console.log("ok pour l'incrémentation  du nouvel  user avec l'email :" + req.body.email)
-            res.status(201).json({ message : "tout est ok pour le nouveau user!" })
+            res.status(201).json(newUser)
         })
     })
     .catch(() => res.status(500).json( { message : "impossible d'enregisté l'utilisateur...!"}) )
@@ -58,17 +58,6 @@ exports.login = ( req, res) => {
 
     User.findOne(email,password)
     .then( result  => res.status(200).json( result))
-    .catch(() => res.status(400).json( { message : "problème que je pige pas...!"} ))
-  
+    .catch(() => res.status(400).json( { message : "problème que je pige pas...!"} ))  
 }
 
-
-
-
-
-// bcrypt.compare( req.body.password, User.password)
-// .then( valid =>{
-//     if(!valid){
-//         return res.status(400).json({ message : "le mot de passe n'est pas correct" })
-//     }
-// })

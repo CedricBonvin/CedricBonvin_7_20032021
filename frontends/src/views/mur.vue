@@ -1,17 +1,23 @@
 <template>
     <div>
-        <h1>Mur Principal</h1>
-        <div v-for="(mess, myKey ) in card" :key="myKey" >
-            <div class="card"   >
-                <div class="boxNom">
-                    <span class="nom"> {{ mess.nom }} </span> 
-                    <span class="nom"> {{ mess.prenom}} </span>
+        <h1>Mur principal </h1> 
+        <div v-for="(mess, myKey ) in card" :key="myKey">
+            <div> {{messageFromUser(mess.pseudoUser)}}
+                <div  :class="{cardUser : isUser, card : !isUser}">
+                    <div class="boxNom">
+                        <span class="nom"> {{ mess.pseudoUser }} </span>
+                    </div>
+                    <div>{{ mess.message }}</div>
+                
+                    <img src="../assets/param.svg" alt="paramètre du message"
+                        class="param"
+                        v-if="pseudoUser === mess.pseudoUser"
+                        @click="displayBoxUpdate( mess.idMESSAGES)"
+                    >
                 </div>
-                <div>{{ mess.message }}</div>
-                <button @click="displayBoxUpdate( mess.idMESSAGES)"> modifier le message </button>
             </div>
         </div>
-           <boxUpdate v-if="modifie === true " :id="this.id"/>
+           <boxUpdate  v-if="modifie === true" :id="this.id"/>
         <footer>
             <h3>poster votre message : </h3>
             <input type="text" class="inputMessage" id="message">
@@ -25,32 +31,44 @@ import boxUpdate from "../components/upDateMessage.vue"
 export default {
     name: 'Home',
     components : {
-        boxUpdate
+        boxUpdate,
     },
     data(){
         return{
             modifie : false,
             id : "",
             card : [],
+            pseudoUser : "",
+            isUser : false,          
         }
     },                                                  // différence beforeMount et methods
     methods : {
+        messageFromUser(pseudo){
+            //console.log(pseudo + " " + JSON.parse(localStorage.getItem("pseudo") ))
+            const storagePseudo = JSON.parse(localStorage.getItem("pseudo"))
+            if (pseudo === storagePseudo ){
+                this.isUser = true
+            }else this.isUser = false
+        },
         recupApi(){
-            fetch("http://localhost:8080/api/message").then(response => response.json()).then(result =>{ 
-                this.card = result
-                console.log(result)
+            fetch("http://localhost:8080/api/message").then(response => response.json()).then(result =>{             
+                    this.pseudo = result[0].pseudoUser
+                    console.log("le pseudo est : "+result[0].pseudoUser)
+                    this.card = result
+                    this.pseudoUser = JSON.parse(localStorage.getItem("pseudo"))
+
+
             })
         },
         postMessage(){
 
             const mess = document.getElementById("message").value
-            console.log(mess)
+            const idUser = JSON.parse(localStorage.getItem("idUser"))
 
             const obj = {
                 //idMESSAGES : "",
-                idUSERS : 9,
-                nom : "bourbon",
-                prenom : "sophie",
+                idUSERS : idUser,
+                pseudoUser : JSON.parse(localStorage.getItem("pseudo")),
                 message : mess
             }
 
@@ -61,7 +79,8 @@ export default {
             })
             .then(response => response.json()) 
             .then(() =>{      
-                console.log("le message à bien été poster...! ")         
+                console.log("le message à bien été poster...! ") 
+                this.card.push(obj)        
             });
         },
         displayBoxUpdate(id){
@@ -74,31 +93,56 @@ export default {
             }
         },
     },
+    
     beforeMount(){
         this.recupApi()
     },
+    destroyed(){
+        this.recupApi()
+    }
 }
 </script>
 
 
 <style>
-    body{
-        background: rgb(192, 189, 189);
-    }
+
     h1{
         text-align: center;
         text-decoration: none;
         margin: 0;
+        color: white;
     }
-    .card{
+    .cardUser{
+        position: relative;
         border: solid;
         padding:0px 10px 10px 20px;
         margin: 20px auto;
+        margin-right: 50px;
+        width: 50%;
+        background: rgb(86, 100, 163);
+        box-shadow: 0 0 1px 1px;
+        border-radius: 20px;
+        color: white;
+    }
+    .card{
+        position: relative;
+        border: solid;
+        padding:0px 10px 10px 20px;
+        margin: 20px auto;
+        margin-left: 50px;
         width: 50%;
         background: rgb(89, 163, 86);
         box-shadow: 0 0 1px 1px;
         border-radius: 20px;
         color: white;
+    }
+    .param{
+        opacity: 50%;
+        width: 20px;
+        position: absolute;
+        right: 5px;
+        bottom: 5px;
+        cursor: pointer;
     }
     .boxNom{
         padding-bottom: 10px ;
@@ -131,7 +175,6 @@ export default {
         font-size: 1.5rem;
         color: white;
         font-weight: bold;
-
     }
    
 </style>
