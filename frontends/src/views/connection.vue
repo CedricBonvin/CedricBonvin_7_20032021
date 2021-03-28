@@ -14,7 +14,7 @@
 
                 <div class="boxLinkInscription"><router-link to="/inscription">Créer un compte</router-link> </div>
             </div>
-            <button @click="afficheUser()" v-on:click="signIn()" >Connexion</button>
+            <button  v-on:click="signIn()" >Connexion</button>
         </div>
         <div  class="getMur">
             <router-link to="/mur" class="linkMur"  >aller sur le mur</router-link>
@@ -53,29 +53,29 @@ export default {
             headers: {"Content-type": "application/json; charset=UTF-8"}
             })
             .then(response => response.json()) 
-            .then(response =>{ 
+            .then(() =>{ 
                
-                console.log("la longueur est de :"+ response.length)
-                if (response.length){
-                    console.log("Essaie de connection " + response[0].email) 
-                    localStorage.setItem("pseudo",JSON.stringify(response[0].pseudo))
-                    localStorage.setItem("idUser",JSON.stringify(response[0].idUser))
+                // console.log("la longueur est de :"+ response.length)
+                // if (response.length){
+                //     console.log("Essaie de connection " + response[0].email) 
+                //     localStorage.setItem("pseudo",JSON.stringify(response[0].pseudo))
+                //     localStorage.setItem("idUser",JSON.stringify(response[0].idUser))
                     
-                    this.$router.push('/mur#/')
-                }
-                if (response === 0){
-                    this.isEmail = false
-                    console.log("impossible de trouvé le mail")
-                }         
-                if (response === 1){
-                    this.isPassword = false
-                    console.log("Mot de passe erroné")
-                }         
+                //     this.$router.push('/mur#/')
+                // }
+                // if (response === 0){
+                //     this.isEmail = false
+                //     console.log("impossible de trouvé le mail")
+                // }         
+                // if (response === 1){
+                //     this.isPassword = false
+                //     console.log("Mot de passe erroné")
+                // }         
             });
         }, 
+        // afficheUser(){this.$store.commit("AFFICHE_USER")},
     },
-     destroyed:
-         function afficheUser(){this.$store.commit("AFFICHE_USER")},
+    
         
    
 

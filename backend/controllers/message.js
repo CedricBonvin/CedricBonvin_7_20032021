@@ -39,7 +39,7 @@ exports.postMessage = (req,res) => {
             throw err
         }
         console.log("ok pour le post")
-        res.status(201).json({ message : "tout est ok pour la route POST...!" })
+        res.status(201).json({ message : "tout est ok pour la route POST...!"})
     })
 }
 

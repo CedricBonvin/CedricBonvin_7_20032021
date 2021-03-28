@@ -7,6 +7,7 @@ function User(user){
     this.email = user.email ? user.email : null;
     this.password = user.password ? user.password : null;
     this.pseudo = user.pseudo ? user.pseudo : null;
+    this.photo = user.photo ? user.photo : null;
   }
 
 User.create = (newUser, callback) => {

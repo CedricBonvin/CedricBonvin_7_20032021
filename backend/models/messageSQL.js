@@ -14,7 +14,9 @@ function Message (message) { // Pour que ca fonctionne j'ai du mettre une foncti
     this.idUSERS = message.idUSERS ? message.idUSERS : null;
     this.message = message.message ? message.message : null;
     this.pseudoUser = message.pseudoUser ? message.pseudoUser : null;
-
+    this.date = message.date ? message.date : null;
+    
+    
 }
 
 Message.create = (newMessage, callback) => {

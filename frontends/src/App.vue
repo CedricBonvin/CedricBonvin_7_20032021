@@ -4,7 +4,10 @@
      <!-- <router-link to="/">Home</router-link> |
       <router-link to="/about">About</router-link> -->
         <div class="logo">Groupomania</div>
-        <headerBox class="headerBox" ></headerBox>
+        <headerBox  :class="afficheUser()" 
+                    :pseudo="this.pseudoUser"  
+                    class="headerBox"  >
+        </headerBox>
     </div>
 
     <router-view/>
@@ -12,38 +15,46 @@
 </template>
 
 <script>
-import headerBox from "./components/headerBox.vue"
+import headerBox from "./components/headerBox"
 export default {
-  name:"app",
-    components : {
-      headerBox
-      },  
-  data(){
-    return {
-      pseudo : ""
-    }
-  },
-  mounted(){
-         this.pseudo= JSON.parse(localStorage.getItem("pseudo")) 
+    name:"app",
+        components : {
+        headerBox
+        },  
+    data(){
+        return {
+        pseudoUser : ""
+        }
+    },
+    methods : {
+        afficheUser(){
+        this.pseudoUser = JSON.parse(localStorage.getItem("pseudo"))
+        }
     },
 }
 </script>
 
 <style>
+html{
+  height: 100%;
+}
 *{
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 }
 body{
     background: rgba(13, 14, 13, 0.747);
     margin: 0;
+    min-height: 100%;
+    position: relative;
+    padding-bottom: 120px;
 }
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  color: #2c3e50;
+    font-family: Avenir, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    color: #2c3e50;
 }
 
 #nav {

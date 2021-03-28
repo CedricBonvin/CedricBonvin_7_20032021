@@ -7,7 +7,8 @@
 
 
 const db = require("../sqlConfig");
-const bcrypt = require("bcrypt")
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken")
 const User = require("../models/userSQL");
 
 exports.signUp = (req,res) => {
@@ -57,7 +58,15 @@ exports.login = ( req, res) => {
     const password = req.body.password
 
     User.findOne(email,password)
-    .then( result  => res.status(200).json( result))
+    //.then( result  => res.status(200).json( result))
+    .then( result  => res.status(200).json({
+        idUser: result.idUser,
+        token: jwt.sign(
+          { idUser: result.idUser},
+          'RANDOM_TOKEN_SECRET',
+          { expiresIn: '24h' }
+        )
+    }))
     .catch(() => res.status(400).json( { message : "problème que je pige pas...!"} ))  
 }
 

@@ -1,10 +1,13 @@
 <template>
     <div id="updateMessage" v-if="cancel">
         <h3> Modifier votre message </h3>
-        <textarea  id="newMessage"  v-model="message" placeholder="Votre nouveau message" ></textarea>
-        <button @click="updateMessage(id)" >Mettre à jour</button>
-        <button @click="deleteMessage(id)">Supprimer</button>
-        <button @click="cancelAction()">Annuler</button>
+        <textarea  id="newMessage"  v-model="message" placeholder="Votre nouveau message" rows="5" ></textarea>
+        <div class="boxBoutton">
+            <button @click="updateMessage(id)" title="Mettre à jour le message">Mettre à jour</button>
+            <!--<button @click="deleteMessage(id)">Supprimer</button> -->
+            <button @click="deleteMessage(id)" title="Supprimer le message">Supprimer</button>
+            <button @click="cancelAction()" title="Annuler">Annuler</button>
+        </div>
     </div>
 </template>
 
@@ -21,7 +24,8 @@
                 cancel : true,
                 message : "",    
             }
-        }, 
+        },
+       
         methods : {
             cancelAction(){
                 if (this.cancel === false){
@@ -30,6 +34,7 @@
                 this.cancel =false
             }, 
             updateMessage(id){
+                this.$emit("newMessage",{ message : this.message})
                 console.log("pour le post l'id est " + id + "et le message est : " + this.message)
                 this.cancel = false
                 const obj = {
@@ -45,27 +50,26 @@
                     .then(() =>{ 
                         console.log("Le nouveau message à bien été envoyer...!  ")         
                 });
+            },      
+            deleteMessage(id){
+                this.$emit("eventDelete",{})
+                console.log("l'id du message que je veut supprimer est :" + id)
+                this.cancel = false
+                const obj = {
+                    idMESSAGES : id
+                }
+                fetch('http://localhost:8080/api/message/delete', {
+                    method: "POST",
+                    body: JSON.stringify(obj),
+                    headers: {"Content-type": "application/json; charset=UTF-8"}
+                    })
+                    .then(response => response.json()) 
+                    .then( result =>{ 
+                        console.log("l'id du message à supprimer à bien été envoyé, id : " + id) 
+                        console.log(result)
+                });
             },
- 
-        
-          deleteMessage(id){
-              console.log("l'id du message que je veut supprimer est :" + id)
-              this.cancel = false
-              const obj = {
-                  idMESSAGES : id
-              }
-              fetch('http://localhost:8080/api/message/delete', {
-                  method: "POST",
-                  body: JSON.stringify(obj),
-                  headers: {"Content-type": "application/json; charset=UTF-8"}
-                  })
-                  .then(response => response.json()) 
-                  .then(() =>{ 
-                      console.log("l'id du message à supprimer à bien été envoyé, id : " + id) 
-              });
-          },
-        },
-       
+        },     
     }
 
     
@@ -76,26 +80,35 @@
     
     #updateMessage{
         position : fixed;
-        top : 50vh;
-        left : 5%;
-        transform: translateY(-50%);
+        top : 20%;
+        left : 50%;
+        transform: translateX(-50%);
+        color: white;
 
-        background: gray;
+        background: rgba(0, 0, 0, 0.931);
         width: 80%;
-        margin: auto;
         padding: 20px;
     }
+    .boxBoutton{
+        display: flex;
+        flex-flow: row wrap;
+        justify-content: space-evenly;
+        font-size: 0.7rem;
+    }
     textarea{
+        margin-top: 20px;
         width: 100%;
+        max-width: 100%;
     }
     button{
         display: block;
-        background: red;
+        background: rgba(236, 59, 59, 0.87);
         padding: 10px 20px;
-        margin: 20px auto;
+        margin: 10px 5px;
         color : white;
-        font-size: 1.5rem;
+        font-size: 1rem;
         border-radius: 20px;
+        cursor: pointer;
     }
 
 </style>

@@ -15,9 +15,18 @@
             <div class="inputCol">
                 <label for="pseudo">Pseudo :</label>
                 <input type="text" name="pseudo" id="pseudo" placeholder="Mon pseudo">
-                <!--<div class="boxLinkInscription"><a href="#">Créer un compte</a></div>-->
             </div>
-            <button v-on:click="signUp()">Inscription</button>
+            <p class="labelImage" @click="afficheBoxImage()">Image de profil :</p>
+            <div v-if="BoxImage"> 
+                <div id="boxImage">
+                    <div>
+                        <label class="labelProfil" for="file">Ajouter une photo</label>
+                    </div>
+                    <input @change="fileFunc()"  type="file" name="file" id="file">
+                    <div class="photoProfil" id="renduImage"></div>
+                </div>
+            </div>
+                <button  @click="signUp()">Inscription</button>
         </div>
         <div class="getMur">
             <router-link to="/mur" class="getMur">aller sur le mur</router-link>
@@ -31,11 +40,13 @@
 export default {
     name: 'connection',
     data() {
-       return {         
+       return {  
+           BoxImage : true       
        }
     },
     props: {
-        msg: String
+        msg: String,
+        NewUser : Boolean
     },
     methods : {
         signUp(){
@@ -43,10 +54,13 @@ export default {
             let Password = document.getElementById("password").value
             let Pseudo = document.getElementById("pseudo").value
 
+
+
             let obj = {
                 email : Email,
                 password : Password,
-                pseudo : Pseudo
+                pseudo : Pseudo,
+               
             }
 
            fetch('http://localhost:8080/api/user', {
@@ -60,8 +74,35 @@ export default {
                 localStorage.setItem("pseudo",JSON.stringify(response.pseudo))
                 this.$router.push('/mur#/')        
             });
+        },
+         fileFunc(){
+            const input = document.getElementById("file")
+          
+                console.log(input.files[0])
+                const reader = new FileReader()
+                reader.onload = function(){
+                    const img = new Image()
+                    img.src = reader.result
+
+                    img.style.width = "100px"
+                    img.style.height = "100px"
+                    // img.style.borderRadius = "50%"
+                    //img.style.transform = "translateY(-50%)"
+
+                    const miniature = document.getElementById("renduImage")
+                    miniature.append(img)
+                }
+               reader.readAsDataURL(input.files[0]) 
+        },
+        afficheBoxImage(){
+            if (this.BoxImage === true){
+                this.BoxImage = false
+                console.log(this.BoxImage)
+            }else this.BoxImage = true
+            console.log(this.BoxImage)
         }
-    }
+    },
+    
 }
 </script>
 
@@ -80,12 +121,10 @@ export default {
 
         display: flex;
         flex-flow: column;
-        align-items: center;
         justify-content: space-between;
-
-        width: 80%;
-        margin: 20px auto;
         padding: 20px;
+        width: 80%;
+        margin: 30px auto;
 
         box-shadow: 0 0 5px 5px  gray;
         border-radius: 20px;
@@ -94,6 +133,7 @@ export default {
     .inputCol{
         padding: 10px;
         width: 70%;
+        margin: auto;
         text-align: center;
     }
   
@@ -120,11 +160,11 @@ export default {
         color: black;
     }
     button{
-        margin-top: 20px;
-        display: block;
+        width: 200px;
+        margin: 40px auto 20px auto;
         padding: 20px 50px;
         border-radius: 20px;
-        background: green;
+        background: red;
         color: white;
         font-size: 1.5rem;
     }
@@ -138,6 +178,45 @@ export default {
         font-size: 2rem;
         background: black;
         color: white;
+    }
+    #file{
+        display: none;
+    }
+    .photoProfil{
+        display: block;
+        width: 100px;
+        height: 100px;
+        border: solid 1px black;
+        border-radius: 50%;
+        overflow: hidden;
+    }
+    #boxImage{
+        display: flex;
+        flex-flow: row wrap;
+        justify-content: space-between ;
+        width: 60%;
+        margin: auto;
+        align-items: center;
+        height: 100px;
+    }
+    .labelProfil{
+        display: block;
+        text-decoration: underline;
+        cursor: pointer;
+        font-size: 1.9rem;
+    }
+    .labelImage{
+        text-align: left;
+        margin: auto;
+        width: 70%;
+        
+        padding: 10px;
+        font-size: 1.5rem;
+        cursor: pointer;
+    }
+    .labelImage:hover{
+        color: rgb(48, 48, 48);
+        transform: scale(1.05);
     }
  
 </style>

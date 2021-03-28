@@ -1,37 +1,44 @@
 <template>
     <div>
-        <h1>Mur principal </h1> 
-        <div v-for="(mess, myKey ) in card" :key="myKey">
-            <div> {{messageFromUser(mess.pseudoUser)}}
-                <div  :class="{cardUser : isUser, card : !isUser}">
-                    <div class="boxNom">
-                        <span class="nom"> {{ mess.pseudoUser }} </span>
+        <h1>Mur principal </h1>
+        <thanksNewUser  class="thanksNewUser" v-if="this.affiche"></thanksNewUser>
+        <div v-for="mess in card" :key="mess.name">
+            <div class="card"   > 
+                <div class="date">{{ mess.date}}</div>
+                <div>  <!-- :class=" isUser ? 'card' : 'cardUser'"-->
+                    <div >   
+                        <div class="boxNom">
+                            <span class="nom"> {{ mess.pseudoUser }} </span>
+                        </div>
+                        <div>{{ mess.message }}</div>
+                    
+                        <img src="../assets/param.svg" alt="paramètre du message"
+                            class="param"
+                            v-if="storagePseudo === mess.pseudoUser"
+                            @click="displayBoxUpdate( mess.idMESSAGES)"
+                        >
                     </div>
-                    <div>{{ mess.message }}</div>
-                
-                    <img src="../assets/param.svg" alt="paramètre du message"
-                        class="param"
-                        v-if="pseudoUser === mess.pseudoUser"
-                        @click="displayBoxUpdate( mess.idMESSAGES)"
-                    >
                 </div>
             </div>
         </div>
-           <boxUpdate  v-if="modifie === true" :id="this.id"/>
+           <boxUpdate @newMessage="postNewMessage" @eventDelete="deleteMess"  v-if="modifie === true" :id="this.id"/>
         <footer>
-            <h3>poster votre message : </h3>
-            <input type="text" class="inputMessage" id="message">
-            <button v-on:click="postMessage()">Envoyer</button>
+            <div class="boxBoutton">
+                <input type="text" class="inputMessage" id="message" placeholder="Poster votre message">
+                <button v-on:click="postMessage()">E</button>
+            </div>
         </footer>
     </div>
 </template>
 
 <script>
 import boxUpdate from "../components/upDateMessage.vue"
+import thanksNewUser from "../components/thanksNewUser.vue"
 export default {
     name: 'Home',
     components : {
         boxUpdate,
+        thanksNewUser
     },
     data(){
         return{
@@ -39,37 +46,57 @@ export default {
             id : "",
             card : [],
             pseudoUser : "",
-            isUser : false,          
+            storagePseudo : "",
+            isUser : false,
+            affiche : false,
+            date : ""               
         }
-    },                                                  // différence beforeMount et methods
+    },
+                                                // différence beforeMount et methods
     methods : {
-        messageFromUser(pseudo){
-            //console.log(pseudo + " " + JSON.parse(localStorage.getItem("pseudo") ))
-            const storagePseudo = JSON.parse(localStorage.getItem("pseudo"))
-            if (pseudo === storagePseudo ){
+      
+        pseudoUserMessage(pseudo){
+            this.pseudoUser = pseudo
+        },
+        compare(){
+            if( this.storagePseudo === this.pseudoUser){
                 this.isUser = true
-            }else this.isUser = false
+            } else this.isUser = false
+            console.log(this.isUser)
+            console.log("le pseudo du storage est : " + this.storagePseudo)
+            console.log(" le pseudoUser est : "+this.pseudoUser)
         },
         recupApi(){
             fetch("http://localhost:8080/api/message").then(response => response.json()).then(result =>{             
-                    this.pseudo = result[0].pseudoUser
-                    console.log("le pseudo est : "+result[0].pseudoUser)
                     this.card = result
-                    this.pseudoUser = JSON.parse(localStorage.getItem("pseudo"))
+                    this.storagePseudo = JSON.parse(localStorage.getItem("pseudo"))
 
 
             })
         },
+        getDate ()  {
+              
+            const now = new Date();
+            var options = { month: 'long'};
+            this.date =  now.getDate() + " "
+                    + new Intl.DateTimeFormat('fr-FR', options).format() + ": "
+                    + now.getHours() + "h : " 
+                    + now.getMinutes(12) + "min ";
+            },
         postMessage(){
 
             const mess = document.getElementById("message").value
             const idUser = JSON.parse(localStorage.getItem("idUser"))
 
+            this.getDate()
+            console.log(" la date est : "+ this.date)
+
             const obj = {
                 //idMESSAGES : "",
                 idUSERS : idUser,
                 pseudoUser : JSON.parse(localStorage.getItem("pseudo")),
-                message : mess
+                message : mess,
+                date : this.date
             }
 
             fetch('http://localhost:8080/api/message', {
@@ -78,9 +105,10 @@ export default {
             headers: {"Content-type": "application/json; charset=UTF-8"}
             })
             .then(response => response.json()) 
-            .then(() =>{      
-                console.log("le message à bien été poster...! ") 
-                this.card.push(obj)        
+            .then(result =>{      
+                console.log("le message à bien été poster...! et la réponse du serveur est : "+  result.idMessage) 
+                this.card.push(obj) 
+
             });
         },
         displayBoxUpdate(id){
@@ -92,6 +120,27 @@ export default {
                 this.modifie = false
             }
         },
+        deleteMess(){
+            const idMessage = (element) => element.idMESSAGES === this.id;
+            let index = this.card.findIndex(idMessage)
+            console.log("index : "+index)
+            this.card.splice(index,1)
+            this.modifie = false
+            console.log("index du tableau card à supprimer : " + index);
+            
+        },
+        postNewMessage(payload){
+            const idMessage = (element) => element.idMESSAGES === this.id;
+            let index = this.card.findIndex(idMessage)
+            this.card[index].message = payload.message
+            console.log("pour le new"+this.card[index.message])
+            this.modifie = false
+        },
+        thanksNewUser(){
+            if(thanksNewUser){
+                thanksNewUser = false
+            }else thanksNewUser = true
+        }
     },
     
     beforeMount(){
@@ -128,13 +177,21 @@ export default {
         position: relative;
         border: solid;
         padding:0px 10px 10px 20px;
-        margin: 20px auto;
-        margin-left: 50px;
+        margin: 50px auto;
+        margin-left: 10%;
         width: 50%;
+        min-width: 250px;
         background: rgb(89, 163, 86);
         box-shadow: 0 0 1px 1px;
         border-radius: 20px;
         color: white;
+    }
+    .date{
+        position: absolute;
+        left: 50%;
+        top : -25px;
+        transform: translateX(-50%);
+        font-size: 0.8rem;
     }
     .param{
         opacity: 50%;
@@ -144,37 +201,47 @@ export default {
         bottom: 5px;
         cursor: pointer;
     }
-    .boxNom{
-        padding-bottom: 10px ;
-    }
+  
     .nom{
         color: rgb(175, 56, 56);
         text-align: left;
-        font-size: 0.8rem;
         margin-top: 0;
         font-weight: bold;
     }
     footer{
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
         background: black;
-        padding: 30px;
+        padding: 10px 15px 30px 15px;    
         color: white;
     }
+    footer h3{
+        margin-left: 20px;
+    }
+    .boxBoutton{
+        display: flex;
+        justify-content: center;
+        margin-top: 10px;
+    }
     footer input{
-        display: block;
-        margin: auto;
         width: 80%;
+        height: 60px;
         padding: 20px 10px;
         border-radius: 30px;
     }
     footer button{
-        display: block;
-        margin: 20px auto;
-        padding: 5px 40px;
+        width: 60px;
+        height: 60px;
+        font-weight: bold;
+        margin-left:  10px;
         background: rgb(89, 163, 86);
-        border-radius: 30px;
+        border-radius: 50%;
+        border: solid 2px green;
         font-size: 1.5rem;
         color: white;
-        font-weight: bold;
+        cursor: pointer;
     }
    
 </style>
