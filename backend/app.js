@@ -6,6 +6,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const routeMessage = require("./routes/routeMessage");
 const routeUser = require("./routes/routeUser");
+const path = require("path")
 
 
     
@@ -19,7 +20,9 @@ app.use((req, res, next) => {
     next();
 });
 
-app.use(bodyParser.json())                  
+app.use(bodyParser.json()) 
+
+app.use("/images",express.static(path.join(__dirname,"images")))
 
 app.use("/api",routeMessage);
 app.use("/api",routeUser);

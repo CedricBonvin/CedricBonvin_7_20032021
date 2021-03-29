@@ -46,34 +46,24 @@ export default {
                 email : Email,
                 password : Password
             }
-
            fetch('http://localhost:8080/api/user/login', {
             method: "POST",
             body: JSON.stringify(obj),
             headers: {"Content-type": "application/json; charset=UTF-8"}
             })
             .then(response => response.json()) 
-            .then(() =>{ 
-               
-                // console.log("la longueur est de :"+ response.length)
-                // if (response.length){
-                //     console.log("Essaie de connection " + response[0].email) 
-                //     localStorage.setItem("pseudo",JSON.stringify(response[0].pseudo))
-                //     localStorage.setItem("idUser",JSON.stringify(response[0].idUser))
-                    
-                //     this.$router.push('/mur#/')
-                // }
-                // if (response === 0){
-                //     this.isEmail = false
-                //     console.log("impossible de trouvé le mail")
-                // }         
-                // if (response === 1){
-                //     this.isPassword = false
-                //     console.log("Mot de passe erroné")
-                // }         
+            .then(response =>{ 
+             console.log(" voila ce que je recoie du serveur : " + JSON.stringify(response))  
+              console.log("Essaie de connection avec le mail : " + response.email) 
+                if (response.email){
+                    localStorage.setItem("pseudo",JSON.stringify(response.pseudo))
+                    localStorage.setItem("idUser",JSON.stringify(response.idUser))
+                    localStorage.setItem("photoUrl",JSON.stringify(response.photo))
+                    console.log("la photo est : " + response.photo)
+                    this.$router.push('/mur#/')
+                }     
             });
         }, 
-        // afficheUser(){this.$store.commit("AFFICHE_USER")},
     },
     
         

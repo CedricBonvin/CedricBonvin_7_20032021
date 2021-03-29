@@ -1,12 +1,12 @@
 <template>
-    <div>
+    <div class="headerBox">
         <div @click="afficheBox()" class="userPseudo">  {{ pseudo }}
             <div class="boxAffiche" v-if="affiche">
                 <div class="parametre paramHover">Paramètre</div>
                 <div class="deconnexion paramHover" @click="deconnexion()">déconnection</div>
             </div>
-
-         </div>
+        </div>
+        <img :src="photo" id="photoUser" v-if="displayPhoto">
     </div>
 </template>
 
@@ -16,10 +16,13 @@ export default {
     data(){
         return{
             affiche : false,
+           
         }
     },
     props : {
-        pseudo : String
+        pseudo : String,
+        photo : String,
+        displayPhoto : Boolean
     },
     methods : {
         afficheBox(){
@@ -29,7 +32,9 @@ export default {
             this.affiche = false
         },
         deconnexion(){
-            localStorage.setItem("pseudo",null)
+            localStorage.removeItem("pseudo")
+            localStorage.removeItem("photoUrl")
+            this.displayPhoto = false
             this.$router.push('/')
         }
     } 
@@ -42,6 +47,10 @@ export default {
         z-index: 20;
         color: red;
         cursor: pointer;
+        margin-right: 10px;
+    }
+    .headerBox{
+        display: flex;
     }
     .boxAffiche{
         position: absolute;
@@ -61,6 +70,11 @@ export default {
         cursor: pointer;
         background: gray;
         color: red;
+    }
+    #photoUser{
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
     }
    
 </style>

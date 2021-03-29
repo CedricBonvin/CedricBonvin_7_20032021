@@ -11,6 +11,7 @@ function User(user){
   }
 
 User.create = (newUser, callback) => {
+    console.log(newUser)
     db.query('INSERT INTO users SET ?', newUser, (err, succ) => {
         if (err){
             throw err

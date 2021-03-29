@@ -38,10 +38,11 @@
 
 <script>
 export default {
-    name: 'connection',
+    name: 'Inscription',
     data() {
        return {  
-           BoxImage : true       
+           BoxImage : true ,
+           ImageUser : ""      
        }
     },
     props: {
@@ -53,41 +54,45 @@ export default {
             let Email = document.getElementById("inputEmail").value
             let Password = document.getElementById("password").value
             let Pseudo = document.getElementById("pseudo").value
-
-
-
-            let obj = {
-                email : Email,
-                password : Password,
-                pseudo : Pseudo,
-               
-            }
-
+             let Image = document.getElementById("file").files[0]
+           
+           let formdata = new FormData()
+            formdata.append('email' , Email)
+            formdata.append('password' , Password)
+            formdata.append('pseudo' , Pseudo)
+            formdata.append('image' , Image)     
+            
            fetch('http://localhost:8080/api/user', {
             method: "POST",
-            body: JSON.stringify(obj),
-            headers: {"Content-type": "application/json; charset=UTF-8"}
+            body: formdata,
+           // headers: {"Content-type": "multipart/form-data",}
             })
             .then(response => response.json()) 
             .then(response =>{ 
                 console.log("l'utilisateur à bien été crée'...! ") 
+                console.log("le nom du fichier est :" + this.ImageUser)
                 localStorage.setItem("pseudo",JSON.stringify(response.pseudo))
+                localStorage.setItem("photoUrl",JSON.stringify(response.photo))
+
                 this.$router.push('/mur#/')        
             });
+            
         },
          fileFunc(){
             const input = document.getElementById("file")
           
-                console.log(input.files[0])
+                // console.log(input.files[0].name)
+                console.log(input.files.get )
+                 //console.log("le this.ImageUser est : " + this.ImageUser)
+                 //this.ImageUser = input.files[0].type
                 const reader = new FileReader()
                 reader.onload = function(){
                     const img = new Image()
                     img.src = reader.result
+                    this.ImageUser = img
 
                     img.style.width = "100px"
                     img.style.height = "100px"
-                    // img.style.borderRadius = "50%"
-                    //img.style.transform = "translateY(-50%)"
 
                     const miniature = document.getElementById("renduImage")
                     miniature.append(img)

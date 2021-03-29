@@ -1,9 +1,4 @@
-// const db = require("../sqlConfig");
 
-// exports.signUp = (req,res) => {
-//     res.status(201).json({ message : " ma route inscription fonctionne de malade...!"})
-  
-// }
 
 
 const db = require("../sqlConfig");
@@ -12,13 +7,15 @@ const jwt = require("jsonwebtoken")
 const User = require("../models/userSQL");
 
 exports.signUp = (req,res) => {
-
+    console.log(req.body)
     bcrypt.hash(req.body.password,10)
     .then(hash => {
 
         const obj = {
             ...req.body,
              password : hash,
+             photo: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
+
         }
     
         let newUser = new User(obj);        
@@ -34,39 +31,28 @@ exports.signUp = (req,res) => {
 }
 
 
-// exports.login = ( req, res) => {
-//      const email = req.body.email
-//      const sql = `SELECT * FROM users WHERE email = "${email}" `
-//      console.log("le mail envoyé depuis le login est :" + email)
-
-//     db.query(sql,(err,succ) =>{
-//         if(err)
-//         console.log("utilisateur non trouvé...!")
-//         if (succ.length != 0)
-//         {
-//             console.log("l'utilisateur a été touver dans la base : " )
-//             res.status(200).json(succ)
-//         }
-//         else {
-//             console.log("l'utilisteur n'existe pas dans la base")
-//         }
-//     })   
-// }
-
 exports.login = ( req, res) => {
     const email = req.body.email
     const password = req.body.password
 
     User.findOne(email,password)
+
     //.then( result  => res.status(200).json( result))
-    .then( result  => res.status(200).json({
-        idUser: result.idUser,
+    .then( result  =>{
+        console.log("le resultat de la promesse de findOne est : "+result)
+       return res.status(200).json({
+        
+        idUser: result[0].idUser,
+        email: result[0].email,
+        pseudo: result[0].pseudo,
+        photo: result[0].photo,
         token: jwt.sign(
-          { idUser: result.idUser},
+          { idUser: result[0].idUser},
           'RANDOM_TOKEN_SECRET',
           { expiresIn: '24h' }
         )
-    }))
+        })
+    }) 
     .catch(() => res.status(400).json( { message : "problème que je pige pas...!"} ))  
 }
 

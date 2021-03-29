@@ -5,7 +5,9 @@
       <router-link to="/about">About</router-link> -->
         <div class="logo">Groupomania</div>
         <headerBox  :class="afficheUser()" 
-                    :pseudo="this.pseudoUser"  
+                    :pseudo="this.pseudoUser"
+                    :photo="this.photoUrl" 
+                    :displayPhoto="this.affichePhoto "
                     class="headerBox"  >
         </headerBox>
     </div>
@@ -23,12 +25,18 @@ export default {
         },  
     data(){
         return {
-        pseudoUser : ""
+        pseudoUser : "",
+        photoUrl : "",
+        affichePhoto : false
         }
     },
     methods : {
         afficheUser(){
         this.pseudoUser = JSON.parse(localStorage.getItem("pseudo"))
+        this.photoUrl = JSON.parse(localStorage.getItem("photoUrl"))
+        if (this.photoUrl){
+          this.affichePhoto = true
+        }else this.affichePhoto = false
         }
     },
 }
