@@ -10,7 +10,8 @@
                         <div class="boxNom">
                             <span class="nom"> {{ mess.pseudoUser }} </span>
                         </div>
-                        <div>{{ mess.message }}</div>
+                        <img class="imageMessage" :src="mess.image" alt="">
+                        <div class="boxMessages">{{ mess.message }}</div>
                     
                         <img src="../assets/param.svg" alt="paramètre du message"
                             class="param"
@@ -21,11 +22,13 @@
                 </div>
             </div>
         </div>
+            <boxImage  v-if="displayBoxImage" />
            <boxUpdate @newMessage="postNewMessage" @eventDelete="deleteMess"  v-if="modifie === true" :id="this.id"/>
         <footer>
             <div class="boxBoutton">
                 <input type="text" class="inputMessage" id="message" placeholder="Poster votre message">
-                <button v-on:click="postMessage()">E</button>
+                <button class="buttonImage" v-on:click="postMessage()"><img src="../assets/iconeRow.svg" alt=""></button>
+                <button class="buttonImage" v-on:click="afficheBoxImage()"><img src="../assets/iconeImage.svg" alt="iconeImage"></button>
             </div>
         </footer>
     </div>
@@ -34,11 +37,13 @@
 <script>
 import boxUpdate from "../components/upDateMessage.vue"
 import thanksNewUser from "../components/thanksNewUser.vue"
+import boxImage from "../components/boxImage.vue"
 export default {
     name: 'Home',
     components : {
         boxUpdate,
-        thanksNewUser
+        thanksNewUser,
+        boxImage
     },
     data(){
         return{
@@ -49,7 +54,10 @@ export default {
             storagePseudo : "",
             isUser : false,
             affiche : false,
-            date : ""               
+            date : "",
+            
+            displayBoxImage : false,
+            isMessage : true
         }
     },
                                                 // différence beforeMount et methods
@@ -140,7 +148,12 @@ export default {
             if(thanksNewUser){
                 thanksNewUser = false
             }else thanksNewUser = true
-        }
+        },
+        afficheBoxImage(){
+            if (this.displayBoxImage){
+                this.displayBoxImage = false
+            }else this.displayBoxImage = true
+        }, 
     },
     
     beforeMount(){
@@ -176,7 +189,7 @@ export default {
     .card{
         position: relative;
         border: solid;
-        padding:0px 10px 10px 20px;
+        padding:0px 10px 10px 10px;
         margin: 50px auto;
         margin-left: 10%;
         width: 50%;
@@ -209,6 +222,7 @@ export default {
         font-weight: bold;
     }
     footer{
+
         position: absolute;
         bottom: 0;
         left: 0;
@@ -242,6 +256,19 @@ export default {
         font-size: 1.5rem;
         color: white;
         cursor: pointer;
+    }
+    .buttonImage{
+        padding: 10px
+    }
+    .imageMessage{
+        width: 100%;
+    }
+    .boxMessages{
+         background: white;
+         color: black;
+         padding: 10px;
+         margin-top: -5px;
+         border-radius: 0 0 20px 20px;
     }
    
 </style>

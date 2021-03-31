@@ -32,14 +32,18 @@ exports.displayMessages = (req,res) => {
 
 //avec callback
 exports.postMessage = (req,res) => {
-    const obj = req.body
+    console.log(" le req.body.PseudoUser est , "+req.body.pseudoUser)
+    const obj = {
+        ...req.body,
+        image: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
+    }
     let message = new Message(obj);        
     Message.create(message, (err,succ) => {
         if(err){
             throw err
         }
         console.log("ok pour le post")
-        res.status(201).json({ message : "tout est ok pour la route POST...!"})
+        res.status(201).json({ message : "ok pour le post"})
     })
 }
 

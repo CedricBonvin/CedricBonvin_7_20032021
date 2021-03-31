@@ -75,8 +75,7 @@ export default {
                 localStorage.setItem("photoUrl",JSON.stringify(response.photo))
 
                 this.$router.push('/mur#/')        
-            });
-            
+            });    
         },
          fileFunc(){
             const input = document.getElementById("file")

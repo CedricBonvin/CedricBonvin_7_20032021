@@ -15,8 +15,7 @@ export default {
     name : "headerBox",
     data(){
         return{
-            affiche : false,
-           
+            affiche : false,       
         }
     },
     props : {
@@ -34,6 +33,7 @@ export default {
         deconnexion(){
             localStorage.removeItem("pseudo")
             localStorage.removeItem("photoUrl")
+            localStorage.removeItem("idUser")
             this.displayPhoto = false
             this.$router.push('/')
         }

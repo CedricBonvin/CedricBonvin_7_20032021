@@ -30,6 +30,9 @@ export default {
         affichePhoto : false
         }
     },
+    computed : {
+        
+    },
     methods : {
         afficheUser(){
         this.pseudoUser = JSON.parse(localStorage.getItem("pseudo"))
