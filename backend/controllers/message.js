@@ -33,9 +33,19 @@ exports.displayMessages = (req,res) => {
 //avec callback
 exports.postMessage = (req,res) => {
     console.log(" le req.body.PseudoUser est , "+req.body.pseudoUser)
-    const obj = {
-        ...req.body,
-        image: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
+    let obj = {}
+    if (req.file){
+        console.log("il y a un fichier")
+         obj = {
+            ...req.body,   
+            image: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
+        }
+
+    }else
+     obj = {
+        ...req.body, 
+        image : null  
+       // image: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
     }
     let message = new Message(obj);        
     Message.create(message, (err,succ) => {

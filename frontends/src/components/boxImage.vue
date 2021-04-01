@@ -1,5 +1,5 @@
 <template>
-    <div class="wrapper" v-if="affiche">
+    <div class="wrapper">
         <h4>Postez votre image :</h4>
         <div id="sampleImage">
             <label for="files"><img class="iconeImage" src="../assets/iconeImage.svg" alt=""></label>
@@ -21,7 +21,6 @@ export default {
     name : "boxImage",
     data(){
         return{
-             affiche : true,
              date :""
         }
     },
@@ -29,9 +28,6 @@ export default {
     methods : {
         afficheBox(){
             this.$emit("event",{ affiche: false} )
-            if (this.affiche){
-                this.affiche =false
-            }else this.affiche = true
         },
         fileFunc(){
             const input = document.getElementById("files")
@@ -58,14 +54,19 @@ export default {
             let Image = document.getElementById("files").files[0]
             let mess = document.getElementById("message").value
 
+            console.log("image : "+Image)
+
             this.getDate()
            
             let formdata = new FormData()
             formdata.append('pseudoUser' , Pseudo)
-            formdata.append('image' , Image)     
             formdata.append('date' , this.date)     
             formdata.append('message' , mess)     
- 
+            formdata.append('image' , Image)     
+
+
+            
+
  
             
            fetch('http://localhost:8080/api/message', {
@@ -92,7 +93,8 @@ export default {
                     + new Intl.DateTimeFormat('fr-FR', options).format() + ": "
                     + now.getHours() + "h : " 
                     + now.getMinutes(12) + "min ";
-            },   
+        },
+
     }
 }
 </script>

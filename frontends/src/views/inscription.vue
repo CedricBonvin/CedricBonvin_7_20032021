@@ -1,8 +1,7 @@
 <template>
-    <div>
+    <div v-if="affiche">
         <div class="boxConnection">
-                <h1>Inscription</h1>
-
+            <h1>Inscription</h1>
             <div class="inputCol">
                 <label for="email">E-mail :</label>
                 <input type="text" name="email" id="inputEmail" placeholder="monEmail@hébergeur.com">
@@ -16,17 +15,16 @@
                 <label for="pseudo">Pseudo :</label>
                 <input type="text" name="pseudo" id="pseudo" placeholder="Mon pseudo">
             </div>
-            <p class="labelImage" @click="afficheBoxImage()">Image de profil :</p>
-            <div v-if="BoxImage"> 
-                <div id="boxImage">
-                    <div>
-                        <label class="labelProfil" for="file">Ajouter une photo</label>
-                    </div>
-                    <input @change="fileFunc()"  type="file" name="file" id="file">
-                    <div class="photoProfil" id="renduImage"></div>
-                </div>
+
+            <p class="labelImage">Image de profil :</p>    
+            <div id="renduImage">   
+                <label  for="file"> <img class="iconeImage" src="../assets/iconeImage.svg" alt=""></label> 
+                <input @change="fileFunc()"  type="file" name="file" id="file">
             </div>
+            <div class="boxButton">
+                <button @click="closeBox">Annuler</button>
                 <button  @click="signUp()">Inscription</button>
+            </div>
         </div>
         <div class="getMur">
             <router-link to="/mur" class="getMur">aller sur le mur</router-link>
@@ -40,9 +38,9 @@
 export default {
     name: 'Inscription',
     data() {
-       return {  
-           BoxImage : true ,
-           ImageUser : ""      
+       return {      
+           ImageUser : "",
+           affiche : true      
        }
     },
     props: {
@@ -90,28 +88,29 @@ export default {
                     img.src = reader.result
                     this.ImageUser = img
 
-                    img.style.width = "100px"
-                    img.style.height = "100px"
+                    img.style.width = "150px"
+                    img.style.height = "150px"
+                    img.style.position = "absolute"
+                    img.style.objectFit = "cover"
+                    img.style.top = 0
+                    img.style.left = 0
 
                     const miniature = document.getElementById("renduImage")
                     miniature.append(img)
                 }
                reader.readAsDataURL(input.files[0]) 
         },
-        afficheBoxImage(){
-            if (this.BoxImage === true){
-                this.BoxImage = false
-                console.log(this.BoxImage)
-            }else this.BoxImage = true
-            console.log(this.BoxImage)
+        closeBox(){
+            if (this.affiche){
+                this.affiche = false
+                this.$router.push('/')
+            } else this.affiche = true
         }
+     
     },
     
 }
 </script>
-
-
-
 
 
 <style scoped >
@@ -120,6 +119,7 @@ export default {
     }
     h1{
         text-align: center;
+        color: rgb(59, 59, 59);
     }
     .boxConnection{
 
@@ -136,11 +136,11 @@ export default {
     }
     .inputCol{
         padding: 10px;
-        width: 70%;
+        width: 90%;
+        max-width: 400px;
         margin: auto;
         text-align: center;
     }
-  
     label{
         display: block;
         text-align: left;
@@ -163,10 +163,14 @@ export default {
     a:hover{
         color: black;
     }
+    .boxButton{
+        display: flex;
+        flex-flow: row wrap;
+    }
     button{
-        width: 200px;
-        margin: 40px auto 20px auto;
-        padding: 20px 50px;
+        width: 150px;
+        margin: 20px auto 20px auto;
+        padding: 10px 20px;
         border-radius: 20px;
         background: red;
         color: white;
@@ -176,7 +180,7 @@ export default {
         transform: scale(1.05);
         cursor: pointer;
     }
-     .getMur{
+    .getMur{
         text-align: center;
         padding: 20px;
         font-size: 2rem;
@@ -186,41 +190,26 @@ export default {
     #file{
         display: none;
     }
-    .photoProfil{
-        display: block;
-        width: 100px;
-        height: 100px;
-        border: solid 1px black;
-        border-radius: 50%;
+    #renduImage{
+        position: relative;
         overflow: hidden;
+        width: 150px;
+        height: 150px;
+        margin: 10px auto;
+        padding: 20px;
+        background: rgba(128, 128, 128, 0.472);
+        border-radius: 50%;
     }
-    #boxImage{
-        display: flex;
-        flex-flow: row wrap;
-        justify-content: space-between ;
-        width: 60%;
-        margin: auto;
-        align-items: center;
-        height: 100px;
-    }
-    .labelProfil{
-        display: block;
-        text-decoration: underline;
+    .iconeImage{
         cursor: pointer;
-        font-size: 1.9rem;
     }
     .labelImage{
-        text-align: left;
-        margin: auto;
-        width: 70%;
-        
-        padding: 10px;
-        font-size: 1.5rem;
-        cursor: pointer;
+        text-align: center;
+        font-size: 1.3rem;
+        margin-top: 10px;
     }
-    .labelImage:hover{
-        color: rgb(48, 48, 48);
-        transform: scale(1.05);
-    }
+
+    
+  
  
 </style>

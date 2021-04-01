@@ -59,6 +59,7 @@ export default {
                     localStorage.setItem("pseudo",JSON.stringify(response.pseudo))
                     localStorage.setItem("idUser",JSON.stringify(response.idUser))
                     localStorage.setItem("photoUrl",JSON.stringify(response.photo))
+                    localStorage.setItem("email",JSON.stringify(response.email))
                     console.log("la photo est : " + response.photo)
                     this.$router.push('/mur#/')
                 }     

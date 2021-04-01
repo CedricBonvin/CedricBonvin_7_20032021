@@ -35,12 +35,14 @@ export default {
     },
     methods : {
         afficheUser(){
-        this.pseudoUser = JSON.parse(localStorage.getItem("pseudo"))
-        this.photoUrl = JSON.parse(localStorage.getItem("photoUrl"))
-        if (this.photoUrl){
-          this.affichePhoto = true
-        }else this.affichePhoto = false
-        }
+          this.pseudoUser = JSON.parse(localStorage.getItem("pseudo"))
+          this.photoUrl = JSON.parse(localStorage.getItem("photoUrl"))
+          if (this.photoUrl){
+            this.affichePhoto = true
+          }else this.affichePhoto = false
+        },
+        // parametre
+        
     },
 }
 </script>

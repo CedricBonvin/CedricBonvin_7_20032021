@@ -1,7 +1,6 @@
 <template>
     <div>
         <h1>Mur principal </h1>
-        <thanksNewUser  class="thanksNewUser" v-if="this.affiche"></thanksNewUser>
         <div v-for="mess in card" :key="mess.name">
             <div class="card"   > 
                 <div class="date">{{ mess.date}}</div>
@@ -10,7 +9,7 @@
                         <div class="boxNom">
                             <span class="nom"> {{ mess.pseudoUser }} </span>
                         </div>
-                        <img class="imageMessage" :src="mess.image" alt="">
+                        <img  v-if="mess.image" class="imageMessage" :src="mess.image" alt="">
                         <div class="boxMessages">{{ mess.message }}</div>
                     
                         <img src="../assets/param.svg" alt="paramètre du message"
@@ -22,8 +21,18 @@
                 </div>
             </div>
         </div>
-            <boxImage  v-if="displayBoxImage" />
-           <boxUpdate @newMessage="postNewMessage" @eventDelete="deleteMess"  v-if="modifie === true" :id="this.id"/>
+            
+            <boxImage 
+                @event="afficheFromBoxImage"  
+                v-if="displayBoxImage" 
+            />
+           <boxUpdate 
+                @newMessage="postNewMessage" 
+                @eventDelete="deleteMess" 
+                @closeBoxUpdate="closeFromUpdateMessage" 
+                v-if="modifie" 
+                :id="this.id"
+            />
         <footer>
             <div class="boxBoutton">
                 <input type="text" class="inputMessage" id="message" placeholder="Poster votre message">
@@ -36,14 +45,12 @@
 
 <script>
 import boxUpdate from "../components/upDateMessage.vue"
-import thanksNewUser from "../components/thanksNewUser.vue"
 import boxImage from "../components/boxImage.vue"
 export default {
     name: 'Home',
     components : {
         boxUpdate,
-        thanksNewUser,
-        boxImage
+        boxImage,
     },
     data(){
         return{
@@ -53,19 +60,16 @@ export default {
             pseudoUser : "",
             storagePseudo : "",
             isUser : false,
-            affiche : false,
             date : "",
             
             displayBoxImage : false,
-            isMessage : true
+            isMessage : true,
         }
     },
                                                 // différence beforeMount et methods
     methods : {
       
-        pseudoUserMessage(pseudo){
-            this.pseudoUser = pseudo
-        },
+       
         compare(){
             if( this.storagePseudo === this.pseudoUser){
                 this.isUser = true
@@ -90,7 +94,7 @@ export default {
                     + new Intl.DateTimeFormat('fr-FR', options).format() + ": "
                     + now.getHours() + "h : " 
                     + now.getMinutes(12) + "min ";
-            },
+        },
         postMessage(){
 
             const mess = document.getElementById("message").value
@@ -118,15 +122,13 @@ export default {
                 this.card.push(obj) 
 
             });
-        },
-        displayBoxUpdate(id){
-            this.id = id
-            if (this.modifie === false){
-                console.log("j'ai appuyer et l'id de this.id est : " + this.id)
-                this.modifie = true
-            }else if (this.modifie === true){
-                this.modifie = false
-            }
+        },      
+        postNewMessage(payload){
+            const idMessage = (element) => element.idMESSAGES === this.id;
+            let index = this.card.findIndex(idMessage)
+            this.card[index].message = payload.message
+            console.log("pour le new"+this.card[index.message])
+            this.modifie = false
         },
         deleteMess(){
             const idMessage = (element) => element.idMESSAGES === this.id;
@@ -136,24 +138,30 @@ export default {
             this.modifie = false
             console.log("index du tableau card à supprimer : " + index);
             
-        },
-        postNewMessage(payload){
-            const idMessage = (element) => element.idMESSAGES === this.id;
-            let index = this.card.findIndex(idMessage)
-            this.card[index].message = payload.message
-            console.log("pour le new"+this.card[index.message])
-            this.modifie = false
-        },
-        thanksNewUser(){
-            if(thanksNewUser){
-                thanksNewUser = false
-            }else thanksNewUser = true
-        },
+        },    
         afficheBoxImage(){
+           
             if (this.displayBoxImage){
                 this.displayBoxImage = false
             }else this.displayBoxImage = true
+        },
+        afficheFromBoxImage(payload){
+            this.displayBoxImage = payload.affiche
+        },
+        displayBoxUpdate(id){
+            this.id = id
+            if (this.modifie === false){
+                console.log("j'ai appuyer et l'id de this.id est : " + this.id)
+                this.modifie = true
+            }else if (this.modifie === true){
+                this.modifie = false
+            }
         }, 
+        closeFromUpdateMessage(payload){
+            this.modifie = payload.affiches
+        },
+        
+
     },
     
     beforeMount(){
@@ -264,10 +272,8 @@ export default {
         width: 100%;
     }
     .boxMessages{
-         background: white;
          color: black;
-         padding: 10px;
-         margin-top: -5px;
+         padding: 0px;
          border-radius: 0 0 20px 20px;
     }
    

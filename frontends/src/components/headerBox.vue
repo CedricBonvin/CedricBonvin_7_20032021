@@ -2,20 +2,26 @@
     <div class="headerBox">
         <div @click="afficheBox()" class="userPseudo">  {{ pseudo }}
             <div class="boxAffiche" v-if="affiche">
-                <div class="parametre paramHover">Paramètre</div>
+                <div class="parametre paramHover" @click="afficheParametre()">Paramètre</div>
                 <div class="deconnexion paramHover" @click="deconnexion()">déconnection</div>
             </div>
         </div>
         <img :src="photo" id="photoUser" v-if="displayPhoto">
+        <parametre @closeParametre="closeParametre" v-if="this.affichParam" />
     </div>
 </template>
 
 <script>
+import parametre from "../components/parametre"
 export default {
     name : "headerBox",
+    components : {
+        parametre,
+    },
     data(){
         return{
-            affiche : false,       
+            affiche : false,
+            affichParam : false     
         }
     },
     props : {
@@ -34,8 +40,17 @@ export default {
             localStorage.removeItem("pseudo")
             localStorage.removeItem("photoUrl")
             localStorage.removeItem("idUser")
+            this.affichParam =false
             this.displayPhoto = false
             this.$router.push('/')
+        },
+        afficheParametre(){
+            if (this.affichParam){
+                this.affichParam = false
+            }else this.affichParam = true
+        },
+        closeParametre(payload){
+            this.affichParam = payload.false
         }
     } 
 }
@@ -54,6 +69,7 @@ export default {
     }
     .boxAffiche{
         position: absolute;
+        z-index: 1000;
         color: white;
         left : -50px;
         background : rgba(49, 49, 49, 0.959);

@@ -1,12 +1,12 @@
 <template>
-    <div id="updateMessage" v-if="cancel">
+    <div id="updateMessage">
         <h3> Modifier votre message </h3>
         <textarea  id="newMessage"  v-model="message" placeholder="Votre nouveau message" rows="5" ></textarea>
         <div class="boxBoutton">
             <button @click="updateMessage(id)" title="Mettre à jour le message">Mettre à jour</button>
             <!--<button @click="deleteMessage(id)">Supprimer</button> -->
             <button @click="deleteMessage(id)" title="Supprimer le message">Supprimer</button>
-            <button @click="cancelAction()" title="Annuler">Annuler</button>
+            <button @click="closeBox()" title="Annuler">Annuler</button>
         </div>
     </div>
 </template>
@@ -27,12 +27,7 @@
         },
        
         methods : {
-            cancelAction(){
-                if (this.cancel === false){
-                    this.cancel = true
-                }
-                this.cancel =false
-            }, 
+         
             updateMessage(id){
                 this.$emit("newMessage",{ message : this.message})
                 console.log("pour le post l'id est " + id + "et le message est : " + this.message)
@@ -69,6 +64,9 @@
                         console.log(result)
                 });
             },
+            closeBox(){
+                this.$emit("closeBoxUpdate", { affiches : false})
+            }
         },     
     }
 
