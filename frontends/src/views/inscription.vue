@@ -52,7 +52,7 @@ export default {
             let Email = document.getElementById("inputEmail").value
             let Password = document.getElementById("password").value
             let Pseudo = document.getElementById("pseudo").value
-             let Image = document.getElementById("file").files[0]
+            let Image = document.getElementById("file").files[0] 
            
            let formdata = new FormData()
             formdata.append('email' , Email)
@@ -71,6 +71,7 @@ export default {
                 console.log("le nom du fichier est :" + this.ImageUser)
                 localStorage.setItem("pseudo",JSON.stringify(response.pseudo))
                 localStorage.setItem("photoUrl",JSON.stringify(response.photo))
+                localStorage.setItem("email",JSON.stringify(response.email))
 
                 this.$router.push('/mur#/')        
             });    

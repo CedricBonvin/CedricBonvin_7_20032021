@@ -1,6 +1,4 @@
 
-
-
 const db = require("../sqlConfig");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken")
@@ -11,11 +9,21 @@ exports.signUp = (req,res) => {
     bcrypt.hash(req.body.password,10)
     .then(hash => {
 
-        const obj = {
-            ...req.body,
-             password : hash,
-             photo: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
+        let obj = {}
+        if (req.file){
+            obj = {
+                ...req.body,
+                password : hash,
+                photo: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
 
+            } 
+        }
+        else if (!req.file){
+            obj = {
+                ...req.body,
+                password : hash,
+                photo : `${req.protocol}://${req.get('host')}/images/profil/profil.png`
+            }
         }
     
         let newUser = new User(obj);        
@@ -23,7 +31,6 @@ exports.signUp = (req,res) => {
             if(err){
                 throw err
             }
-            console.log("ok pour l'incrémentation  du nouvel  user avec l'email :" + req.body.email)
             res.status(201).json(newUser)
         })
     })
@@ -54,5 +61,39 @@ exports.login = ( req, res) => {
         })
     }) 
     .catch(() => res.status(400).json( { message : "problème que je pige pas...!"} ))  
+}
+
+exports.deleteUser = ( req, res) => {
+    User.deleteAccount(req.body.email)
+    .then(() => res.status(200).json({ message : "l'utilisateur à bien été supprimer...!"}))
+    .catch(() => res.status(400).json({ message : "impossible de supprimer l'utilisateur"}))
+}
+
+exports.updateUser = (req, res) => {
+
+    let image = ""
+    if (req.file){
+         image =`${req.protocol}://${req.get('host')}/images/${req.file.filename}`
+    }else if (!req.file){
+        image = req.body.oldPhotoUser
+    }
+
+
+    User.update(req.body.oldMail, req.body.email, req.body.pseudo, image)
+    .then( () => 
+        db.query(`SELECT * FROM users WHERE email = "${req.body.email}"`,(err , succ) => {
+            if (err) {
+                throw err
+            }
+            res.status(200).json( succ[0] )
+        }),
+        // je met à jour le pseudo dans la table message pour l'affichage des messages avec le nouveau pseudo
+        db.query(`UPDATE message SET pseudoUser = "${req.body.pseudo}" WHERE pseudoUser = "${req.body.oldPseudo}"`,(err,succ) =>{
+            if(err)
+            throw err
+        })
+    )
+
+    .catch(() => res.status(400).json({ message : "Impossible de mettre à jour le User"}))
 }
 

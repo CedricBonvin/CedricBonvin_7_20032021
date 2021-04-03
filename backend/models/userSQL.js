@@ -21,19 +21,6 @@ User.create = (newUser, callback) => {
     })
 }
 
-// User.create = (newUser) => {
-//     return new Promise ((resolve, reject) => {
-//         db.query('INSERT INTO users SET ?', newUser, (err, succ) => {
-//             if (err){
-//                 throw err
-//             }
-//             resolve(succ)
-//             // res.insertId donne le resultat de l'autoIncrementation de l'id
-//             //callback(null, {idUser: succ.insertId, ...newUser})
-//         })
-//     })
-// }
-
 User.findOne = (bodyMail,bodyPassword) => {
     return new Promise ((resolve, reject) => {
         db.query(`SELECT * FROM users WHERE email = "${bodyMail}"`, (err, succ) => {
@@ -60,6 +47,31 @@ User.findOne = (bodyMail,bodyPassword) => {
             }
         })     
     })    
+}
+User.deleteAccount = (bodymail) => {
+    return new Promise((resolve, reject) => {
+        db.query(`DELETE FROM users WHERE email = "${bodymail}"`,(err, succ) => {
+            if (err){
+                throw err
+            }  resolve(succ)
+        })
+    })
+}
+
+// en test 
+User.update = (oldMail,newMail,pseudo,image) => {
+    return new Promise((resolve, reject) =>{
+        const sql = `Update users SET 
+                    email = "${newMail}",
+                    pseudo = "${pseudo}",
+                    photo = "${image}"
+                    WHERE email = "${oldMail}"`
+        db.query(sql,(err,succ) => {
+            if (err){
+                throw err
+            }else resolve(succ)
+        })
+    })
 }
 
 module.exports = User  // Aurélien avait oublié de l'exporter

@@ -7,7 +7,10 @@
             </div>
         </div>
         <img :src="photo" id="photoUser" v-if="displayPhoto">
-        <parametre @closeParametre="closeParametre" v-if="this.affichParam" />
+        <parametre 
+                @closeParametre="closeParametre" 
+                v-if="this.affichParam" 
+        />
     </div>
 </template>
 
@@ -51,7 +54,8 @@ export default {
         },
         closeParametre(payload){
             this.affichParam = payload.false
-        }
+        },
+      
     } 
 }
 </script>
@@ -91,6 +95,7 @@ export default {
         width: 40px;
         height: 40px;
         border-radius: 50%;
+        object-fit: cover;
     }
    
 </style>

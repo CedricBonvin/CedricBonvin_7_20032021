@@ -8,7 +8,10 @@
                     :pseudo="this.pseudoUser"
                     :photo="this.photoUrl" 
                     :displayPhoto="this.affichePhoto "
-                    class="headerBox"  >
+                    @updateUser="func"
+                    class="headerBox"  
+                    
+                    >
         </headerBox>
     </div>
 
@@ -41,6 +44,10 @@ export default {
             this.affichePhoto = true
           }else this.affichePhoto = false
         },
+        func(payload){
+          this.photoUrl = payload.photoUrl
+          this.pseudoUser = payload.pseudoUser
+        }
         // parametre
         
     },
@@ -71,11 +78,16 @@ body{
 }
 
 #nav {
+  position: relative;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
   display: flex;
   justify-content: space-between;
 
   font-size: 1.5rem;  
-  padding: 30px 15px;
+  padding: 10px 15px;
   background: black;
   color: white;
 }
@@ -87,7 +99,8 @@ body{
 }
 
 .headerBox{
-margin-right: 20px;}
+  margin-right: 20px;
+}
 
 </style>
 

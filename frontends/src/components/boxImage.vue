@@ -11,7 +11,7 @@
         </div>
         <div class="boxbutton">
             <button @click="afficheBox()">Annuler</button>
-            <button @click="postImage()">Poster</button>
+            <button @click="postImage(), afficheBox(), includeCard()">Poster</button>
         </div>
     </div>
 </template>
@@ -21,7 +21,12 @@ export default {
     name : "boxImage",
     data(){
         return{
-             date :""
+             date :"",
+             objetMessage : {
+                 pseudoUser : "",
+                 Message : "",
+                 image : ""
+             }
         }
     },
     
@@ -49,6 +54,9 @@ export default {
             }
             reader.readAsDataURL(input.files[0]) 
         },
+        includeCard(){
+            this.$emit("includeInCard",{ newMessage : this.objetMessage} )
+        },
          postImage(){          
             let Pseudo = JSON.parse(localStorage.getItem("pseudo"))
             let Image = document.getElementById("files").files[0]
@@ -63,26 +71,17 @@ export default {
             formdata.append('date' , this.date)     
             formdata.append('message' , mess)     
             formdata.append('image' , Image)     
-
-
-            
-
- 
-            
+     
            fetch('http://localhost:8080/api/message', {
             method: "POST",
             body: formdata,
            // headers: {"Content-type": "multipart/form-data",}
             })
             .then(response => response.json()) 
-            .then( (res) =>{ console.log(res)
-               // console.log("l'utilisateur à bien été crée'...! ") 
-              //  console.log("le nom du fichier est :" + this.ImageUser)
-              //  localStorage.setItem("pseudo",JSON.stringify(response.pseudo))
-              //  localStorage.setItem("photoUrl",JSON.stringify(response.photo))
-
-              //  this.$router.push('/mur#/') 
-              this.affiche = false       
+            .then( res =>{
+                this.objetMessage.pseudoUser = res.pseudoUser
+                this.objetMessage.message = res.message
+                this.objetMessage.image = res.image
             });    
         }, 
          getDate ()  {

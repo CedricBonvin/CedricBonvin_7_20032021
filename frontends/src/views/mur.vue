@@ -24,6 +24,7 @@
             
             <boxImage 
                 @event="afficheFromBoxImage"  
+                @includeInCard="includeNewMessage"
                 v-if="displayBoxImage" 
             />
            <boxUpdate 
@@ -141,9 +142,10 @@ export default {
         },    
         afficheBoxImage(){
            
-            if (this.displayBoxImage){
-                this.displayBoxImage = false
-            }else this.displayBoxImage = true
+            // if (this.displayBoxImage){
+            //     this.displayBoxImage = false
+            // }else this.displayBoxImage = true
+            this.displayBoxImage ? this.displayBoxImage = false : this.displayBoxImage = true
         },
         afficheFromBoxImage(payload){
             this.displayBoxImage = payload.affiche
@@ -160,6 +162,10 @@ export default {
         closeFromUpdateMessage(payload){
             this.modifie = payload.affiches
         },
+        includeNewMessage(payload){
+            console.log("le payload est : "+ payload.newMessage.pseudoUser)
+            this.card.push(payload.newMessage)
+        }
         
 
     },
@@ -231,7 +237,7 @@ export default {
     }
     footer{
 
-        position: absolute;
+        position: fixed;
         bottom: 0;
         left: 0;
         right: 0;

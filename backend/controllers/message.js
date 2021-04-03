@@ -40,12 +40,10 @@ exports.postMessage = (req,res) => {
             ...req.body,   
             image: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
         }
-
     }else
      obj = {
         ...req.body, 
         image : null  
-       // image: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
     }
     let message = new Message(obj);        
     Message.create(message, (err,succ) => {
@@ -53,7 +51,7 @@ exports.postMessage = (req,res) => {
             throw err
         }
         console.log("ok pour le post")
-        res.status(201).json({ message : "ok pour le post"})
+        res.status(201).json(message)
     })
 }
 
