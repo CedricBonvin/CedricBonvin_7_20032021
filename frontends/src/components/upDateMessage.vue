@@ -34,12 +34,15 @@
                 this.cancel = false
                 const obj = {
                     idMESSAGES : id,
-                    message : this.message
+                    message : this.message,
+                    token : JSON.parse(localStorage.getItem("token"))
                 } 
                 fetch('http://localhost:8080/api/message/update', {
                     method: "POST",
                     body: JSON.stringify(obj),
-                    headers: {"Content-type": "application/json; charset=UTF-8"}
+                    headers: {"Content-type": "application/json; charset=UTF-8",
+                                Authorization: "Bearer" +" "+ obj.token,
+                                }
                     })
                     .then(response => response.json()) 
                     .then(() =>{ 
@@ -51,12 +54,15 @@
                 console.log("l'id du message que je veut supprimer est :" + id)
                 this.cancel = false
                 const obj = {
-                    idMESSAGES : id
+                    idMESSAGES : id,
+                    token : JSON.parse(localStorage.getItem("token"))
                 }
                 fetch('http://localhost:8080/api/message/delete', {
                     method: "POST",
                     body: JSON.stringify(obj),
-                    headers: {"Content-type": "application/json; charset=UTF-8"}
+                    headers: {"Content-type": "application/json; charset=UTF-8",
+                                Authorization: "Bearer" +" "+ obj.token,
+                            }
                     })
                     .then(response => response.json()) 
                     .then( result =>{ 

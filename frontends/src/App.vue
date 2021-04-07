@@ -57,6 +57,7 @@ export default {
 <style>
 html{
   height: 100%;
+  background-color: rgb(199, 199, 199);
 }
 *{
     box-sizing: border-box;
@@ -64,11 +65,14 @@ html{
     padding: 0;
 }
 body{
-    background: rgba(13, 14, 13, 0.747);
-    margin: 0;
     min-height: 100%;
-    position: relative;
     padding-bottom: 120px;
+    width: 100%;
+    max-width: 600px;
+    margin: auto;
+    background: linear-gradient(288deg, rgba(179,179,179,1) 0%, rgba(79,79,79,1) 100%);
+    background-attachment: fixed;
+    box-shadow: 0 0 55px 5px rgb(211, 211, 211);
 }
 #app {
     font-family: Avenir, Helvetica, Arial, sans-serif;

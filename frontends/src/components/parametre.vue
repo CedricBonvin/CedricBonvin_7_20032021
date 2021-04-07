@@ -76,12 +76,15 @@ export default {
         deleteAccount(){
             console.log("essaie du supresseion du compte de l'email : " + this.email)
             const obj = {
-                email : this.email
+                email : this.email,
+                token : JSON.parse(localStorage.getItem("token"))
             }
             fetch('http://localhost:8080/api/user/deleteUser', {
             method: "POST",
             body: JSON.stringify(obj),
-            headers: {"Content-type": "application/json; charset=UTF-8"}
+            headers: {"Content-type": "application/json; charset=UTF-8",
+                        Authorization: "Bearer" +" "+ obj.token,
+                        }
             })
             .then(response => response.json()) 
             .then( () => {
@@ -89,6 +92,7 @@ export default {
                 localStorage.removeItem("pseudo")
                 localStorage.removeItem("photoUrl")
                 localStorage.removeItem("idUser")
+                localStorage.removeItem("token")
                 this.$router.push('/')
             })
         },
@@ -124,6 +128,7 @@ export default {
             const oldPseudo = JSON.parse(localStorage.getItem("pseudo"))
             const fileUser = document.getElementById("fileUser").files[0]
             const oldPhotoUser = JSON.parse(localStorage.getItem("photoUrl"))
+           const token = JSON.parse(localStorage.getItem("token"))
 
             const formdata = new FormData()
                 formdata.append("email", email)
@@ -132,18 +137,17 @@ export default {
                 formdata.append("oldMail", oldMail)
                 formdata.append("oldPseudo", oldPseudo)
                 formdata.append("oldPhotoUser", oldPhotoUser)
+                formdata.append("token", token)
 
             fetch('http://localhost:8080/api/user/update', {
             method: "POST",
             body: formdata,
+              headers: {
+                        Authorization: "Bearer" +" "+ token,
+                        }
             })
             .then(response => response.json()) 
             .then (res => {   
-                // localStorage.setItem("pseudo",res.pseudo)
-                // localStorage.setItem("photoUrl",res.photoUrl)
-                // localStorage.setItem("idUser",res.idUser)
-                // localStorage.setItem("email",res.email)
-
                 this.email = res.email
                 this.pseudo = res.pseudo
 
@@ -160,6 +164,7 @@ export default {
             localStorage.removeItem("photoUrl")
             localStorage.removeItem("idUser")
             localStorage.removeItem("email")
+            localStorage.removeItem("token")
         }
 
 

@@ -14,24 +14,31 @@ exports.signUp = (req,res) => {
             obj = {
                 ...req.body,
                 password : hash,
-                photo: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
-
+                photo: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`,
+               
             } 
         }
         else if (!req.file){
             obj = {
                 ...req.body,
                 password : hash,
-                photo : `${req.protocol}://${req.get('host')}/images/profil/profil.png`
+                photo : `${req.protocol}://${req.get('host')}/images/profil/profil.png`,
+               
             }
         }
     
-        let newUser = new User(obj);        
+        let newUser = new User(obj); 
         User.create(newUser, (err,succes) => {
+            newUser.token = jwt.sign(
+                { idUser: newUser.idUser},
+                'RANDOM_TOKEN_SECRET',
+                { expiresIn: '24h' }
+            )
             if(err){
                 throw err
             }
             res.status(201).json(newUser)
+          
         })
     })
     .catch(() => res.status(500).json( { message : "impossible d'enregisté l'utilisateur...!"}) )
@@ -46,18 +53,16 @@ exports.login = ( req, res) => {
 
     //.then( result  => res.status(200).json( result))
     .then( result  =>{
-        console.log("le resultat de la promesse de findOne est : "+result)
-       return res.status(200).json({
-        
-        idUser: result[0].idUser,
-        email: result[0].email,
-        pseudo: result[0].pseudo,
-        photo: result[0].photo,
-        token: jwt.sign(
-          { idUser: result[0].idUser},
-          'RANDOM_TOKEN_SECRET',
-          { expiresIn: '24h' }
-        )
+        return res.status(200).json({
+            idUser: result[0].idUser,
+            email: result[0].email,
+            pseudo: result[0].pseudo,
+            photo: result[0].photo,
+            token: jwt.sign(
+                { idUser: result[0].idUser},
+                'RANDOM_TOKEN_SECRET',
+                { expiresIn: '24h' }
+            )
         })
     }) 
     .catch(() => res.status(400).json( { message : "problème que je pige pas...!"} ))  

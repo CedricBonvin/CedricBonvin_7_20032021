@@ -43,6 +43,7 @@ export default {
             localStorage.removeItem("pseudo")
             localStorage.removeItem("photoUrl")
             localStorage.removeItem("idUser")
+            localStorage.removeItem("token")
             this.affichParam =false
             this.displayPhoto = false
             this.$router.push('/')
@@ -70,6 +71,7 @@ export default {
     }
     .headerBox{
         display: flex;
+        margin-right: 0;
     }
     .boxAffiche{
         position: absolute;

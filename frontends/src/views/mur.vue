@@ -1,24 +1,36 @@
 <template>
     <div>
         <h1>Mur principal </h1>
-        <div v-for="mess in card" :key="mess.name">
-            <div class="card"   > 
+        <div  v-for="mess in card" :key="mess.name"  >
+            <div  :class="storagePseudo === mess.pseudoUser? 'card' : 'cardUser'"> 
+                
                 <div class="date">{{ mess.date}}</div>
-                <div>  <!-- :class=" isUser ? 'card' : 'cardUser'"-->
-                    <div >   
-                        <div class="boxNom">
-                            <span class="nom"> {{ mess.pseudoUser }} </span>
-                        </div>
-                        <img  v-if="mess.image" class="imageMessage" :src="mess.image" alt="">
-                        <div class="boxMessages">{{ mess.message }}</div>
-                    
-                        <img src="../assets/param.svg" alt="paramètre du message"
-                            class="param"
-                            v-if="storagePseudo === mess.pseudoUser"
-                            @click="displayBoxUpdate( mess.idMESSAGES)"
-                        >
-                    </div>
+                        
+                <div class="boxNom">
+                    <img class="photoProfil" :src="mess.photo" alt="">
+                    <span class="nom"> {{ mess.pseudoUser }} </span>
                 </div>
+                <img  v-if="mess.image" class="imageMessage" :src="mess.image" alt="">
+                <div class="boxMessages">{{ mess.message }}</div>
+
+                <!-- PARAMETRE -->
+                <div class="wrapperParametre">
+                    <div class="wrapperLike" >
+                        <div class="boxLike">
+                            <img @click="addLike(mess)" class="like" src="../assets/heart.svg" alt="icone like">
+                            <div :id="mess.idMESSAGES"  class="nbrLike nbr">{{mess.totalLike}}</div>
+                        </div>
+                        <div class="boxDislike">
+                            <img @click="addDislike(mess)" class="dislike" src="../assets/heartBreak.svg" alt="icone like">
+                            <div  class="nbrdislike nbr">{{mess.totalDislike}}</div>
+                        </div>
+                    </div>
+                    <img src="../assets/param.svg" alt="paramètre du message"
+                        class="param"
+                        v-if="storagePseudo === mess.pseudoUser"
+                        @click="displayBoxUpdate( mess.idMESSAGES)"
+                    >
+                </div>    
             </div>
         </div>
             
@@ -37,7 +49,7 @@
         <footer>
             <div class="boxBoutton">
                 <input type="text" class="inputMessage" id="message" placeholder="Poster votre message">
-                <button class="buttonImage" v-on:click="postMessage()"><img src="../assets/iconeRow.svg" alt=""></button>
+                <button class="buttonImage row" v-on:click="postMessage()"><img src="../assets/iconeRow.svg" alt=""></button>
                 <button class="buttonImage" v-on:click="afficheBoxImage()"><img src="../assets/iconeImage.svg" alt="iconeImage"></button>
             </div>
         </footer>
@@ -60,30 +72,27 @@ export default {
             card : [],
             pseudoUser : "",
             storagePseudo : "",
-            isUser : false,
+            isUser : true,
             date : "",
             
             displayBoxImage : false,
             isMessage : true,
+
+            like : 0,
+            dislike : 0
         }
     },
-                                                // différence beforeMount et methods
+   
+                                              
     methods : {
-      
-       
-        compare(){
-            if( this.storagePseudo === this.pseudoUser){
-                this.isUser = true
-            } else this.isUser = false
-            console.log(this.isUser)
-            console.log("le pseudo du storage est : " + this.storagePseudo)
-            console.log(" le pseudoUser est : "+this.pseudoUser)
-        },
+
         recupApi(){
-            fetch("http://localhost:8080/api/message").then(response => response.json()).then(result =>{             
+            fetch("http://localhost:8080/api/message")
+            .then(response => response.json())
+            .then(result =>{             
                     this.card = result
                     this.storagePseudo = JSON.parse(localStorage.getItem("pseudo"))
-
+                    
 
             })
         },
@@ -102,24 +111,28 @@ export default {
             const idUser = JSON.parse(localStorage.getItem("idUser"))
 
             this.getDate()
-            console.log(" la date est : "+ this.date)
 
             const obj = {
                 //idMESSAGES : "",
                 idUSERS : idUser,
                 pseudoUser : JSON.parse(localStorage.getItem("pseudo")),
                 message : mess,
-                date : this.date
+                date : this.date,
+                token : JSON.parse(localStorage.getItem("token"))
+
             }
 
             fetch('http://localhost:8080/api/message', {
             method: "POST",
             body: JSON.stringify(obj),
-            headers: {"Content-type": "application/json; charset=UTF-8"}
+            headers: {"Content-type": "application/json; charset=UTF-8",
+                    Authorization: "Bearer" +" "+ obj.token,
+
+            }
             })
             .then(response => response.json()) 
-            .then(result =>{      
-                console.log("le message à bien été poster...! et la réponse du serveur est : "+  result.idMessage) 
+            .then(() =>{      
+                obj.photo = JSON.parse(localStorage.getItem("photoUrl")) 
                 this.card.push(obj) 
 
             });
@@ -163,19 +176,58 @@ export default {
             this.modifie = payload.affiches
         },
         includeNewMessage(payload){
-            console.log("le payload est : "+ payload.newMessage.pseudoUser)
+            console.log("le payload est : "+ payload.newMessage.pseudoUser) // pourquoi ca n'affiche pas le user et ? mais sa fonctionne !!!
             this.card.push(payload.newMessage)
-        }
-        
+        },
+        addLike(mess){
+            const obj = {
+                idUser :  JSON.parse(localStorage.getItem("idUser")),
+                idMessage : mess.idMESSAGES,
+                token : JSON.parse(localStorage.getItem("token"))
+            }
+            fetch('http://localhost:8080/api/message/like', {
+                method: "POST",
+                body: JSON.stringify(obj),
+                headers: {"Content-type": "application/json; charset=UTF-8",
+                            Authorization: "Bearer" +" "+ obj.token,
+                        }
+                })
+                .then(response => response.json()) 
+                .then(result =>{     
+                            console.log(result)
+                        this.card = result          
+            });
+        },
+        addDislike(mess){
+            const obj = {
+                idUser :  JSON.parse(localStorage.getItem("idUser")),
+                idMessage : mess.idMESSAGES,
+                token : JSON.parse(localStorage.getItem("token"))
+                
+            }
 
+            fetch('http://localhost:8080/api/message/dislike', {
+                method: "POST",
+                body: JSON.stringify(obj),
+                headers: {"Content-type": "application/json; charset=UTF-8",
+                            Authorization: "Bearer" +" "+ obj.token,
+                        }
+                })
+                .then(response => response.json()) 
+                .then(result =>{      
+                        console.log("Le retour apres le post dislike est : " + result)
+                        this.card = result
+            });
+        },
+      
     },
     
-    beforeMount(){
-        this.recupApi()
-    },
-    destroyed(){
-        this.recupApi()
-    }
+   
+     mounted(){
+       this.recupApi()
+     },
+  
+ 
 }
 </script>
 
@@ -185,30 +237,32 @@ export default {
     h1{
         text-align: center;
         text-decoration: none;
-        margin: 0;
-        color: white;
-    }
-    .cardUser{
-        position: relative;
-        border: solid;
-        padding:0px 10px 10px 20px;
-        margin: 20px auto;
-        margin-right: 50px;
-        width: 50%;
-        background: rgb(86, 100, 163);
-        box-shadow: 0 0 1px 1px;
-        border-radius: 20px;
+        margin-top: 20px;
         color: white;
     }
     .card{
         position: relative;
         border: solid;
-        padding:0px 10px 10px 10px;
-        margin: 50px auto;
-        margin-left: 10%;
-        width: 50%;
+        padding:0px 10px 0px 10px;
+        margin: 60px auto;
+        margin-right: 5%;
+        width: 60%;
         min-width: 250px;
-        background: rgb(89, 163, 86);
+        background: rgb(120, 195, 118);
+        box-shadow: 0 0 1px 1px;
+        border-radius: 20px;
+        color: white;
+    }
+    .cardUser{
+        position: relative;
+        border: solid;
+        padding:0px 10px 0px 10px;
+        margin: 60px auto;
+        margin-left: 5%;
+        width: 60%;
+        min-width: 250px;
+        background: rgb(204, 211, 233);
+        
         box-shadow: 0 0 1px 1px;
         border-radius: 20px;
         color: white;
@@ -221,28 +275,35 @@ export default {
         font-size: 0.8rem;
     }
     .param{
-        opacity: 50%;
-        width: 20px;
-        position: absolute;
-        right: 5px;
-        bottom: 5px;
+        width: 15px;
+    
         cursor: pointer;
     }
-  
+    .boxNom{
+        padding: 5px  0 10px 0 ;
+    }
     .nom{
+        position: relative;
+        top: -10px;
         color: rgb(175, 56, 56);
         text-align: left;
         margin-top: 0;
         font-weight: bold;
+        font-size: 1.2rem;
+    }
+    .photoProfil{
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        object-fit: cover;
     }
     footer{
-
         position: fixed;
         bottom: 0;
         left: 0;
         right: 0;
         background: black;
-        padding: 10px 15px 30px 15px;    
+        padding: 10px 15px 10px 15px;    
         color: white;
     }
     footer h3{
@@ -251,36 +312,76 @@ export default {
     .boxBoutton{
         display: flex;
         justify-content: center;
-        margin-top: 10px;
     }
     footer input{
         width: 80%;
         height: 60px;
-        padding: 20px 10px;
-        border-radius: 30px;
+        padding: 0px 10px;
+        border-radius: 30px 0 0 30px;
     }
     footer button{
         width: 60px;
         height: 60px;
-        font-weight: bold;
         margin-left:  10px;
         background: rgb(89, 163, 86);
         border-radius: 50%;
         border: solid 2px green;
-        font-size: 1.5rem;
         color: white;
         cursor: pointer;
     }
     .buttonImage{
         padding: 10px
     }
+    .row{
+        border-radius: 0 30px 30px 0;
+        margin-left: -1px;
+    }
     .imageMessage{
         width: 100%;
     }
     .boxMessages{
          color: black;
-         padding: 0px;
          border-radius: 0 0 20px 20px;
+    }
+    .wrapperParametre{
+        display: flex;
+        width: calc(100% + 20px);
+        justify-content: space-between;
+        left: 0;
+        bottom: -40px;
+        opacity: 50%;
+        padding: 5px 10px ;
+        margin-left: -10px;
+        margin-top: 20px;
+        background-color: white;
+        border-radius: 0 0 10px 10px;
+
+    }
+    .wrapperLike{
+        display: flex;
+        justify-content: space-between;
+        width: 80px;
+    }
+    .boxLike{
+        position: relative;
+        cursor: pointer;
+    }
+    .boxDislike{
+        position: relative;
+        cursor: pointer;
+    }
+    .like{
+        width: 15px;
+    }
+    .dislike{
+        width: 15px;
+    }
+    .nbr{
+        position: absolute;
+        bottom: 0;
+        right: -20px;
+        margin-top: -10px;
+        color: rgb(68, 68, 68);
     }
    
 </style>

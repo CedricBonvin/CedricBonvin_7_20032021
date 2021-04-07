@@ -25,7 +25,8 @@ export default {
              objetMessage : {
                  pseudoUser : "",
                  Message : "",
-                 image : ""
+                 image : "",
+                 photo : ""
              }
         }
     },
@@ -61,8 +62,9 @@ export default {
             let Pseudo = JSON.parse(localStorage.getItem("pseudo"))
             let Image = document.getElementById("files").files[0]
             let mess = document.getElementById("message").value
+            let idUSERS = JSON.parse(localStorage.getItem("idUser")) 
+            const token = JSON.parse(localStorage.getItem("token"))
 
-            console.log("image : "+Image)
 
             this.getDate()
            
@@ -71,17 +73,21 @@ export default {
             formdata.append('date' , this.date)     
             formdata.append('message' , mess)     
             formdata.append('image' , Image)     
+            formdata.append('idUSERS' , idUSERS)     
+            formdata.append('token' , token)     
      
            fetch('http://localhost:8080/api/message', {
             method: "POST",
             body: formdata,
-           // headers: {"Content-type": "multipart/form-data",}
+            headers: {Authorization: "Bearer" +" "+ token,}
             })
             .then(response => response.json()) 
             .then( res =>{
+                localStorage.setItem("pseudoUser",res.pseudoUser)
                 this.objetMessage.pseudoUser = res.pseudoUser
                 this.objetMessage.message = res.message
                 this.objetMessage.image = res.image
+                this.objetMessage.photo = JSON.parse(localStorage.getItem("photoUrl"))
             });    
         }, 
          getDate ()  {

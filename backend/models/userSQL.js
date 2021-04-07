@@ -16,6 +16,7 @@ User.create = (newUser, callback) => {
         if (err){
             throw err
         }
+        newUser.idUser = succ.insertId // Pour retrouvé l'idUser j'ai du l'incrémenter ici
         // res.insertId donne le resultat de l'autoIncrementation de l'id
         callback(null, {idUser: succ.insertId, ...newUser})
     })

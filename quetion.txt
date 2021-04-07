@@ -15,3 +15,9 @@ FRONTEND
 
 BACKEND
 -------
+
+    - dans model/user => create, pour incrémenter l'idUser ( voir commentaire )
+
+    - Model/message => findAll, Jointure pour récupérer la photo user pour le mettre dans les messages ( est-ce une bonne pratique ? )
+
+    - auth => j'ai repris le token depuis le storage car je n'ai pas le header Bear 

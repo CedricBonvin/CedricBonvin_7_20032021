@@ -53,13 +53,13 @@ export default {
             })
             .then(response => response.json()) 
             .then(response =>{ 
-             console.log(" voila ce que je recoie du serveur : " + JSON.stringify(response))  
-              console.log("Essaie de connection avec le mail : " + response.email) 
                 if (response.email){
                     localStorage.setItem("pseudo",JSON.stringify(response.pseudo))
                     localStorage.setItem("idUser",JSON.stringify(response.idUser))
                     localStorage.setItem("photoUrl",JSON.stringify(response.photo))
                     localStorage.setItem("email",JSON.stringify(response.email))
+                    localStorage.setItem("token",JSON.stringify(response.token))
+                    
                     console.log("la photo est : " + response.photo)
                     this.$router.push('/mur#/')
                 }     
@@ -80,9 +80,7 @@ export default {
     h1{
         text-align: left;
         text-decoration: underline;
-        margin: 20px 0 10px 0;
-
-        
+        margin: 20px 0 10px 0;      
     }
     .boxConnection{
 

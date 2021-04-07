@@ -18,9 +18,10 @@
 
             <p class="labelImage">Image de profil :</p>    
             <div id="renduImage">   
-                <label  for="file"> <img class="iconeImage" src="../assets/iconeImage.svg" alt=""></label> 
                 <input @change="fileFunc()"  type="file" name="file" id="file">
+                <img class="imageProfil" src="../assets/profil.png" alt="">
             </div>
+                <label class="labelPhotoProfil"  for="file"> Choisissez une photo de profil</label> 
             <div class="boxButton">
                 <button @click="closeBox">Annuler</button>
                 <button  @click="signUp()">Inscription</button>
@@ -68,10 +69,13 @@ export default {
             .then(response => response.json()) 
             .then(response =>{ 
                 console.log("l'utilisateur à bien été crée'...! ") 
+                console.log("le token est :" + response.token)
                 console.log("le nom du fichier est :" + this.ImageUser)
                 localStorage.setItem("pseudo",JSON.stringify(response.pseudo))
                 localStorage.setItem("photoUrl",JSON.stringify(response.photo))
                 localStorage.setItem("email",JSON.stringify(response.email))
+                localStorage.setItem("idUser",JSON.stringify(response.idUser))
+                localStorage.setItem("token",JSON.stringify(response.token))
 
                 this.$router.push('/mur#/')        
             });    
@@ -208,6 +212,21 @@ export default {
         text-align: center;
         font-size: 1.3rem;
         margin-top: 10px;
+    }
+    .imageProfil{
+        width: 150px;
+        height: 150px;
+        position: absolute;
+        top: 0;
+        left: 0;
+        object-fit: cover;
+    }
+    .labelPhotoProfil{
+        color: white;
+        text-decoration: underline;
+        text-align: center;
+        font-size: 1.2rem;
+        padding-bottom: 20px;
     }
 
     

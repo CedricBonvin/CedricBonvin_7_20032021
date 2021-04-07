@@ -16,12 +16,15 @@ function Message (message) { // Pour que ca fonctionne j'ai du mettre une foncti
     this.pseudoUser = message.pseudoUser ? message.pseudoUser : null;
     this.date = message.date ? message.date : null;
     this.image = message.image ? message.image : null;
+    this.totalLike = message.totalLike ? message.totalLike : null;
+    this.totalDislike = message.totalDislike ? message.totalDislike : null;
     
     
 }
 
 Message.create = (newMessage, callback) => {
     db.query('INSERT INTO message SET ?', newMessage, (err, res) => {
+        console.log(newMessage)
         if (err){
             throw err
         }
@@ -30,19 +33,13 @@ Message.create = (newMessage, callback) => {
     })
 }
 
-// Message.find = (callback) => {
-//     const sql = `SELECT * FROM message LIMIT 3`
-//     db.query(sql, (err,succ) => {
-//         if (err) {
-//             throw err
-//         }  
-//         callback (succ) 
-//     })
-// }
-                                                             /// Les 2 methodes fonctionnent, je suis trop content
 Message.findAll = () => {
     return new Promise((resolve,reject) =>{
-        const sql = `SELECT * FROM message`
+        const sql = `SELECT *
+        FROM message
+        INNER JOIN users
+        WHERE message.idUSERS = users.idUser`       
+         //const sql = `SELECT * FROM message`
         db.query(sql, (err,succ) => {
             if (err) {
                 throw err
