@@ -30,6 +30,9 @@ export default {
              }
         }
     },
+    props : {
+        newcard : Function
+    },
     
     methods : {
         afficheBox(){
@@ -88,6 +91,10 @@ export default {
                 this.objetMessage.message = res.message
                 this.objetMessage.image = res.image
                 this.objetMessage.photo = JSON.parse(localStorage.getItem("photoUrl"))
+
+                this.newcard()
+
+
             });    
         }, 
          getDate ()  {
@@ -99,6 +106,7 @@ export default {
                     + now.getHours() + "h : " 
                     + now.getMinutes(12) + "min ";
         },
+     
 
     }
 }

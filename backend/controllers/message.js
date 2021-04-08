@@ -113,9 +113,9 @@ exports.like = (req,res, next) => {
             })
         }
     })
-    //  Message.findAll() 
-    // .then(result => res.status(200).json(result))
-    //  .catch(()=> res.status(400).json({ message : "Impossible de renvoyer les données demandé " }))
+    Message.findAll() 
+     .then(result => res.status(200).json(result))
+      .catch(()=> res.status(400).json({ message : "Impossible de renvoyer les données demandé " }))
 
     next()
     
@@ -182,6 +182,9 @@ exports.dislike = (req,res,next) => {
             })      
         }
     })
+     Message.findAll() 
+     .then(result => res.status(200).json(result))
+      .catch(()=> res.status(400).json({ message : "Impossible de renvoyer les données demandé " }))
     next()
     
 }

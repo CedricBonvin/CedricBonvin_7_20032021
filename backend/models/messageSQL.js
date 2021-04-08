@@ -34,7 +34,7 @@ Message.create = (newMessage, callback) => {
 }
 
 Message.findAll = () => {
-    return new Promise((resolve,reject) =>{
+    return  new Promise((resolve,reject) =>{
         const sql = `SELECT *
         FROM message
         INNER JOIN users

@@ -38,6 +38,7 @@
                 @event="afficheFromBoxImage"  
                 @includeInCard="includeNewMessage"
                 v-if="displayBoxImage" 
+                :newcard="this.recupApi"
             />
            <boxUpdate 
                 @newMessage="postNewMessage" 
@@ -91,9 +92,7 @@ export default {
             .then(response => response.json())
             .then(result =>{             
                     this.card = result
-                    this.storagePseudo = JSON.parse(localStorage.getItem("pseudo"))
-                    
-
+                    this.storagePseudo = JSON.parse(localStorage.getItem("pseudo"))              
             })
         },
         getDate ()  {
@@ -132,8 +131,9 @@ export default {
             })
             .then(response => response.json()) 
             .then(() =>{      
-                obj.photo = JSON.parse(localStorage.getItem("photoUrl")) 
-                this.card.push(obj) 
+                //obj.photo = JSON.parse(localStorage.getItem("photoUrl")) 
+               // this.card.push(obj) 
+               this.recupApi()
 
             });
         },      
@@ -144,15 +144,15 @@ export default {
             console.log("pour le new"+this.card[index.message])
             this.modifie = false
         },
-        deleteMess(){
-            const idMessage = (element) => element.idMESSAGES === this.id;
-            let index = this.card.findIndex(idMessage)
-            console.log("index : "+index)
-            this.card.splice(index,1)
-            this.modifie = false
-            console.log("index du tableau card à supprimer : " + index);
-            
-        },    
+      deleteMess(){
+           const idMessage = (element) => element.idMESSAGES === this.id;
+           let index = this.card.findIndex(idMessage)
+          this.card.splice(index,1)
+          this.modifie = false
+
+          console.log("index du tableau card à supprimer : " + index);
+       
+     },    
         afficheBoxImage(){
            
             // if (this.displayBoxImage){
@@ -194,9 +194,10 @@ export default {
                 })
                 .then(response => response.json()) 
                 .then(result =>{     
-                            console.log(result)
-                        this.card = result          
-            });
+                    console.log(result) 
+                    this.card = result                
+                    this.recupApi()
+                });
         },
         addDislike(mess){
             const obj = {
@@ -217,6 +218,7 @@ export default {
                 .then(result =>{      
                         console.log("Le retour apres le post dislike est : " + result)
                         this.card = result
+                this.recupApi()
             });
         },
       
