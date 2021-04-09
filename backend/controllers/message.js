@@ -108,9 +108,9 @@ exports.like = (req,res, next) => {
             })
         }
     })
-    Message.findAll() 
-    .then(result => res.status(200).json(result))
-    .catch(()=> res.status(400).json({ message : "Impossible de renvoyer les données demandé " }))
+    // Message.findAll() 
+    // .then(result => res.status(200).json(result))
+    // .catch(()=> res.status(400).json({ message : "Impossible de renvoyer les données demandé " }))
     
     next()  
 }
@@ -176,9 +176,37 @@ exports.dislike = (req,res,next) => {
             })      
         }
     })
-     Message.findAll() 
-     .then(result => res.status(200).json(result))
-      .catch(()=> res.status(400).json({ message : "Impossible de renvoyer les données demandé " }))
+    //  Message.findAll() 
+    //  .then(result => res.status(200).json(result))
+    //   .catch(()=> res.status(400).json({ message : "Impossible de renvoyer les données demandé " }))
     next()
     
+}
+
+exports.findMessage = (req, res, ) => {
+    // const sql = `SELECT *
+    // FROM message WHERE idMESSAGES = "${req.body.idMessage}"
+    // INNER JOIN users
+    // WHERE message.idUSERS = users.idUser` 
+    const sql = `SELECT * FROM message WHERE idMESSAGES = "${req.body.idMessage}"`
+    db.query(sql,(err , succ) => {
+        res.status(200).json(succ)
+    })
+}
+
+exports.createCommantaire = (req, res) => {
+    const sql = `INSERT INTO commentaires (idUser, idMessageBase, message, image, pseudo, photoProfil)
+                 VALUES ("${req.body.idUser}", "${req.body.idMessageBase}", "${req.body.message}","null", "${req.body.pseudo}", "${req.body.photoProfil}")`
+    db.query(sql, (err, succ) => {
+        if (err) throw err
+        res.status(200).json({message : "le commentaire à bien été ajouter ...!"})
+    })
+}
+
+exports.recupCommentaires = (req, res) => {
+    const sql = `SELECT * FROM commentaires`
+    db.query(sql, (err, succ) => {
+        if (err) throw err
+        res.status(200).json(succ)
+    })
 }

@@ -116,11 +116,12 @@ export default {
 
     .wrapper{
         position: fixed;
-        bottom: 150px;
+        top: 100px;
         left: 50%;
         transform: translateX(-50%);
         background: rgba(0, 0, 0, 0.966);
         width: 80%;
+        max-width: 500px;
         margin: auto;
         color: white;
         font-size: 1.3rem;
@@ -144,13 +145,13 @@ export default {
     }
     .boxbutton{
         display: flex;
-        flex-flow: row wrap;
+        flex-flow: row;
         justify-content: space-evenly;
         width: 100%;
     }
     button{
         padding: 10px 30px;
-        font-size: 1.3rem;
+        font-size: 1rem;
         background: red;
         border-radius: 20px;
         margin: 20px;

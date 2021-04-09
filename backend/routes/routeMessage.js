@@ -11,5 +11,8 @@ router.post('/message/update', auth, messageCtlr.upDateMessage); // auth ok
 router.post('/message/delete',auth, messageCtlr.deleteMessage); // auth ok 
 router.post('/message/like',auth, messageCtlr.like, messageCtlr.displayMessages); // auth ok
 router.post('/message/dislike',auth, messageCtlr.dislike, messageCtlr.displayMessages); // auth ok
+router.post('/message/commentaire',auth,messageCtlr.findMessage); // auth ok
+router.post('/commentaires',auth,messageCtlr.createCommantaire); // auth ok
+router.get('/commentaires/recup',messageCtlr.recupCommentaires); // auth ok
 
 module.exports = router

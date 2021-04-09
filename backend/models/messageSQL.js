@@ -16,8 +16,8 @@ function Message (message) { // Pour que ca fonctionne j'ai du mettre une foncti
     this.pseudoUser = message.pseudoUser ? message.pseudoUser : null;
     this.date = message.date ? message.date : null;
     this.image = message.image ? message.image : null;
-    this.totalLike = message.totalLike ? message.totalLike : null;
-    this.totalDislike = message.totalDislike ? message.totalDislike : null;
+    this.totalLike = message.totalLike ? message.totalLike : 0;
+    this.totalDislike = message.totalDislike ? message.totalDislike : 0;
     
     
 }

@@ -7,7 +7,7 @@
         </div>
         <div class="colInput password" id="boxPassword">
             <label for="password">Password :</label>
-            <input type="text" id="password" name="password" :value="this.$store.state.clearPassword">
+            <input type="password" id="password" name="password" :value="this.$store.state.clearPassword">
             <p @click="afficheNewPassword()" class="modifPassword">Modifier votre password</p>
             <div v-if="newPassword">
                 <label class="newPassword" for="newPassword">Nouveau password :</label>
@@ -188,11 +188,12 @@ export default {
     }
     .parametre{
         position: absolute;
-        z-index: 10;
+        z-index: 10000;
         top : 60px;
         left: 50%;
         transform: translateX(-50%);
         width: 90%;
+        max-width: 500px;
         padding: 20px;
         color: white;
         border-radius: 10px;

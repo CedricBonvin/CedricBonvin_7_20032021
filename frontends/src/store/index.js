@@ -9,7 +9,9 @@ export default new Vuex.Store({
     clearPassword : "",
     idUser : null,
     email : "",
-    photoProfil : ""
+    photoProfil : "",
+
+    idMessage : 0
 
     
   },

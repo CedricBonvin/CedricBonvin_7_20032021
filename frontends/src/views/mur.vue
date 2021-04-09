@@ -26,6 +26,9 @@
                             <div  class="nbrdislike nbr">{{mess.totalDislike}}</div>
                         </div>
                     </div>
+                    <div>
+                        <p @click="goCommentaire(mess.idMESSAGES)" class="commenter">Commenter</p>
+                    </div>
                     <img src="../assets/param.svg" alt="paramètre du message"
                         class="param"
                         v-if="storagePseudo === mess.pseudoUser || isAdmin === true"
@@ -226,6 +229,13 @@ export default {
                 this.recupApi()
             });
         },
+        goCommentaire(id){
+            console.log("go comment")
+            this.$store.state.idMessage = id
+            this.$router.push('/commentaire#/')
+            console.log("l'id du message du store est  : " + id)
+
+        }
     }, 
      mounted(){
        this.recupApi()
@@ -302,6 +312,9 @@ export default {
     footer{
         position: fixed;
         z-index: 1000;
+        width: 100%;
+        max-width: 600px;
+        margin: auto;
         bottom: 0;
         left: 0;
         right: 0;
@@ -364,6 +377,10 @@ export default {
         display: flex;
         justify-content: space-between;
         width: 80px;
+    }
+    .commenter{
+        color: black;
+        cursor: pointer;
     }
     .boxLike{
         position: relative;
