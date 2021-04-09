@@ -1,9 +1,9 @@
 <template>
-    <div class="headerBox">
+    <div class="headerBox" >
         <div @click="afficheBox()" class="userPseudo">  {{ pseudo }}
             <div class="boxAffiche" v-if="affiche">
                 <div class="parametre paramHover" @click="afficheParametre()">Paramètre</div>
-                <div class="deconnexion paramHover" @click="deconnexion()">déconnection</div>
+                <div class="deconnexion paramHover" @click="deconnexion()" @affichePhotoUser="photoUser">déconnection</div>
             </div>
         </div>
         <img :src="photo" id="photoUser" v-if="displayPhoto">
@@ -24,7 +24,7 @@ export default {
     data(){
         return{
             affiche : false,
-            affichParam : false     
+            affichParam : false,  
         }
     },
     props : {
@@ -45,7 +45,6 @@ export default {
             localStorage.removeItem("idUser")
             localStorage.removeItem("token")
             this.affichParam =false
-            this.displayPhoto = false
             this.$router.push('/')
         },
         afficheParametre(){
@@ -56,6 +55,10 @@ export default {
         closeParametre(payload){
             this.affichParam = payload.false
         },
+        photoUser(){
+            console.log("el la photo eslle est ou... ")
+            this.displayPhoto = true
+        }
       
     } 
 }

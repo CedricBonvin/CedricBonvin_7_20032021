@@ -1,7 +1,7 @@
 <template>
     <div id="updateMessage">
         <h3> Modifier votre message </h3>
-        <textarea  id="newMessage"  v-model="message" placeholder="Votre nouveau message" rows="5" ></textarea>
+        <textarea  id="newMessage"  v-model="message" placeholder="Votre nouveau message" rows="5" > </textarea>
         <div class="boxBoutton">
             <button @click="updateMessage(id)" title="Mettre à jour le message">Mettre à jour</button>
             <!--<button @click="deleteMessage(id)">Supprimer</button> -->
@@ -18,11 +18,12 @@
         name : "boxUpdate",
         props : {
             id : Number,
+            recupMessage : String
         },
         data(){
             return {
                 cancel : true,
-                message : "",    
+                message : this.recupMessage,    
             }
         },
        
@@ -114,5 +115,7 @@
         border-radius: 20px;
         cursor: pointer;
     }
+    #newMessage{
+    padding: 5px 20px;}
 
 </style>

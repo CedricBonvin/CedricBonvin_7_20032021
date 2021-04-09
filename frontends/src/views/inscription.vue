@@ -68,14 +68,19 @@ export default {
             })
             .then(response => response.json()) 
             .then(response =>{ 
-                console.log("l'utilisateur à bien été crée'...! ") 
-                console.log("le token est :" + response.token)
-                console.log("le nom du fichier est :" + this.ImageUser)
-                localStorage.setItem("pseudo",JSON.stringify(response.pseudo))
+                // console.log("l'utilisateur à bien été crée'...! ") 
+                // console.log("le token est :" + response.token)
+                // console.log("le nom du fichier est :" + this.ImageUser)
+
                 localStorage.setItem("photoUrl",JSON.stringify(response.photo))
+
+                localStorage.setItem("pseudo",JSON.stringify(response.pseudo))
+               // this.$store.state.pseudo = response.pseudo
                 localStorage.setItem("email",JSON.stringify(response.email))
                 localStorage.setItem("idUser",JSON.stringify(response.idUser))
                 localStorage.setItem("token",JSON.stringify(response.token))
+
+                this.$store.state.clearPassword = Password
 
                 this.$router.push('/mur#/')        
             });    
@@ -222,6 +227,7 @@ export default {
         object-fit: cover;
     }
     .labelPhotoProfil{
+        cursor: pointer;
         color: white;
         text-decoration: underline;
         text-align: center;

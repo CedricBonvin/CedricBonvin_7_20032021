@@ -2,6 +2,7 @@
     <div>
         <h1>Mur principal </h1>
         <div  v-for="mess in card" :key="mess.name"  >
+
             <div  :class="storagePseudo === mess.pseudoUser? 'card' : 'cardUser'"> 
                 
                 <div class="date">{{ mess.date}}</div>
@@ -27,8 +28,8 @@
                     </div>
                     <img src="../assets/param.svg" alt="paramètre du message"
                         class="param"
-                        v-if="storagePseudo === mess.pseudoUser"
-                        @click="displayBoxUpdate( mess.idMESSAGES)"
+                        v-if="storagePseudo === mess.pseudoUser || isAdmin === true"
+                        @click="displayBoxUpdate( mess.idMESSAGES), recupMessage(mess.message)"
                     >
                 </div>    
             </div>
@@ -46,6 +47,7 @@
                 @closeBoxUpdate="closeFromUpdateMessage" 
                 v-if="modifie" 
                 :id="this.id"
+                :recupMessage="this.message"
             />
         <footer>
             <div class="boxBoutton">
@@ -75,16 +77,17 @@ export default {
             storagePseudo : "",
             isUser : true,
             date : "",
+            message : "",
             
             displayBoxImage : false,
             isMessage : true,
 
             like : 0,
-            dislike : 0
+            dislike : 0,
+
+            isAdmin : false
         }
-    },
-   
-                                              
+    },                                            
     methods : {
 
         recupApi(){
@@ -92,6 +95,7 @@ export default {
             .then(response => response.json())
             .then(result =>{             
                     this.card = result
+                    //this.storagePseudo = JSON.parse(localStorage.getItem("pseudo"))              
                     this.storagePseudo = JSON.parse(localStorage.getItem("pseudo"))              
             })
         },
@@ -144,7 +148,7 @@ export default {
             console.log("pour le new"+this.card[index.message])
             this.modifie = false
         },
-      deleteMess(){
+        deleteMess(){
            const idMessage = (element) => element.idMESSAGES === this.id;
            let index = this.card.findIndex(idMessage)
           this.card.splice(index,1)
@@ -152,7 +156,7 @@ export default {
 
           console.log("index du tableau card à supprimer : " + index);
        
-     },    
+        },    
         afficheBoxImage(){
            
             // if (this.displayBoxImage){
@@ -166,7 +170,6 @@ export default {
         displayBoxUpdate(id){
             this.id = id
             if (this.modifie === false){
-                console.log("j'ai appuyer et l'id de this.id est : " + this.id)
                 this.modifie = true
             }else if (this.modifie === true){
                 this.modifie = false
@@ -178,6 +181,9 @@ export default {
         includeNewMessage(payload){
             console.log("le payload est : "+ payload.newMessage.pseudoUser) // pourquoi ca n'affiche pas le user et ? mais sa fonctionne !!!
             this.card.push(payload.newMessage)
+        },
+        recupMessage(mess){
+            this.message = mess
         },
         addLike(mess){
             const obj = {
@@ -216,20 +222,14 @@ export default {
                 })
                 .then(response => response.json()) 
                 .then(result =>{      
-                        console.log("Le retour apres le post dislike est : " + result)
                         this.card = result
                 this.recupApi()
             });
         },
-      
-    },
-    
-   
+    }, 
      mounted(){
        this.recupApi()
      },
-  
- 
 }
 </script>
 
@@ -301,6 +301,7 @@ export default {
     }
     footer{
         position: fixed;
+        z-index: 1000;
         bottom: 0;
         left: 0;
         right: 0;

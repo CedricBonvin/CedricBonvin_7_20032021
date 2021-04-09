@@ -9,10 +9,6 @@ exports.displayMessages = (req,res) => {
     .catch(()=> res.status(400).json({ message : "Impossible de renvoyer les données demandé " }))
  }
 
-
-
-
-
 exports.postMessage = (req,res) => {
     console.log(req.body.message)
     let obj = {}
@@ -34,7 +30,6 @@ exports.postMessage = (req,res) => {
         res.status(201).json(message)
     })
 }
-
 
 // avec CallBack
 exports.upDateMessage = (req,res) => {
@@ -114,11 +109,10 @@ exports.like = (req,res, next) => {
         }
     })
     Message.findAll() 
-     .then(result => res.status(200).json(result))
-      .catch(()=> res.status(400).json({ message : "Impossible de renvoyer les données demandé " }))
-
-    next()
+    .then(result => res.status(200).json(result))
+    .catch(()=> res.status(400).json({ message : "Impossible de renvoyer les données demandé " }))
     
+    next()  
 }
 
 exports.dislike = (req,res,next) => {

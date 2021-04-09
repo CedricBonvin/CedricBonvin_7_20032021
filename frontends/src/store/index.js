@@ -5,12 +5,17 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    userPseudo : ""
+    pseudo : "",
+    clearPassword : "",
+    idUser : null,
+    email : "",
+    photoProfil : ""
+
     
   },
   mutations: {
-    AFFICHE_USER(state){
-      state.userPseudo = JSON.parse(localStorage.getItem("pseudo"))
+    PUT_CLEAR_PASSWORD(state,password){
+      state.clearPassword = password
     }
   },
   actions: {

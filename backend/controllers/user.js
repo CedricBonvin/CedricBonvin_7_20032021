@@ -9,6 +9,8 @@ exports.signUp = (req,res) => {
     bcrypt.hash(req.body.password,10)
     .then(hash => {
 
+      
+
         let obj = {}
         if (req.file){
             obj = {
@@ -23,7 +25,6 @@ exports.signUp = (req,res) => {
                 ...req.body,
                 password : hash,
                 photo : `${req.protocol}://${req.get('host')}/images/profil/profil.png`,
-               
             }
         }
     

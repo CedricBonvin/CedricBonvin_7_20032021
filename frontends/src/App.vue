@@ -82,7 +82,7 @@ body{
 }
 
 #nav {
-  position: relative;
+  position: r;
   top: 0;
   left: 0;
   width: 100%;

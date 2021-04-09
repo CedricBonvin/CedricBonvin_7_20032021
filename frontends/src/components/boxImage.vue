@@ -11,7 +11,7 @@
         </div>
         <div class="boxbutton">
             <button @click="afficheBox()">Annuler</button>
-            <button @click="postImage(), afficheBox(), includeCard()">Poster</button>
+            <button @click="postImage(), afficheBox()">Poster</button> <!-- ici il y avait la fonction includeCard mais je rappelle recupApi-->
         </div>
     </div>
 </template>
@@ -58,10 +58,10 @@ export default {
             }
             reader.readAsDataURL(input.files[0]) 
         },
-        includeCard(){
-            this.$emit("includeInCard",{ newMessage : this.objetMessage} )
-        },
-         postImage(){          
+        // includeCard(){
+        //     this.$emit("includeInCard",{ newMessage : this.objetMessage} )
+        // },
+        postImage(){          
             let Pseudo = JSON.parse(localStorage.getItem("pseudo"))
             let Image = document.getElementById("files").files[0]
             let mess = document.getElementById("message").value
@@ -92,7 +92,7 @@ export default {
                 this.objetMessage.image = res.image
                 this.objetMessage.photo = JSON.parse(localStorage.getItem("photoUrl"))
 
-                this.newcard()
+                this.newcard() // appelle de recupApi() depuis mur.vue
 
 
             });    

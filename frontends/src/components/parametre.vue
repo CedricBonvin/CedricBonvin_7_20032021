@@ -1,17 +1,21 @@
 <template>
     <div class="parametre">
-        <h3>paramètres du compte</h3>
+        <h3>Paramètres du compte</h3>
         <div class="colInput">
-            <label for="email">email :</label>
+            <label for="email">Email :</label>
             <input  type="email" id="email" name="email" :value="this.email">
         </div>
-        <div class="colInput">
-            <label for="password">password :</label>
-            <input type="password" id="password" name="password" :value="this.password">
-            <p class="modifPassword">modifier votre password</p>
+        <div class="colInput password" id="boxPassword">
+            <label for="password">Password :</label>
+            <input type="text" id="password" name="password" :value="this.$store.state.clearPassword">
+            <p @click="afficheNewPassword()" class="modifPassword">Modifier votre password</p>
+            <div v-if="newPassword">
+                <label class="newPassword" for="newPassword">Nouveau password :</label>
+                <input type="password" id="newPassword" name="newPassword" :value="this.password">
+            </div>
         </div>
         <div class="colInput">
-            <label for="pseudo">pseudo :</label>
+            <label for="pseudo">Pseudo :</label>
             <input type="pseudo" id="pseudo" name="pseudo" :value="this.pseudo">
         </div>
 
@@ -27,7 +31,7 @@
 
         <!--BUTTON -->
         <div class="boxButton">
-            <button @click="afficheConfirmUpdate(), userUpdate()"  class="button ">mettre à jour</button>
+            <button @click="afficheConfirmUpdate(), userUpdate()"  class="button ">Mettre à jour</button>
             <button @click="afficheBox()" class="button">Annuler</button>
         </div>
         <button @click="afficheConfirm()" class="supprimer">Supprimer votre compte</button>
@@ -65,7 +69,8 @@ export default {
             userPhoto : JSON.parse(localStorage.getItem("photoUrl")),
 
             afficheConfirmation : false,
-            confirmUpdate : false
+            confirmUpdate : false,
+            newPassword : false
 
         }
     },
@@ -165,6 +170,9 @@ export default {
             localStorage.removeItem("idUser")
             localStorage.removeItem("email")
             localStorage.removeItem("token")
+        },
+        afficheNewPassword(){
+            this.newPassword === false ? this.newPassword = true : this.newPassword = false
         }
 
 
@@ -277,6 +285,9 @@ export default {
         margin-bottom: 20px;
         text-decoration: underline;
     }
+    label{
+        font-size: 1rem;
+    }
     .titlePhotoProfil{
         text-align: left;
     }
@@ -302,4 +313,8 @@ export default {
     .information{
         padding: 30px;
     }
+    .newPassword{
+        color: red;
+    }
+  
 </style>

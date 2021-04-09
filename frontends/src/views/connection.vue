@@ -14,7 +14,7 @@
 
                 <div class="boxLinkInscription"><router-link to="/inscription">Créer un compte</router-link> </div>
             </div>
-            <button  v-on:click="signIn()" >Connexion</button>
+            <button  @click="signIn()" >Connexion</button>
         </div>
         <div  class="getMur">
             <router-link to="/mur" class="linkMur"  >aller sur le mur</router-link>
@@ -32,8 +32,7 @@ export default {
             isEmail : true,
             isPassword : true
         }
-    },
-       
+    },  
     methods : {
             
         signIn(){
@@ -58,18 +57,12 @@ export default {
                     localStorage.setItem("idUser",JSON.stringify(response.idUser))
                     localStorage.setItem("photoUrl",JSON.stringify(response.photo))
                     localStorage.setItem("email",JSON.stringify(response.email))
-                    localStorage.setItem("token",JSON.stringify(response.token))
-                    
-                    console.log("la photo est : " + response.photo)
+                    localStorage.setItem("token",JSON.stringify(response.token))   
                     this.$router.push('/mur#/')
                 }     
             });
-        }, 
+        },   
     },
-    
-        
-   
-
 }
 </script>
 
