@@ -174,8 +174,6 @@ export default {
         afficheNewPassword(){
             this.newPassword === false ? this.newPassword = true : this.newPassword = false
         }
-
-
     }
 }
 </script>

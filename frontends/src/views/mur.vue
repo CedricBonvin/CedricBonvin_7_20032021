@@ -27,7 +27,7 @@
                         </div>
                     </div>
                     <div>
-                        <p @click="goCommentaire(mess.idMESSAGES)" class="commenter">Commenter</p>
+                        <p @click="goCommentaire(mess.idMESSAGES, mess.photo)" class="commenter">Commenter</p>
                     </div>
                     <img src="../assets/param.svg" alt="paramètre du message"
                         class="param"
@@ -204,7 +204,7 @@ export default {
                 .then(response => response.json()) 
                 .then(result =>{     
                     console.log(result) 
-                    this.card = result                
+                    //this.card = result                
                     this.recupApi()
                 });
         },
@@ -224,14 +224,15 @@ export default {
                         }
                 })
                 .then(response => response.json()) 
-                .then(result =>{      
-                        this.card = result
+                .then(() =>{      
+                        //this.card = result
                 this.recupApi()
             });
         },
-        goCommentaire(id){
+        goCommentaire(id,photoProfil){
             console.log("go comment")
             this.$store.state.idMessage = id
+            this.$store.state.photoProfilMessage = photoProfil
             this.$router.push('/commentaire#/')
             console.log("l'id du message du store est  : " + id)
 
@@ -258,7 +259,7 @@ export default {
         padding:0px 10px 0px 10px;
         margin: 60px auto;
         margin-right: 5%;
-        width: 60%;
+        width: 80%;
         min-width: 250px;
         background: rgb(120, 195, 118);
         box-shadow: 0 0 1px 1px;
@@ -271,7 +272,7 @@ export default {
         padding:0px 10px 0px 10px;
         margin: 60px auto;
         margin-left: 5%;
-        width: 60%;
+        width: 80%;
         min-width: 250px;
         background: rgb(204, 211, 233);
         

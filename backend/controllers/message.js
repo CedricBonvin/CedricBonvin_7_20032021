@@ -204,7 +204,7 @@ exports.createCommantaire = (req, res) => {
 }
 
 exports.recupCommentaires = (req, res) => {
-    const sql = `SELECT * FROM commentaires`
+    const sql = `SELECT * FROM commentaires WHERE idMessageBase = ${req.body.idMessageBase}`
     db.query(sql, (err, succ) => {
         if (err) throw err
         res.status(200).json(succ)

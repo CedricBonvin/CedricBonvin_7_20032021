@@ -10,6 +10,7 @@ export default new Vuex.Store({
     idUser : null,
     email : "",
     photoProfil : "",
+    photoProfilMessage : "",
 
     idMessage : 0
 
