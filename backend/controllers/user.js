@@ -103,3 +103,16 @@ exports.updateUser = (req, res) => {
     .catch(() => res.status(400).json({ message : "Impossible de mettre à jour le User"}))
 }
 
+exports.refresh = (req, res) => {
+    const token = jwt.verify(req.body.token, 'RANDOM_TOKEN_SECRET');
+    const userId = token.idUser
+    console.log("le token recu de malade est : " + userId)
+    const sql = `SELECT * FROM users WHERE idUser = "${userId}"`
+
+    db.query(sql,(err, succ) => {
+        if (err) throw err  
+        res.status(200).json( succ )
+    })
+
+}
+

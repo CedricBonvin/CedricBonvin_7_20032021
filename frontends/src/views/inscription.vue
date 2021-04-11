@@ -1,15 +1,16 @@
 <template>
-    <div v-if="affiche">
-        <div class="boxConnection">
-            <h1>Inscription</h1>
+    <div v-if="affiche" class="inscription">
+        <div class="boxInscription">
             <div class="inputCol">
                 <label for="email">E-mail :</label>
                 <input type="text" name="email" id="inputEmail" placeholder="monEmail@hébergeur.com">
             </div>
             <div class="inputCol">
                 <label for="password">Mot de passe :</label>
-                <input type="email" name="email" id="password" placeholder="Password">
-                <!--<div class="boxLinkInscription"><a href="#">Créer un compte</a></div>-->
+                <div class="boxPassword">
+                    <input type="password" name="email" id="password" placeholder="Password" >
+                    <img @click="affichePassword()" class="eye" src="../assets/eye.svg" id="affichePassword" alt="">
+                </div>
             </div>
             <div class="inputCol">
                 <label for="pseudo">Pseudo :</label>
@@ -23,13 +24,10 @@
             </div>
                 <label class="labelPhotoProfil"  for="file"> Choisissez une photo de profil</label> 
             <div class="boxButton">
-                <button @click="closeBox">Annuler</button>
-                <button  @click="signUp()">Inscription</button>
+                <button  id="buttonInscription" @click="signUp()">Inscription</button>
             </div>
         </div>
-        <div class="getMur">
-            <router-link to="/mur" class="getMur">aller sur le mur</router-link>
-        </div>
+     
 
     </div>
 </template>
@@ -68,16 +66,10 @@ export default {
             })
             .then(response => response.json()) 
             .then(response =>{ 
-                // console.log("l'utilisateur à bien été crée'...! ") 
-                // console.log("le token est :" + response.token)
-                // console.log("le nom du fichier est :" + this.ImageUser)
-
-                localStorage.setItem("photoUrl",JSON.stringify(response.photo))
-
-                localStorage.setItem("pseudo",JSON.stringify(response.pseudo))
-               // this.$store.state.pseudo = response.pseudo
-                localStorage.setItem("email",JSON.stringify(response.email))
-                localStorage.setItem("idUser",JSON.stringify(response.idUser))
+                this.$store.state.pseudo = response.pseudo
+                this.$store.state.idUser = response.idUser
+                this.$store.state.photoProfil = response.photo
+                this.$store.state.email = response.email
                 localStorage.setItem("token",JSON.stringify(response.token))
 
                 this.$store.state.clearPassword = Password
@@ -98,8 +90,8 @@ export default {
                     img.src = reader.result
                     this.ImageUser = img
 
-                    img.style.width = "150px"
-                    img.style.height = "150px"
+                    img.style.width = "100px"
+                    img.style.height = "100px"
                     img.style.position = "absolute"
                     img.style.objectFit = "cover"
                     img.style.top = 0
@@ -110,39 +102,48 @@ export default {
                 }
                reader.readAsDataURL(input.files[0]) 
         },
-        closeBox(){
-            if (this.affiche){
-                this.affiche = false
-                this.$router.push('/')
-            } else this.affiche = true
-        }
-     
-    },
-    
+       
+        affichePassword(){
+            const password = document.getElementById("password")
+            let attPass = password.getAttribute("type")
+
+            if ( attPass === "password"){
+                password.setAttribute("type","text")
+            } 
+            else if (attPass === "text"){
+                password.setAttribute("type", "password")
+            }       
+        }  
+    },   
 }
 </script>
 
 
-<style scoped >
-    body{
-        background: #f2f2f2;
-    }
+<style>
+   .inscription{
+   background-image: url("../assets/meeting.jpg");
+   background-size: cover;
+   height: 100vh;
+   
+   }
+ 
     h1{
         text-align: center;
         color: rgb(59, 59, 59);
     }
-    .boxConnection{
-
+    .boxInscription{
         display: flex;
         flex-flow: column;
         justify-content: space-between;
-        padding: 20px;
+        position : absolute;
+        top: 100px;
+        left: 50%;
+        padding: 0;
+        transform: translateX(-50%);
         width: 80%;
-        margin: 30px auto;
 
-        box-shadow: 0 0 5px 5px  gray;
         border-radius: 20px;
-        background: rgb(110, 182, 110);
+        background: rgb(238, 238, 238);
     }
     .inputCol{
         padding: 10px;
@@ -170,6 +171,17 @@ export default {
         text-decoration: underline;
         color: rgb(66, 65, 65);
     }
+    .boxPassword{
+        position: relative
+    }
+    .eye{
+        position: absolute;
+        top : 7px;
+        right: 10px;
+        width: 25px;
+        opacity: 40%;
+        cursor: pointer;
+    }
     a:hover{
         color: black;
     }
@@ -177,19 +189,16 @@ export default {
         display: flex;
         flex-flow: row wrap;
     }
-    button{
-        width: 150px;
-        margin: 20px auto 20px auto;
+    #buttonInscription{
+        width: 100%;
         padding: 10px 20px;
-        border-radius: 20px;
+        border-radius:  0 0 20px 20px;
         background: red;
         color: white;
         font-size: 1.5rem;
-    }
-    button:hover{
-        transform: scale(1.05);
         cursor: pointer;
     }
+   
     .getMur{
         text-align: center;
         padding: 20px;
@@ -203,8 +212,8 @@ export default {
     #renduImage{
         position: relative;
         overflow: hidden;
-        width: 150px;
-        height: 150px;
+        width: 100px;
+        height: 100px;
         margin: 10px auto;
         padding: 20px;
         background: rgba(128, 128, 128, 0.472);
@@ -219,8 +228,8 @@ export default {
         margin-top: 10px;
     }
     .imageProfil{
-        width: 150px;
-        height: 150px;
+        width: 100px;
+        height: 100px;
         position: absolute;
         top: 0;
         left: 0;
@@ -228,12 +237,16 @@ export default {
     }
     .labelPhotoProfil{
         cursor: pointer;
-        color: white;
+        color: rgb(92, 91, 91);
         text-decoration: underline;
         text-align: center;
         font-size: 1.2rem;
         padding-bottom: 20px;
     }
+    .labelPhotoProfil:hover{
+        color:black;
+    }
+
 
     
   

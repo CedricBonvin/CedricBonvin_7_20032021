@@ -63,10 +63,10 @@ export default {
     name : "parametre",
     data(){
         return{
-            pseudo : JSON.parse(localStorage.getItem("pseudo")),
+            pseudo : this.$store.state.pseudo,
             password : "*********",
-            email : JSON.parse(localStorage.getItem("email")),
-            userPhoto : JSON.parse(localStorage.getItem("photoUrl")),
+            email : this.$store.state.email,
+            userPhoto : this.$store.state.photoProfil,
 
             afficheConfirmation : false,
             confirmUpdate : false,
@@ -93,10 +93,10 @@ export default {
             })
             .then(response => response.json()) 
             .then( () => {
-                localStorage.removeItem("email")
-                localStorage.removeItem("pseudo")
-                localStorage.removeItem("photoUrl")
-                localStorage.removeItem("idUser")
+                this.$store.state.pseudo = ""
+                this.$store.state.photoProfil = ""
+                this.$store.state.idUser = ""
+                this.$store.state.email = ""
                 localStorage.removeItem("token")
                 this.$router.push('/')
             })
@@ -129,10 +129,10 @@ export default {
         userUpdate(){
             const email = document.getElementById("email").value
             const pseudo = document.getElementById("pseudo").value
-            const oldMail = JSON.parse(localStorage.getItem("email"))
-            const oldPseudo = JSON.parse(localStorage.getItem("pseudo"))
+            const oldMail = this.$store.state.email
+            const oldPseudo = this.$store.state.pseudo
             const fileUser = document.getElementById("fileUser").files[0]
-            const oldPhotoUser = JSON.parse(localStorage.getItem("photoUrl"))
+            const oldPhotoUser = this.$store.state.photoProfil
            const token = JSON.parse(localStorage.getItem("token"))
 
             const formdata = new FormData()
@@ -165,10 +165,10 @@ export default {
             this.$router.push('/')
             this.afficheBox()
 
-            localStorage.removeItem("pseudo")
-            localStorage.removeItem("photoUrl")
-            localStorage.removeItem("idUser")
-            localStorage.removeItem("email")
+                this.$store.state.pseudo = ""
+            this.$store.state.photoProfil = ""
+            this.$store.state.idUser = ""
+            this.$store.state.email = ""
             localStorage.removeItem("token")
         },
         afficheNewPassword(){
@@ -186,7 +186,7 @@ export default {
     }
     .parametre{
         position: absolute;
-        z-index: 10000;
+        z-index: 1000;
         top : 60px;
         left: 50%;
         transform: translateX(-50%);
@@ -205,7 +205,6 @@ export default {
         margin: 20px auto;
     }
     input{
-        margin: 10px 0;
         width: 80%;
         padding: 10px;
         border-radius: 10px;

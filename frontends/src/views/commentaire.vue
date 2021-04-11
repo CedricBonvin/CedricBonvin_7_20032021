@@ -1,14 +1,14 @@
 <template>
-    <div>
+    <div class="commentaire">
         <!-- Message de base -->
         <div class="messageOriginal">
         <h2>Message poster par :</h2>
-        <img class="photoUser" :src="photo" alt="photo profil du message">
-        <div class="user">{{ pseudoUser }}</div> 
-            <div class="card" v-for="mess in card" :key="mess.name">
+        <img class="photoUser" :src="photoProfil" alt="photo profil du message">
+        <div class="user">{{ pseudoUser}}</div> 
+            <div class="cardCommentaire" v-for="mess in card" :key="mess.name">
                 <div class="boxNom">
-                        <img class="photoProfil" :src="photo" alt="">
-                        <span class="nom"> {{ mess.pseudoUser }} </span>
+                        <img class="photoProfil" :src="mess.photoProfil" alt="">
+                        <span class="nomUser"> {{ mess.pseudoUser }} </span>
                     </div>
                 <img v-if="mess.image" class="image" :src="mess.image" alt="">
                 <div class="boxMessages" > {{mess.message}}</div>
@@ -21,7 +21,7 @@
         </div>
 
         <!-- commentaire -->
-        <div class="card" v-for="mess in commentaires" :key="mess.name">
+        <div class="cardCommentaire" v-for="mess in commentaires" :key="mess.name">
             <div class="topMessage">
                 <img class="photoProfil" :src="mess.photoProfil" alt="">
                 <div class="pseudoUser">{{ mess.pseudo}}</div>
@@ -29,15 +29,17 @@
             <div class="boxMessages"> {{ mess.message }}</div>
         </div>
 
-        <footer>
+        <div id="footerCommentaire">
             <div class="boxRowBack">
                 <img src="../assets/iconeRow.svg" class="backMur" @click="backMur()">
             </div>
              <div class="boxBoutton">
-                <input type="text" class="inputMessage" id="commentaire" placeholder="Poster votre message">
-                <button class="buttonImage row" v-on:click="postCommentaire()"><img src="../assets/iconeRow.svg" alt=""></button>
+                <input type="text" class="inputMessage" id="commentaire" placeholder="Poster votre commentaire">
+                <button class=" boxRow" v-on:click="postCommentaire()">
+                    <img class="row" src="../assets/iconeRow.svg" alt="">
+                </button>
             </div>
-        </footer>
+        </div>
     </div>
 </template>
 
@@ -51,7 +53,7 @@ export default {
             date : "",
             idMessage : null,
             commentaires : [],
-            photo : this.$store.state.photoProfilMessage
+            photoProfil : ""
         }
     },
     methods : {
@@ -59,8 +61,9 @@ export default {
             this.$router.push('/mur#/')
         },
         displayBasicMessage(){
+            const idMess = this.$route.params.id
             const obj = {
-                idMessage : this.$store.state.idMessage,
+                idMessage : idMess,
                 token : JSON.parse(localStorage.getItem("token"))
             }
 
@@ -73,9 +76,11 @@ export default {
             })
             .then(response => response.json()) 
             .then( result =>{ 
-                this.card = result     
-                this.pseudoUser = result[0].pseudoUser
+                this.card = result 
+                this.photo = result[0].photo    
+                this.pseudoUser = result[0].pseudoUser    
                 this.date = result[0].date
+                this.photoProfil = result[0].photoProfil
 
             });
         },
@@ -84,12 +89,12 @@ export default {
             const commentaire = document.getElementById("commentaire").value
 
             const obj = {
-                idUser : JSON.parse(localStorage.getItem("idUser")),
+                idUser : this.$store.state.idUser,
                 idMessageBase : this.$store.state.idMessage,
                 message : commentaire,
                 image : null,
-                pseudo : JSON.parse(localStorage.getItem("pseudo")),
-                photoProfil : JSON.parse(localStorage.getItem("photoUrl")),
+                pseudo : this.$store.state.pseudo,
+                photoProfil : this.$store.state.photoProfil,
                 token : JSON.parse(localStorage.getItem("token"))
             }
 
@@ -107,9 +112,9 @@ export default {
             });
         },
         displayCommentaires(){
-
+           const idMess = this.$route.params.id
             const obj = {
-                idMessageBase : this.$store.state.idMessage,
+                idMessageBase : idMess
             }
             fetch("http://localhost:8080/api/commentaires/recup",{
                 method: "POST",
@@ -120,20 +125,51 @@ export default {
             })
             .then(response => response.json())
             .then( result =>{
-                this.commentaires = result             
+                this.commentaires = result 
+                //console.log("je recoie un truc")            
                 //console.log("un truc est la !!!!!!!!" + result[0].pseudo )
             })
-        }
+        },
+        refreshUser(){
+            if (!this.$store.state.email){
+                const obj = {
+                    token : JSON.parse(localStorage.getItem("token"))    
+                }
+                
+                fetch('http://localhost:8080/api/user/refresh', {
+                    method: "POST",
+                    body: JSON.stringify(obj),
+                    headers: {
+                        "Content-type": "application/json; charset=UTF-8",
+                        Authorization: "Bearer" +" "+ obj.token,
+                    }
+                })
+                 .then(response => response.json()) 
+                .then( result =>{ 
 
+                    this.$store.state.pseudo = result[0].pseudo
+                    this.$store.state.photoProfil = result[0].photo
+                    this.$store.state.idUser = result[0].idUser
+                    this.$store.state.email = result[0].email
+                });
+            }
+        },
     },
     mounted(){
-        this.displayBasicMessage(),
-        this.displayCommentaires()
+        this.refreshUser(),
+        this.displayCommentaires(),
+        this.displayBasicMessage()
     }
 }
 </script>
 
 <style scoped>
+
+.commentaire{
+    padding-bottom: 100px;
+     background: linear-gradient(288deg, rgba(179,179,179,1) 0%, rgba(79,79,79,1) 100%);
+    background-attachment: fixed;
+}
 
 .messageOriginal{
     background: rgb(63, 62, 62);
@@ -154,10 +190,21 @@ h2{
     object-fit: cover;
     margin: auto;
 }
-.card{
-    margin: 30px auto;
-    padding-bottom: 10px;
+.nomUser{
+    color: red;
+}
 
+.cardCommentaire{
+   margin: 30px auto;
+    padding-bottom: 10px;
+    background-color: rgb(187, 184, 184);
+    border-color: rgb(160, 157, 157);
+    width: 80%;
+    max-width: 500px;
+    background: white;
+    padding: 0 10px 10px 10px;
+    border-radius: 20px;
+    border: 2px rgb(131, 128, 128) solid;
 }
 .topMessage{
     display: flex;
@@ -206,16 +253,19 @@ h2{
 }
 
 
-footer{
+#footerCommentaire{
+    position: fixed;
+    bottom: 0;
     width: 100%;
    
     background:none;
-    bottom: 0;
     width: 100%;
     max-width: 600px;
     padding: 0;
 }
 .boxBoutton{
+    display: flex;
+    justify-content: center;
     background: black;
     padding: 10px;
 }
@@ -236,12 +286,22 @@ footer{
 }
 .inputMessage{
     width: 70%;
-    border-radius: 10px;
-    padding: 20px;
+    border-radius: 10px 0 0 10px;
+    padding: 10px;
+}
+.boxRow{
+    position: relative;
+    left: -5px;
+    top: 1px;
+    background: rgb(102, 209, 102);
+    border-radius: 0 10px 10px 0%;
+    padding: 10px;
 }
 .row{
-    width: 40px;
+    width: 30px;
+    height: 30px;
     margin: 0;
 }
+
 
 </style>

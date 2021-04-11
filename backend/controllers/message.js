@@ -184,12 +184,13 @@ exports.dislike = (req,res,next) => {
 }
 
 exports.findMessage = (req, res, ) => {
-    // const sql = `SELECT *
-    // FROM message WHERE idMESSAGES = "${req.body.idMessage}"
-    // INNER JOIN users
-    // WHERE message.idUSERS = users.idUser` 
+//    const sql = `SELECT idMESSAGES, idUSERS, message, pseudoUser, date, image 
+//    FROM message WHERE idMESSAGES = "${req.body.idMessage}"
+//    UNION
+//    SELECT * FROM users WHERE idUser = "${req.body.idUser}"`
     const sql = `SELECT * FROM message WHERE idMESSAGES = "${req.body.idMessage}"`
     db.query(sql,(err , succ) => {
+        if (err) throw err
         res.status(200).json(succ)
     })
 }

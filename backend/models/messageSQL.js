@@ -18,8 +18,7 @@ function Message (message) { // Pour que ca fonctionne j'ai du mettre une foncti
     this.image = message.image ? message.image : null;
     this.totalLike = message.totalLike ? message.totalLike : 0;
     this.totalDislike = message.totalDislike ? message.totalDislike : 0;
-    
-    
+    this.photoProfil = message.photoProfil ? message.photoProfil : null  
 }
 
 Message.create = (newMessage, callback) => {

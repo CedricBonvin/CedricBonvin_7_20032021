@@ -1,7 +1,6 @@
 <template>
-    <div>
+    <div class="body">
         <div class="boxConnection">
-        <h1>Connectez-vous !</h1>
             <div class="inputCol">
                 <label for="email">E-mail :</label>
                 <input type="text" name="email" id="connectInputEmail" placeholder="monEmail@hébergeur.com">
@@ -9,16 +8,14 @@
             </div>
             <div class="inputCol">
                 <label for="password">Mot de passe :</label>
-                <input type="email" name="email" id="connectPassword" placeholder="Password">
+                <input type="password" name="email" id="connectPassword" placeholder="Password">
                 <div v-if="!isPassword" class="isFalse">* Mot de passe incorrect</div>
 
                 <div class="boxLinkInscription"><router-link to="/inscription">Créer un compte</router-link> </div>
             </div>
-            <button  @click="signIn()" >Connexion</button>
+            <button class="buttonConnection"  @click="signIn()" >Connexion</button>
         </div>
-        <div  class="getMur">
-            <router-link to="/mur" class="linkMur"  >aller sur le mur</router-link>
-        </div>
+        
 
     </div>
 </template>
@@ -53,10 +50,11 @@ export default {
             .then(response => response.json()) 
             .then(response =>{ 
                 if (response.email){
-                    localStorage.setItem("pseudo",JSON.stringify(response.pseudo))
-                    localStorage.setItem("idUser",JSON.stringify(response.idUser))
-                    localStorage.setItem("photoUrl",JSON.stringify(response.photo))
-                    localStorage.setItem("email",JSON.stringify(response.email))
+                    this.$store.state.pseudo = response.pseudo
+                    this.$store.state.idUser = response.idUser
+                    this.$store.state.photoProfil = response.photo
+                    this.$store.state.email = response.email
+
                     localStorage.setItem("token",JSON.stringify(response.token))   
                     this.$router.push('/mur#/')
                 }     
@@ -66,29 +64,36 @@ export default {
 }
 </script>
 
-<style scoped >
-    body{
-        background: #f2f2f2;
+<style>
+    .body{
+    height: 100vh;
+    background-image: url("../assets/meeting.jpg");
+    background-size: cover;
+
+           
     }
+   
     h1{
         text-align: left;
         text-decoration: underline;
-        margin: 20px 0 10px 0;      
     }
     .boxConnection{
-
+        position : fixed;
+        top: 30%;
+        left: 50%;
+        transform: translate(-50%);
         display: flex;
         flex-flow: column;
         align-items: center;
         justify-content: space-evenly;
 
-        width: 80%;
-        margin: 20px auto;
-        padding: 0px 0 20px 0;
+        width: 50%;
+        max-width: 500px;
+        min-width: 350px;
+        padding: 0px 0 0px 0;
 
-        box-shadow: 0 0 5px 5px  gray;
         border-radius: 20px;
-        background: rgb(110, 182, 110);
+        background: rgb(238, 238, 238);
     }
     .inputCol{
         width: 70%;
@@ -119,18 +124,18 @@ export default {
     a:hover{
         color: black;
     }
-    button{
-        padding: 20px 50px;
-        border-radius: 20px;
-        background: green;
+    .buttonConnection{
+        
+        width: 100%;
+        padding: 10px 50px;
+        border-radius: 0 0 20px 20px;
+        background: rgb(197, 55, 45);
         color: white;
         font-size: 1.5rem;
-        margin: 20px 0;
-    }
-    button:hover{
-        transform: scale(1.05);
         cursor: pointer;
+        
     }
+   
     .getMur{
         text-align: center;
         padding: 20px;

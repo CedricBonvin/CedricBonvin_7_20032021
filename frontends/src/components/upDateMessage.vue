@@ -46,13 +46,10 @@
                                 }
                     })
                     .then(response => response.json()) 
-                    .then(() =>{ 
-                        console.log("Le nouveau message à bien été envoyer...!  ")         
-                });
+                    .then(() =>{});
             },      
             deleteMessage(id){
                 this.$emit("eventDelete",{})
-                console.log("l'id du message que je veut supprimer est :" + id)
                 this.cancel = false
                 const obj = {
                     idMESSAGES : id,
@@ -67,7 +64,6 @@
                     })
                     .then(response => response.json()) 
                     .then( result =>{ 
-                        console.log("l'id du message à supprimer à bien été envoyé, id : " + id) 
                         console.log(result)
                 });
             },

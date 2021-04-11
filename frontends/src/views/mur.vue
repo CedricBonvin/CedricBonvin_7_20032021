@@ -1,9 +1,9 @@
 <template>
-    <div>
-        <h1>Mur principal </h1>
+    <div class="mur" >
+        <h1 class="titleMur">Mur principal </h1>
         <div  v-for="mess in card" :key="mess.name"  >
 
-            <div  :class="storagePseudo === mess.pseudoUser? 'card' : 'cardUser'"> 
+            <div  :class="$store.state.pseudo === mess.pseudoUser? 'card' : 'cardUser'"> 
                 
                 <div class="date">{{ mess.date}}</div>
                         
@@ -31,7 +31,7 @@
                     </div>
                     <img src="../assets/param.svg" alt="paramètre du message"
                         class="param"
-                        v-if="storagePseudo === mess.pseudoUser || isAdmin === true"
+                        v-if="$store.state.pseudo === mess.pseudoUser || isAdmin === true"
                         @click="displayBoxUpdate( mess.idMESSAGES), recupMessage(mess.message)"
                     >
                 </div>    
@@ -52,7 +52,7 @@
                 :id="this.id"
                 :recupMessage="this.message"
             />
-        <footer>
+        <footer class="footerMur">
             <div class="boxBoutton">
                 <input type="text" class="inputMessage" id="message" placeholder="Poster votre message">
                 <button class="buttonImage row" v-on:click="postMessage()"><img src="../assets/iconeRow.svg" alt=""></button>
@@ -77,7 +77,6 @@ export default {
             id : "",
             card : [],
             pseudoUser : "",
-            storagePseudo : "",
             isUser : true,
             date : "",
             message : "",
@@ -98,8 +97,6 @@ export default {
             .then(response => response.json())
             .then(result =>{             
                     this.card = result
-                    //this.storagePseudo = JSON.parse(localStorage.getItem("pseudo"))              
-                    this.storagePseudo = JSON.parse(localStorage.getItem("pseudo"))              
             })
         },
         getDate ()  {
@@ -114,16 +111,17 @@ export default {
         postMessage(){
 
             const mess = document.getElementById("message").value
-            const idUser = JSON.parse(localStorage.getItem("idUser"))
+            const idUser = this.$store.state.idUser
 
             this.getDate()
 
             const obj = {
                 //idMESSAGES : "",
                 idUSERS : idUser,
-                pseudoUser : JSON.parse(localStorage.getItem("pseudo")),
+                pseudoUser : this.$store.state.pseudo,
                 message : mess,
                 date : this.date,
+                photoProfil : this.$store.state.photoProfil,
                 token : JSON.parse(localStorage.getItem("token"))
 
             }
@@ -138,7 +136,6 @@ export default {
             })
             .then(response => response.json()) 
             .then(() =>{      
-                //obj.photo = JSON.parse(localStorage.getItem("photoUrl")) 
                // this.card.push(obj) 
                this.recupApi()
 
@@ -161,10 +158,6 @@ export default {
        
         },    
         afficheBoxImage(){
-           
-            // if (this.displayBoxImage){
-            //     this.displayBoxImage = false
-            // }else this.displayBoxImage = true
             this.displayBoxImage ? this.displayBoxImage = false : this.displayBoxImage = true
         },
         afficheFromBoxImage(payload){
@@ -190,7 +183,8 @@ export default {
         },
         addLike(mess){
             const obj = {
-                idUser :  JSON.parse(localStorage.getItem("idUser")),
+                //idUser :  JSON.parse(localStorage.getItem("idUser")),
+                idUser :  this.$store.state.idUser,
                 idMessage : mess.idMESSAGES,
                 token : JSON.parse(localStorage.getItem("token"))
             }
@@ -202,15 +196,15 @@ export default {
                         }
                 })
                 .then(response => response.json()) 
-                .then(result =>{     
-                    console.log(result) 
+                .then(() =>{     
                     //this.card = result                
                     this.recupApi()
                 });
         },
         addDislike(mess){
             const obj = {
-                idUser :  JSON.parse(localStorage.getItem("idUser")),
+                //idUser :  JSON.parse(localStorage.getItem("idUser")),
+                idUser :  this.$store.state.idUser,
                 idMessage : mess.idMESSAGES,
                 token : JSON.parse(localStorage.getItem("token"))
                 
@@ -233,24 +227,54 @@ export default {
             console.log("go comment")
             this.$store.state.idMessage = id
             this.$store.state.photoProfilMessage = photoProfil
-            this.$router.push('/commentaire#/')
+            this.$router.push('/commentaire/'+ id)
             console.log("l'id du message du store est  : " + id)
 
+        },
+        refresh(){
+            if (!this.$store.state.email){
+                const obj = {
+                    token : JSON.parse(localStorage.getItem("token"))    
+                }
+                
+                fetch('http://localhost:8080/api/user/refresh', {
+                    method: "POST",
+                    body: JSON.stringify(obj),
+                    headers: {
+                        "Content-type": "application/json; charset=UTF-8",
+                        Authorization: "Bearer" +" "+ obj.token,
+                    }
+                })
+                 .then(response => response.json()) 
+                .then( result =>{ 
+
+                    this.$store.state.pseudo = result[0].pseudo
+                    this.$store.state.photoProfil = result[0].photo
+                    this.$store.state.idUser = result[0].idUser
+                    this.$store.state.email = result[0].email
+                });
+            }
         }
     }, 
      mounted(){
-       this.recupApi()
+       this.recupApi(),
+       this.refresh()
      },
 }
 </script>
 
 
 <style>
-
-    h1{
+    .mur{
+    height: 100%;
+    padding-bottom: 100px;
+    background: linear-gradient(288deg, rgba(179,179,179,1) 0%, rgba(79,79,79,1) 100%);
+    background-attachment: fixed;
+    }
+   
+    .titleMur{
         text-align: center;
         text-decoration: none;
-        margin-top: 20px;
         color: white;
     }
     .card{
@@ -310,12 +334,12 @@ export default {
         border-radius: 50%;
         object-fit: cover;
     }
-    footer{
+    .footerMur{
         position: fixed;
         z-index: 1000;
         width: 100%;
         max-width: 600px;
-        margin: auto;
+        margin: 50px auto 0 auto;
         bottom: 0;
         left: 0;
         right: 0;
@@ -332,13 +356,13 @@ export default {
     }
     footer input{
         width: 80%;
-        height: 60px;
+        height: 50px;
         padding: 0px 10px;
         border-radius: 30px 0 0 30px;
     }
     footer button{
-        width: 60px;
-        height: 60px;
+        width: 50px;
+        height: 50px;
         margin-left:  10px;
         background: rgb(89, 163, 86);
         border-radius: 50%;

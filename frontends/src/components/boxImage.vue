@@ -62,10 +62,14 @@ export default {
         //     this.$emit("includeInCard",{ newMessage : this.objetMessage} )
         // },
         postImage(){          
-            let Pseudo = JSON.parse(localStorage.getItem("pseudo"))
+            // let Pseudo = JSON.parse(localStorage.getItem("pseudo"))
+            let Pseudo = this.$store.state.pseudo
+
             let Image = document.getElementById("files").files[0]
             let mess = document.getElementById("message").value
-            let idUSERS = JSON.parse(localStorage.getItem("idUser")) 
+            let photoProfil = this.$store.state.photoProfil
+            // let idUSERS = JSON.parse(localStorage.getItem("idUser")) 
+            let idUSERS = this.$store.state.idUser
             const token = JSON.parse(localStorage.getItem("token"))
 
 
@@ -77,6 +81,7 @@ export default {
             formdata.append('message' , mess)     
             formdata.append('image' , Image)     
             formdata.append('idUSERS' , idUSERS)     
+            formdata.append('photoProfil' , photoProfil)     
             formdata.append('token' , token)     
      
            fetch('http://localhost:8080/api/message', {
@@ -85,12 +90,12 @@ export default {
             headers: {Authorization: "Bearer" +" "+ token,}
             })
             .then(response => response.json()) 
-            .then( res =>{
-                localStorage.setItem("pseudoUser",res.pseudoUser)
-                this.objetMessage.pseudoUser = res.pseudoUser
-                this.objetMessage.message = res.message
-                this.objetMessage.image = res.image
-                this.objetMessage.photo = JSON.parse(localStorage.getItem("photoUrl"))
+            .then( () =>{
+                // localStorage.setItem("pseudoUser",res.pseudoUser)
+                // this.objetMessage.pseudoUser = res.pseudoUser
+                // this.objetMessage.message = res.message
+                // this.objetMessage.image = res.image
+                // this.objetMessage.photo = JSON.parse(localStorage.getItem("photoUrl"))
 
                 this.newcard() // appelle de recupApi() depuis mur.vue
 

@@ -1,16 +1,18 @@
 <template>
-    <div class="headerBox" >
-        <div @click="afficheBox()" class="userPseudo">  {{ pseudo }}
-            <div class="boxAffiche" v-if="affiche">
-                <div class="parametre paramHover" @click="afficheParametre()">Paramètre</div>
-                <div class="deconnexion paramHover" @click="deconnexion()" @affichePhotoUser="photoUser">déconnection</div>
+    <div>
+        <div class="headerBox" >
+            <div v @click="afficheBox()" class="userPseudo">  {{ $store.state.pseudo }}
+                <div class="boxAffiche" v-if="affiche">
+                    <div class="parametre paramHover" @click="afficheParametre()">Paramètre</div>
+                    <div class="deconnexion paramHover" @click="deconnexion()" @affichePhotoUser="photoUser">déconnection</div>
+                </div>
             </div>
+            <img v-if="$store.state.photoProfil" :src="$store.state.photoProfil" id="photoUser" >
+            <parametre
+                    @closeParametre="closeParametre"
+                    v-if="this.affichParam"
+            />
         </div>
-        <img :src="photo" id="photoUser" v-if="displayPhoto">
-        <parametre 
-                @closeParametre="closeParametre" 
-                v-if="this.affichParam" 
-        />
     </div>
 </template>
 
@@ -24,13 +26,13 @@ export default {
     data(){
         return{
             affiche : false,
-            affichParam : false,  
+            affichParam : false, 
         }
     },
     props : {
-        pseudo : String,
-        photo : String,
-        displayPhoto : Boolean
+        //pseudo : String,
+        //photo : String,
+        //displayPhoto : Boolean
     },
     methods : {
         afficheBox(){
@@ -40,9 +42,10 @@ export default {
             this.affiche = false
         },
         deconnexion(){
-            localStorage.removeItem("pseudo")
-            localStorage.removeItem("photoUrl")
-            localStorage.removeItem("idUser")
+            this.$store.state.pseudo = ""
+            this.$store.state.photoProfil = ""
+            this.$store.state.idUser = ""
+            this.$store.state.email = ""
             localStorage.removeItem("token")
             this.affichParam =false
             this.$router.push('/')
@@ -56,7 +59,6 @@ export default {
             this.affichParam = payload.false
         },
         photoUser(){
-            console.log("el la photo eslle est ou... ")
             this.displayPhoto = true
         }
       
@@ -73,6 +75,7 @@ export default {
         margin-right: 10px;
     }
     .headerBox{
+     
         display: flex;
         margin-right: 0;
     }

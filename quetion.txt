@@ -4,22 +4,20 @@
 FRONTEND
 ---------
 
-    1.- dans upDateMessage dans le dossier composants, comment faire pour pré-remplire le text-area avec l'ancien message ? 
-        Je ne peut pas mettre de moustache entre les balises text-area car j'utilise v-model... Y a-t-il une solution ? 
-
-    3.- BUG => je poste un nouveau message => je veut modifier ce message ou le supprimer => Impossible ( c'est normal 
-            car l'api n'a pas été rappeler donc pas possible de récupérer l'id du message, les changements ont été seulement
-            effectué dans le tableau de récupération de l'api pour actualiser la vue )
 
     4.- Comment fermer des box ( composant ) en cliquant à coté de la box ? 
 
-    - gif et video ?? // 
     - implémenter accès admin
+
+    -probleme affichage parametre ( si je met le header à fixed, les parametres sont plus grand que la page et impossible de scroller..!!)
+
+    - logo Groupomania ?? svg ?? 
+
+    - parametre dans url
 
 BACKEND
 -------
 
     - dans model/user => create, pour incrémenter l'idUser ( voir commentaire )
 
-    - Model/message => findAll, Jointure pour récupérer la photo user pour le mettre dans les messages ( est-ce une bonne pratique ? )
 

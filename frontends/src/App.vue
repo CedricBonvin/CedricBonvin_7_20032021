@@ -3,14 +3,14 @@
     <div id="nav">
      <!-- <router-link to="/">Home</router-link> |
       <router-link to="/about">About</router-link> -->
-        <div class="logo">Groupomania</div>
+        <!-- <div class="logo">Groupomania</div> -->
+        <img class="logo" src="./assets/Groupomania/icon-left-font-monochrome-white.svg" alt="">
         <headerBox  :class="afficheUser()" 
                     :pseudo="this.pseudoUser"
                     :photo="this.photoUrl" 
                     :displayPhoto="this.affichePhoto "
                     @updateUser="func"
                     class="headerBox"  
-                    
                     >
         </headerBox>
     </div>
@@ -65,14 +65,14 @@ html{
     padding: 0;
 }
 body{
+    position: relative;
     min-height: 100%;
-    padding-bottom: 120px;
     width: 100%;
     max-width: 600px;
     margin: auto;
-    background: linear-gradient(288deg, rgba(179,179,179,1) 0%, rgba(79,79,79,1) 100%);
+    /*background: linear-gradient(288deg, rgba(179,179,179,1) 0%, rgba(79,79,79,1) 100%);
     background-attachment: fixed;
-    box-shadow: 0 0 55px 5px rgb(211, 211, 211);
+    box-shadow: 0 0 55px 5px rgb(211, 211, 211);*/
 }
 #app {
     font-family: Avenir, Helvetica, Arial, sans-serif;
@@ -82,16 +82,16 @@ body{
 }
 
 #nav {
-  position: r;
-  top: 0;
-  left: 0;
+ 
   width: 100%;
+  max-width: 600px;
   z-index: 1000;
   display: flex;
   justify-content: space-between;
+  margin: auto;
 
   font-size: 1.5rem;  
-  padding: 10px 15px;
+  padding: 20px 15px;
   background: black;
   color: white;
 }
@@ -104,6 +104,10 @@ body{
 
 .headerBox{
   margin-right: 20px;
+}
+.logo{
+  width: 150px;
+  
 }
 
 </style>

@@ -22,7 +22,7 @@ const routes = [
     component: () => import(/* webpackChunkName: "mur" */ '../views/mur.vue')
   },
   {
-    path: '/commentaire',
+    path: '/commentaire/:id',
     name: 'commentaire',
     component: () => import(/* webpackChunkName: "commentaire" */ '../views/commentaire.vue')
   }
