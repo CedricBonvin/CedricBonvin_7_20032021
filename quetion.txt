@@ -5,19 +5,29 @@ FRONTEND
 ---------
 
 
-    4.- Comment fermer des box ( composant ) en cliquant à coté de la box ? 
+    - Comment fermer des box ( composant ) en cliquant à coté de la box ? 
 
-    - implémenter accès admin
-
-    -probleme affichage parametre ( si je met le header à fixed, les parametres sont plus grand que la page et impossible de scroller..!!)
+    - probleme affichage parametre ( si je met le header à fixed, les parametres sont plus grand que la page et impossible de scroller..!!)
 
     - logo Groupomania ?? svg ?? 
-
-    - parametre dans url
 
 BACKEND
 -------
 
     - dans model/user => create, pour incrémenter l'idUser ( voir commentaire )
+
+
+ADMINISTRATEUR :
+----------------
+
+ - Connecté avec pseudo = admin && MP => admin
+ - Est-ce que l'admin peut supprimer un compte ?
+
+
+ BUG
+ ----
+
+ SUR LES LIKE 
+ SUR LA SUPRESSION DES COMMENTAIRES ( PAREIL QUE LES LIKES C'EST ALéATOIRE !!!!!)   EST CE QUE LES VERBES ON A VOIR QUELQUE CHOSE ???
 
 

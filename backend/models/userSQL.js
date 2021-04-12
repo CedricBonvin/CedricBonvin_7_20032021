@@ -8,7 +8,8 @@ function User(user){
     this.password = user.password ? user.password : null;
     this.pseudo = user.pseudo ? user.pseudo : null;
     this.photo = user.photo ? user.photo : null;
-  }
+    this.isAdmin = user.isAdmin ? user.isAdmin : false;
+}
 
 User.create = (newUser, callback) => {
     console.log(newUser)

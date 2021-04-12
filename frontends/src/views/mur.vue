@@ -31,7 +31,7 @@
                     </div>
                     <img src="../assets/param.svg" alt="paramètre du message"
                         class="param"
-                        v-if="$store.state.pseudo === mess.pseudoUser || isAdmin === true"
+                        v-if="$store.state.pseudo === mess.pseudoUser || $store.state.isAdmin === 1"
                         @click="displayBoxUpdate( mess.idMESSAGES), recupMessage(mess.message)"
                     >
                 </div>    
@@ -87,7 +87,7 @@ export default {
             like : 0,
             dislike : 0,
 
-            isAdmin : false
+            isAdmin : 0
         }
     },                                            
     methods : {
@@ -95,7 +95,8 @@ export default {
         recupApi(){
             fetch("http://localhost:8080/api/message")
             .then(response => response.json())
-            .then(result =>{             
+            .then(result =>{  
+                    console.log(result)           
                     this.card = result
             })
         },
@@ -127,12 +128,12 @@ export default {
             }
 
             fetch('http://localhost:8080/api/message', {
-            method: "POST",
-            body: JSON.stringify(obj),
-            headers: {"Content-type": "application/json; charset=UTF-8",
-                    Authorization: "Bearer" +" "+ obj.token,
+                method: "POST",
+                body: JSON.stringify(obj),
+                headers: {"Content-type": "application/json; charset=UTF-8",
+                        Authorization: "Bearer" +" "+ obj.token,
 
-            }
+                }
             })
             .then(response => response.json()) 
             .then(() =>{      
@@ -152,10 +153,7 @@ export default {
            const idMessage = (element) => element.idMESSAGES === this.id;
            let index = this.card.findIndex(idMessage)
           this.card.splice(index,1)
-          this.modifie = false
-
-          console.log("index du tableau card à supprimer : " + index);
-       
+          this.modifie = false       
         },    
         afficheBoxImage(){
             this.displayBoxImage ? this.displayBoxImage = false : this.displayBoxImage = true
@@ -252,6 +250,7 @@ export default {
                     this.$store.state.photoProfil = result[0].photo
                     this.$store.state.idUser = result[0].idUser
                     this.$store.state.email = result[0].email
+                    this.$store.state.isAdmin = result[0].isAdmin
                 });
             }
         }
@@ -427,8 +426,7 @@ export default {
         right: -20px;
         margin-top: -10px;
         color: rgb(68, 68, 68);
-    }
-   
+    }   
 </style>
 
 

@@ -50,10 +50,12 @@ export default {
             .then(response => response.json()) 
             .then(response =>{ 
                 if (response.email){
+                    console.log("admin :" + response.isAdmin)
                     this.$store.state.pseudo = response.pseudo
                     this.$store.state.idUser = response.idUser
                     this.$store.state.photoProfil = response.photo
                     this.$store.state.email = response.email
+                    this.$store.state.isAdmin = response.isAdmin
 
                     localStorage.setItem("token",JSON.stringify(response.token))   
                     this.$router.push('/mur#/')

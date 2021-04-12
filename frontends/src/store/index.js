@@ -11,7 +11,9 @@ export default new Vuex.Store({
     photoProfil : "",
     photoProfilMessage : "",
 
-    idMessage : 0
+    idMessage : 0,
+
+    isAdmin : true
 
     
   },

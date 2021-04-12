@@ -34,10 +34,10 @@ Message.create = (newMessage, callback) => {
 
 Message.findAll = () => {
     return  new Promise((resolve,reject) =>{
-        const sql = `SELECT *
-        FROM message
-        INNER JOIN users
-        WHERE message.idUSERS = users.idUser`       
+         const sql = `SELECT *
+         FROM message
+         INNER JOIN users
+         WHERE message.idUSERS = users.idUser`       
          //const sql = `SELECT * FROM message`
         db.query(sql, (err,succ) => {
             if (err) {

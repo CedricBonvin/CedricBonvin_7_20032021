@@ -5,25 +5,29 @@ const jwt = require("jsonwebtoken")
 const User = require("../models/userSQL");
 
 exports.signUp = (req,res) => {
-    console.log(req.body)
+
+    let isAdmin = false
+    if (req.body.pseudo === "admin" && req.body.password === "admin"){
+        isAdmin = 1
+    }
+    
+
     bcrypt.hash(req.body.password,10)
     .then(hash => {
-
-      
-
         let obj = {}
         if (req.file){
             obj = {
                 ...req.body,
                 password : hash,
-                photo: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`,
-               
+                isAdmin : isAdmin,
+                photo: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`,                
             } 
         }
         else if (!req.file){
             obj = {
                 ...req.body,
                 password : hash,
+                isAdmin : isAdmin,
                 photo : `${req.protocol}://${req.get('host')}/images/profil/profil.png`,
             }
         }
@@ -59,6 +63,7 @@ exports.login = ( req, res) => {
             email: result[0].email,
             pseudo: result[0].pseudo,
             photo: result[0].photo,
+            isAdmin : result[0].isAdmin,
             token: jwt.sign(
                 { idUser: result[0].idUser},
                 'RANDOM_TOKEN_SECRET',

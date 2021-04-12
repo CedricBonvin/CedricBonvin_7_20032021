@@ -5,7 +5,7 @@
         <h2>Message poster par :</h2>
         <img class="photoUser" :src="photoProfil" alt="photo profil du message">
         <div class="user">{{ pseudoUser}}</div> 
-            <div class="cardCommentaire" v-for="mess in card" :key="mess.name">
+            <div class="cardMessageBase" v-for="mess in card" :key="mess.name">
                 <div class="boxNom">
                         <img class="photoProfil" :src="mess.photoProfil" alt="">
                         <span class="nomUser"> {{ mess.pseudoUser }} </span>
@@ -27,8 +27,21 @@
                 <div class="pseudoUser">{{ mess.pseudo}}</div>
             </div>
             <div class="boxMessages"> {{ mess.message }}</div>
+            <div class="boxParametre"> 
+                <img 
+                    v-if="mess.pseudo === $store.state.pseudo || $store.state.isAdmin === 1" 
+                    @click="afficheUpdateCommentaire(mess.idCommentaire)"
+                    class="iconeParametre" src="../assets/param.svg" alt="icone parametre du commentaire"> 
+            </div>
         </div>
-
+        <updateCommentaire 
+            v-if="afficheUpdate"
+            @closeBoxUpdate="afficheUpdate = false"
+            :id="this.idCommentaire"
+            :afterDelete="displayCommentaires"
+        />
+        
+        <!-- FOOTER -->
         <div id="footerCommentaire">
             <div class="boxRowBack">
                 <img src="../assets/iconeRow.svg" class="backMur" @click="backMur()">
@@ -40,20 +53,26 @@
                 </button>
             </div>
         </div>
+
     </div>
 </template>
 
 <script>
+import updateCommentaire from "../components/updateCommentaire"
 export default {
     name : "commentaire",
+    components :{
+        updateCommentaire
+    },
     data(){
         return{
             card : [],
             pseudoUser : "",
             date : "",
-            idMessage : null,
+            idCommentaire : null,
             commentaires : [],
-            photoProfil : ""
+            photoProfil : "",
+            afficheUpdate : false
         }
     },
     methods : {
@@ -67,7 +86,7 @@ export default {
                 token : JSON.parse(localStorage.getItem("token"))
             }
 
-            fetch('http://localhost:8080/api/message/commentaire', {
+            fetch('http://localhost:8080/api/commentaires/originalCommentaire', {
                 method: "POST",
                 body: JSON.stringify(obj),
                 headers: {"Content-type": "application/json; charset=UTF-8",
@@ -90,7 +109,7 @@ export default {
 
             const obj = {
                 idUser : this.$store.state.idUser,
-                idMessageBase : this.$store.state.idMessage,
+                idMessageBase : this.$route.params.id,//this.$store.state.idMessage,
                 message : commentaire,
                 image : null,
                 pseudo : this.$store.state.pseudo,
@@ -151,9 +170,14 @@ export default {
                     this.$store.state.photoProfil = result[0].photo
                     this.$store.state.idUser = result[0].idUser
                     this.$store.state.email = result[0].email
+                    this.$store.state.isAdmin = result[0].isAdmin
                 });
             }
         },
+        afficheUpdateCommentaire(idComment){
+            this.afficheUpdate === false ? this.afficheUpdate = true : this.afficheUpdate = false
+            this.idCommentaire = idComment
+        }
     },
     mounted(){
         this.refreshUser(),
@@ -170,10 +194,10 @@ export default {
      background: linear-gradient(288deg, rgba(179,179,179,1) 0%, rgba(79,79,79,1) 100%);
     background-attachment: fixed;
 }
-
 .messageOriginal{
     background: rgb(63, 62, 62);
     padding: 20px;
+
 }
 h2{
     text-align: left;
@@ -191,24 +215,35 @@ h2{
     margin: auto;
 }
 .nomUser{
+    position: relative;
+    top : -10px;
+    left: 5px;
     color: red;
 }
-
-.cardCommentaire{
-   margin: 30px auto;
-    padding-bottom: 10px;
+.cardMessageBase{
+     margin: 30px auto;
     background-color: rgb(187, 184, 184);
     border-color: rgb(160, 157, 157);
     width: 80%;
     max-width: 500px;
-    background: white;
-    padding: 0 10px 10px 10px;
+    background: rgb(169, 236, 124);
+    padding: 10px 10px 10px 10px;
     border-radius: 20px;
     border: 2px rgb(131, 128, 128) solid;
 }
+.cardCommentaire{
+    margin: 30px auto;
+    width: 80%;
+    max-width: 500px;
+    background: rgb(204, 211, 233);;
+    border-radius: 20px;
+    border: 2px rgb(131, 128, 128) solid;
+    border: solid 3px white;
+    overflow: hidden;
+}
 .topMessage{
     display: flex;
-    padding: 10px 0;
+    padding: 10px 10px;
     position: relative;
 }
 .user{
@@ -224,19 +259,18 @@ h2{
 }
 .boxMessages{
     color: black;
+    padding:0 10px 10px 10px;
 }
 .image{
     width: 100%;
 }
-
 .pseudoUser{
     position: absolute;
-    left: 40px;
+    left: 50px;
     top : 50%;
     transform: translateY(-50%);
     color: red;
 }
-
 .dates{
     color: white;
     text-align: center;
@@ -251,8 +285,6 @@ h2{
     color: white;
     padding: 20px;
 }
-
-
 #footerCommentaire{
     position: fixed;
     bottom: 0;
@@ -301,6 +333,20 @@ h2{
     width: 30px;
     height: 30px;
     margin: 0;
+}
+.boxParametre{
+    text-align: right;
+    padding: 3px;
+    background: white;
+    opacity: 50%;
+}
+.iconeParametre{
+    position: relative;
+    right: 10px;
+    top: 2px;
+    width: 20px;
+    opacity: 60%;
+    cursor: pointer;
 }
 
 

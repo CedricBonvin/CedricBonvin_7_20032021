@@ -6,6 +6,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const routeMessage = require("./routes/routeMessage");
 const routeUser = require("./routes/routeUser");
+const routeCommentaire = require("./routes/routeCommentaire");
 const path = require("path")
 
 
@@ -26,5 +27,6 @@ app.use("/images",express.static(path.join(__dirname,"images")))
 
 app.use("/api",routeMessage);
 app.use("/api",routeUser);
+app.use("/api",routeCommentaire);
 
 module.exports = app;

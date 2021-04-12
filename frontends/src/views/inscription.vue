@@ -70,6 +70,8 @@ export default {
                 this.$store.state.idUser = response.idUser
                 this.$store.state.photoProfil = response.photo
                 this.$store.state.email = response.email
+                this.$store.state.isAdmin = response.isAdmin
+                console.log("le user est admin : " + response.isAdmin)
                 localStorage.setItem("token",JSON.stringify(response.token))
 
                 this.$store.state.clearPassword = Password
