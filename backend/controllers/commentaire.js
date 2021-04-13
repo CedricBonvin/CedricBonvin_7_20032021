@@ -11,8 +11,8 @@ exports.deleteCommentaire = (req, res ) => {
 }
 
 exports.createCommantaire = (req, res) => {
-    const sql = `INSERT INTO commentaires (idUser, idMessageBase, message, image, pseudo, photoProfil)
-                 VALUES ("${req.body.idUser}", "${req.body.idMessageBase}", "${req.body.message}","null", "${req.body.pseudo}", "${req.body.photoProfil}")`
+    const sql = `INSERT INTO commentaires (idUser, idMessageBase, message, image, pseudo, photoProfil, date)
+                 VALUES ("${req.body.idUser}", "${req.body.idMessageBase}", "${req.body.message}","null", "${req.body.pseudo}", "${req.body.photoProfil}", "${req.body.date}")`
     db.query(sql, (err, succ) => {
         if (err) throw err
         res.status(200).json({message : "le commentaire à bien été ajouter ...!"})
@@ -37,3 +37,11 @@ exports.findMessage = (req, res, ) => {
             res.status(200).json(succ)
         })
     }
+
+exports.update = (req, res ) => {
+    const sql = `UPDATE commentaires SET message = "${req.body.commentaire}" WHERE idCommentaire = ${req.body.idCommentaire}`
+    db.query(sql, (err, succ) => {
+        if (err) throw err
+        res.status(201).json( { message : "route update Ok ! "})
+    })
+}

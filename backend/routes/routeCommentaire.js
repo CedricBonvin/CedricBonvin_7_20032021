@@ -13,6 +13,7 @@ router.post('/commentaires/originalCommentaire',auth,commentaireCtlr.findMessage
 router.post('/commentaires',auth,commentaireCtlr.createCommantaire); // auth ok
 router.post('/commentaires/recup',commentaireCtlr.recupCommentaires); // auth ok
 router.post('/commentaires/delete',auth, commentaireCtlr.deleteCommentaire); // auth ok
+router.post('/commentaires/update',auth, commentaireCtlr.update); // auth ok
 
 
 module.exports = router

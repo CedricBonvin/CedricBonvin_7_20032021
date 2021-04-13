@@ -8,7 +8,10 @@
             </div>
             <div class="inputCol">
                 <label for="password">Mot de passe :</label>
-                <input type="password" name="email" id="connectPassword" placeholder="Password">
+                <div class="boxPassword">
+                    <input type="password" name="email" id="connectPassword" placeholder="Password" >
+                    <img class="eye" src="../assets/eye.svg" alt="" @click="showPassword()">
+                </div>
                 <div v-if="!isPassword" class="isFalse">* Mot de passe incorrect</div>
 
                 <div class="boxLinkInscription"><router-link to="/inscription">Créer un compte</router-link> </div>
@@ -61,7 +64,14 @@ export default {
                     this.$router.push('/mur#/')
                 }     
             });
-        },   
+        },
+        showPassword(){
+           const pw = document.getElementById("connectPassword")
+           const att = pw.getAttribute("type")
+            if(att === "password"){
+                pw.setAttribute("type", "text")
+            }else pw.setAttribute("type", "password")        
+        }   
     },
 }
 </script>
@@ -111,7 +121,17 @@ export default {
     input{
         display: block;
         width: 100%;
-        padding: 10px 0;
+        padding: 10px ;
+    }
+    .boxPassword{
+        position: relative;
+    }
+    .eye{
+        position: absolute;
+        right:  10px;
+        top : 10px;
+        width: 20px;
+        opacity: 60%;
     }
     .boxLinkInscription{
         text-align: right;

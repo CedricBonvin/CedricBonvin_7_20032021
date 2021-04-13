@@ -21,17 +21,23 @@
         </div>
 
         <!-- commentaire -->
-        <div class="cardCommentaire" v-for="mess in commentaires" :key="mess.name">
-            <div class="topMessage">
-                <img class="photoProfil" :src="mess.photoProfil" alt="">
-                <div class="pseudoUser">{{ mess.pseudo}}</div>
-            </div>
-            <div class="boxMessages"> {{ mess.message }}</div>
-            <div class="boxParametre"> 
-                <img 
-                    v-if="mess.pseudo === $store.state.pseudo || $store.state.isAdmin === 1" 
-                    @click="afficheUpdateCommentaire(mess.idCommentaire)"
-                    class="iconeParametre" src="../assets/param.svg" alt="icone parametre du commentaire"> 
+        <div  v-for="mess in commentaires" :key="mess.name">
+            <div class="wrapperCard">
+                <div class="date">{{ mess.date }}</div>
+                <div class="cardCommentaire">
+                    <div class="topMessage">
+                        <img class="photoProfil" :src="mess.photoProfil" alt="">
+                        <div class="pseudoUser">{{ mess.pseudo}}</div>
+                    </div>
+                    <div id="commentaire" class="boxMessages"> {{ mess.message }}</div>
+                    <div class="boxParametre">
+                        <img
+                            v-if="mess.pseudo === $store.state.pseudo || $store.state.isAdmin === 1"
+                            @click="afficheUpdateCommentaire(mess.idCommentaire, mess.message)"
+                            class="iconeParametre" src="../assets/param.svg" alt="icone parametre du commentaire"
+                        >
+                    </div>
+                </div>
             </div>
         </div>
         <updateCommentaire 
@@ -39,6 +45,8 @@
             @closeBoxUpdate="afficheUpdate = false"
             :id="this.idCommentaire"
             :afterDelete="displayCommentaires"
+            :afterUpdate="displayCommentaires"
+            :recupMessage="oldCommentaire"
         />
         
         <!-- FOOTER -->
@@ -47,7 +55,7 @@
                 <img src="../assets/iconeRow.svg" class="backMur" @click="backMur()">
             </div>
              <div class="boxBoutton">
-                <input type="text" class="inputMessage" id="commentaire" placeholder="Poster votre commentaire">
+                <input type="text" class="inputMessage" id="commentaires" placeholder="Poster votre commentaire">
                 <button class=" boxRow" v-on:click="postCommentaire()">
                     <img class="row" src="../assets/iconeRow.svg" alt="">
                 </button>
@@ -72,7 +80,8 @@ export default {
             idCommentaire : null,
             commentaires : [],
             photoProfil : "",
-            afficheUpdate : false
+            afficheUpdate : false,
+            oldCommentaire : ""
         }
     },
     methods : {
@@ -104,17 +113,25 @@ export default {
             });
         },
         postCommentaire(){
-            console.log("essaie de post commentaire..!")
-            const commentaire = document.getElementById("commentaire").value
+            const commentaire = document.getElementById("commentaires").value
+            // DATE
+            const now = new Date();
+            var options = { month: 'long'};
+            const date =  now.getDate() + " "
+                    + new Intl.DateTimeFormat('fr-FR', options).format() + ": "
+                    + now.getHours() + "h : " 
+                    + now.getMinutes(12) + "min ";
 
             const obj = {
                 idUser : this.$store.state.idUser,
-                idMessageBase : this.$route.params.id,//this.$store.state.idMessage,
+                idMessageBase : this.$route.params.id,
                 message : commentaire,
                 image : null,
                 pseudo : this.$store.state.pseudo,
                 photoProfil : this.$store.state.photoProfil,
+                date : date,
                 token : JSON.parse(localStorage.getItem("token"))
+
             }
 
             fetch('http://localhost:8080/api/commentaires', {
@@ -126,8 +143,7 @@ export default {
             })
             .then(response => response.json()) 
             .then( () =>{ 
-               console.log("j'ai recu un truc")
-            this.displayCommentaires()
+                this.displayCommentaires()
             });
         },
         displayCommentaires(){
@@ -174,15 +190,18 @@ export default {
                 });
             }
         },
-        afficheUpdateCommentaire(idComment){
+        afficheUpdateCommentaire(idComment, mess){
             this.afficheUpdate === false ? this.afficheUpdate = true : this.afficheUpdate = false
-            this.idCommentaire = idComment
-        }
+            this.idCommentaire = idComment  
+            this.oldCommentaire = mess
+        },
+    
     },
     mounted(){
         this.refreshUser(),
         this.displayCommentaires(),
         this.displayBasicMessage()
+
     }
 }
 </script>
@@ -222,19 +241,25 @@ h2{
 }
 .cardMessageBase{
      margin: 30px auto;
-    background-color: rgb(187, 184, 184);
-    border-color: rgb(160, 157, 157);
     width: 80%;
     max-width: 500px;
-    background: rgb(169, 236, 124);
+    background: rgb(255, 255, 255);
     padding: 10px 10px 10px 10px;
     border-radius: 20px;
     border: 2px rgb(131, 128, 128) solid;
 }
-.cardCommentaire{
+.wrapperCard{
     margin: 30px auto;
     width: 80%;
     max-width: 500px;
+}
+.date{
+    color: white;
+    text-align: center;
+    font-size: 0.8rem;
+    padding-bottom: 5px;
+}
+.cardCommentaire{
     background: rgb(204, 211, 233);;
     border-radius: 20px;
     border: 2px rgb(131, 128, 128) solid;

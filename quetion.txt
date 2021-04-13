@@ -16,6 +16,8 @@ BACKEND
 
     - dans model/user => create, pour incrémenter l'idUser ( voir commentaire )
 
+    - route get ( comment envoyer le token ) => et j'ai presque que mis des post comme verbe !!
+
 
 ADMINISTRATEUR :
 ----------------
@@ -27,7 +29,9 @@ ADMINISTRATEUR :
  BUG
  ----
 
- SUR LES LIKE 
- SUR LA SUPRESSION DES COMMENTAIRES ( PAREIL QUE LES LIKES C'EST ALéATOIRE !!!!!)   EST CE QUE LES VERBES ON A VOIR QUELQUE CHOSE ???
+    - SUR LES LIKE 
+    - SUR LA SUPRESSION DES COMMENTAIRES ( PAREIL QUE LES LIKES C'EST ALéATOIRE !!!!!)   EST CE QUE LES VERBES ON A VOIR QUELQUE CHOSE ???
+        (je rappelle l' affichage de l'api mais c'est aléatoire !!)
 
-
+    - updateUser, quand je update la photoProfil il ne m'est pas à jour dans les commentaires Je comprend pourquoi mais je n'arrive pas
+        a faire la requete sql ( selectionne tous les commentaires avec idCommentaire = X et le user qui correspond à l'idUser du commentaire )

@@ -1,9 +1,9 @@
 <template>
     <div id="updateMessage">
         <h3> Modifier votre message </h3>
-        <textarea  id="newMessage"  v-model="message" placeholder="Votre nouveau message" rows="5" > </textarea>
+        <textarea  id="newCommentaire"  v-model="message" placeholder="Votre nouveau message" rows="5"></textarea>
         <div class="boxBoutton">
-            <button @click="updateMessage(id)" title="Mettre à jour le message">Mettre à jour</button>
+            <button @click="updateCommentaire(id)" title="Mettre à jour le message">Mettre à jour</button>
             <!--<button @click="deleteMessage(id)">Supprimer</button> -->
             <button @click="deleteCommentaire(id), closeBox()" title="Supprimer le message">Supprimer</button>
             <button @click="closeBox()" title="Annuler">Annuler</button>
@@ -19,7 +19,9 @@
         props : {
             id : Number,
             recupMessage : String,
-            afterDelete : Function
+            afterDelete : Function,
+            afterUpdate : Function,
+            oldComment : String
         },
         data(){
             return {
@@ -30,24 +32,28 @@
        
         methods : {
          
-            updateMessage(id){
-                this.$emit("newMessage",{ message : this.message})
-                console.log("pour le post l'id est " + id + "et le message est : " + this.message)
-                this.cancel = false
+            updateCommentaire(id,){
+                //this.$emit("newcommentaire",{ message : this.message})
+               // this.$emit("newcommentaire",{ message : this.message})
+                const comment = document.getElementById("newCommentaire").value
                 const obj = {
-                    idMESSAGES : id,
-                    message : this.message,
+                    idCommentaire : id,
+                    commentaire  : comment,
                     token : JSON.parse(localStorage.getItem("token"))
                 } 
-                fetch('http://localhost:8080/api/message/update', {
+                fetch('http://localhost:8080/api/commentaires/update', {
                     method: "POST",
                     body: JSON.stringify(obj),
                     headers: {"Content-type": "application/json; charset=UTF-8",
                                 Authorization: "Bearer" +" "+ obj.token,
-                                }
+                            }
                     })
                     .then(response => response.json()) 
-                    .then(() =>{});
+                    .then(() =>{
+                        console.log("j'ai recu un truc de updateCommenataire...!!!!")
+                    });
+                    this.closeBox()
+                    this.afterUpdate()
             },      
             deleteCommentaire(id){
                 this.$emit("eventDelete",{})
@@ -103,6 +109,7 @@
         margin-top: 20px;
         width: 100%;
         max-width: 100%;
+        padding: 10px;
     }
     button{
         display: block;

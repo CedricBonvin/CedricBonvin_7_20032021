@@ -31,7 +31,6 @@
          
             updateMessage(id){
                 this.$emit("newMessage",{ message : this.message})
-                console.log("pour le post l'id est " + id + "et le message est : " + this.message)
                 this.cancel = false
                 const obj = {
                     idMESSAGES : id,
