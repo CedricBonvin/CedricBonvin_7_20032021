@@ -11,27 +11,50 @@ exports.deleteCommentaire = (req, res ) => {
 }
 
 exports.createCommantaire = (req, res) => {
-    const sql = `INSERT INTO commentaires (idUser, idMessageBase, message, image, pseudo, photoProfil, date)
-                 VALUES ("${req.body.idUser}", "${req.body.idMessageBase}", "${req.body.message}","null", "${req.body.pseudo}", "${req.body.photoProfil}", "${req.body.date}")`
+
+    let image = null
+    if (req.file){
+        image =  `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
+    }
+
+    const sql = `INSERT INTO commentaires (idUser, idMessageBase, message, image, pseudo, date)
+                 VALUES ("${req.body.idUser}", "${req.body.idMessageBase}", "${req.body.message}","${image}", "${req.body.pseudo}", "${req.body.date}")`
     db.query(sql, (err, succ) => {
         if (err) throw err
         res.status(200).json({message : "le commentaire à bien été ajouter ...!"})
     })
 }
 
+// exports.recupCommentaires = (req, res) => {
+//     //selecion du message de base pour trouver l'idUser
+//     db.query(`SELECT * FROM commentaires WHERE idMessageBase = ${req.body.idMessageBase}`,(err,succ) => {
+//         if (err) throw err
+//         const idUser = succ[0].idUser
+
+//         //const sql = `SELECT * FROM commentaires WHERE idMessageBase = ${req.body.idMessageBase}`
+//         const sql = `SELECT * FROM commentaires c INNER JOIN users WHERE users.idUser = ${idUser} AND c.idMessageBase = ${req.body.idMessageBase}`
+//         db.query(sql, (err, succ1) => {
+//             if (err) throw err
+//             res.status(200).json(succ1)
+//         })
+//     })
+// } 
 exports.recupCommentaires = (req, res) => {
-    const sql = `SELECT * FROM commentaires WHERE idMessageBase = ${req.body.idMessageBase}`
-    db.query(sql, (err, succ) => {
-        if (err) throw err
-        res.status(200).json(succ)
-    })
-}
+       // const sql = `SELECT * FROM commentaires WHERE idMessageBase = ${req.body.idMessageBase}`
+        const sql = `SELECT * FROM commentaires c INNER JOIN users WHERE users.idUser = c.idUser AND c.idMessageBase = ${req.body.idMessageBase}`
+        db.query(sql, (err, succ1) => {
+            if (err) throw err
+            res.status(200).json(succ1)
+        })
+} 
+
+
+
+
 exports.findMessage = (req, res, ) => {
-    //    const sql = `SELECT idMESSAGES, idUSERS, message, pseudoUser, date, image 
-    //    FROM message WHERE idMESSAGES = "${req.body.idMessage}"
-    //    UNION
-    //    SELECT * FROM users WHERE idUser = "${req.body.idUser}"`
-        const sql = `SELECT * FROM message WHERE idMESSAGES = "${req.body.idMessage}"`
+
+    const sql = `SELECT * FROM message m INNER JOIN users WHERE users.idUser = m.idUSERS AND m.idMESSAGES = ${req.body.idMessage}`
+
         db.query(sql,(err , succ) => {
             if (err) throw err
             res.status(200).json(succ)
@@ -45,3 +68,4 @@ exports.update = (req, res ) => {
         res.status(201).json( { message : "route update Ok ! "})
     })
 }
+

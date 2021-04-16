@@ -3,27 +3,40 @@
         <h3>Paramètres du compte</h3>
         <div class="colInput">
             <label for="email">Email :</label>
-            <input  type="email" id="email" name="email" :value="this.email">
+            <input @change="changeEmail()"  type="email" id="email" name="email" :value="this.email">
         </div>
-        <div class="colInput password" id="boxPassword">
-            <label for="password">Password :</label>
-            <input type="password" id="password" name="password" :value="this.$store.state.clearPassword">
-            <p @click="afficheNewPassword()" class="modifPassword">Modifier votre password</p>
-            <div v-if="newPassword">
-                <label class="newPassword" for="newPassword">Nouveau password :</label>
-                <input type="password" id="newPassword" name="newPassword" :value="this.password">
-            </div>
-        </div>
+       
         <div class="colInput">
             <label for="pseudo">Pseudo :</label>
-            <input type="pseudo" id="pseudo" name="pseudo" :value="this.pseudo">
+            <input @change="changePseudo()" type="pseudo" id="pseudo" name="pseudo" :value="this.pseudo">
         </div>
+        
+        <label>Password :</label>
+        <p @click="afficheNewPassword()" class="modifPassword">Modifier votre password</p>
+        <div v-if="newPassword" class="colInput password" id="boxPassword">
+            <div class="boxPassword">
+                <label class="password" for="newPassword"> Nouveau Password :</label>
+                <div class="boxPassword1">
+                    <input  type="password" id="newPassword" name="newPassword">
+                    <img @click="affichePasswore1()" class="eye" src="../assets/eye.svg" alt="icone affiche password">
+                </div>
+                <p v-if="errorPassword" class="errorPassword">Veuillez rentrer le même mot de passe</p>
 
+                <label class="password" for="newPassword">Confirmer votre nouveau password :</label>
+                <div class="boxPassword1">
+                    <input  type="password" id="ConfirmPassword" name="ConfirmPassword" >
+                    <img @click="affichePassword2()" class="eye" src="../assets/eye.svg" alt="icone affiche password">
+                </div>
+
+                <p v-if="errorPassword" class="errorPassword">Veuillez rentrer le même mot de passe</p>
+            </div> 
+        </div>
+        <hr class="hr">
         <!-- PHOTO DE PROFIL -->
         <p class="titlePhotoProfil">Photo de profil : </p>
         <div>
             <div class="renduImage" id="renduImages">
-                <img class="photoProfil" :src="this.userPhoto" alt="photo de profil">
+                <img class="photoProfil" :src="$store.state.photoProfil" alt="photo de profil">
                 <input @change="fileFunc()"  type="file" id="fileUser" name="fileUser">
             </div>
                 <label class="labelChangeFile" for="fileUser">Modifier la photo de profil</label>
@@ -31,8 +44,8 @@
 
         <!--BUTTON -->
         <div class="boxButton">
-            <button @click="afficheConfirmUpdate(), userUpdate()"  class="button ">Mettre à jour</button>
-            <button @click="afficheBox()" class="button">Annuler</button>
+            <button @click="  userUpdate()"  class="button ">Mettre à jour</button>
+            <button @click="afficheBox(), goMur()" class="button">Annuler</button>
         </div>
         <button @click="afficheConfirm()" class="supprimer">Supprimer votre compte</button>
 
@@ -51,6 +64,7 @@
             <div class="information">
                 <p> email : {{this.email}}</p>
                 <p> pseudo : {{this.pseudo}}</p>
+                <p> password : {{this.passwordText}} </p>
             </div>
             <p>Veuillez vous reconnecter..</p>
             <button @click="afficheBox(), goConnection()"  class="button">ok</button>
@@ -64,14 +78,14 @@ export default {
     data(){
         return{
             pseudo : this.$store.state.pseudo,
-            password : "*********",
             email : this.$store.state.email,
             userPhoto : this.$store.state.photoProfil,
 
             afficheConfirmation : false,
             confirmUpdate : false,
-            newPassword : false
-
+            newPassword : false,
+            errorPassword : false,
+            passwordText : "inchangé"
         }
     },
     methods : {
@@ -104,7 +118,9 @@ export default {
         afficheConfirm(){
             this.afficheConfirmation ? this.afficheConfirmation = false : this.afficheConfirmation = true
         },
-
+        goMur(){
+            this.$router.push("/mur")
+        },
         fileFunc(){
             const input = document.getElementById("fileUser")
           
@@ -133,8 +149,18 @@ export default {
             const oldPseudo = this.$store.state.pseudo
             const fileUser = document.getElementById("fileUser").files[0]
             const oldPhotoUser = this.$store.state.photoProfil
-           const token = JSON.parse(localStorage.getItem("token"))
+            const token = JSON.parse(localStorage.getItem("token"))
 
+            //Check Password
+            let validPassword = true
+
+            if (this.newPassword) {
+                const newPassword = document.getElementById("newPassword").value
+                const confirmPassword = document.getElementById("ConfirmPassword").value
+                newPassword === confirmPassword ? validPassword = true : validPassword = false
+            }
+
+            //FORMDATA
             const formdata = new FormData()
                 formdata.append("email", email)
                 formdata.append("pseudo", pseudo)
@@ -144,19 +170,37 @@ export default {
                 formdata.append("oldPhotoUser", oldPhotoUser)
                 formdata.append("token", token)
 
-            fetch('http://localhost:8080/api/user/update', {
-            method: "POST",
-            body: formdata,
-              headers: {
+                if (this.newPassword){
+                    const newPassword = document.getElementById("newPassword").value
+                    formdata.append("password", newPassword)
+
+                    newPassword.length > 0 ? this.passwordText = "mis à jour" : this.passwordText = "inchangé"
+                  
+                    if (newPassword.length === 0){
+                        validPassword = false
+                    }
+                }
+            
+
+            if (validPassword === true){
+                this.confirmUpdate = true
+               fetch('http://localhost:8080/api/user/update', {
+                method: "POST",
+                body: formdata,
+                headers: {
                         Authorization: "Bearer" +" "+ token,
                         }
-            })
-            .then(response => response.json()) 
-            .then (res => {   
-                this.email = res.email
-                this.pseudo = res.pseudo
-
-            })       
+                })
+                .then(response => response.json()) 
+                .then (res => {   
+                    this.email = res.email
+                    this.pseudo = res.pseudo
+                })  
+            }else {
+                console.log("le password est faux") 
+                this.confirmUpdate = false  
+                this.errorPassword = true    
+            } 
         },
         afficheConfirmUpdate(){
             this.confirmUpdate ? this.confirmUpdate = false : this.confirmUpdate = true
@@ -173,7 +217,60 @@ export default {
         },
         afficheNewPassword(){
             this.newPassword === false ? this.newPassword = true : this.newPassword = false
-        }
+        },
+        changeEmail(){
+            const email = document.getElementById("email").value
+            this.email = email
+        },
+        changePseudo(){
+            const pseudo = document.getElementById("pseudo").value
+            this.pseudo = pseudo
+        },
+        affichePasswore1(){
+            const pw = document.getElementById("newPassword")
+           const attr =  pw.getAttribute("type")
+            if (attr === "password"){
+                pw.setAttribute("type", "text")
+            } else pw.setAttribute("type","password")
+        },
+        affichePassword2(){
+            const pw = document.getElementById("ConfirmPassword")
+           const attr =  pw.getAttribute("type")
+            if (attr === "password"){
+                pw.setAttribute("type", "text")
+            } else pw.setAttribute("type","password")
+        },
+         refresh(){
+            if (!this.$store.state.email){
+                const obj = {
+                    token : JSON.parse(localStorage.getItem("token"))    
+                }
+                
+                fetch('http://localhost:8080/api/user/refresh', {
+                    method: "POST",
+                    body: JSON.stringify(obj),
+                    headers: {
+                        "Content-type": "application/json; charset=UTF-8",
+                        Authorization: "Bearer" +" "+ obj.token,
+                    }
+                })
+                 .then(response => response.json()) 
+                .then( result =>{ 
+
+                    this.$store.state.pseudo = result[0].pseudo
+                    this.$store.state.photoProfil = result[0].photo
+                    this.$store.state.idUser = result[0].idUser
+                    this.$store.state.email = result[0].email
+                    this.$store.state.isAdmin = result[0].isAdmin
+
+                    this.email = result[0].email
+                    this.pseudo = result[0].pseudo
+                });
+            }
+        },
+    },
+    mounted(){
+        this.refresh()
     }
 }
 </script>
@@ -181,21 +278,15 @@ export default {
 <style scoped>
   
     h3{
-        font-size: 1.7rem;
+        font-size: 2rem;
         margin: 20px auto;
     }
     .parametre{
-        position: absolute;
-        z-index: 1000;
-        top : 60px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 90%;
-        max-width: 500px;
+        
         padding: 20px;
+        padding-top: 80px;
         color: white;
-        border-radius: 10px;
-        background: rgb(37, 37, 37);
+        background: rgb(128, 126, 126);
         text-align: center;
     }
     .colInput{
@@ -251,14 +342,19 @@ export default {
     }
     .modifPassword{
         color: red;
-        text-align: right;
+        text-align: left;
+        margin-left: 30px;
         text-decoration: underline;
-        font-size: 1rem;
+        font-size: 0.9rem;
+        cursor: pointer;
+    }
+    .password{
+        font-size: 0.8rem;
     }
     .confirmDeleteAccount{
         position: fixed;
         left: 50%;
-        top: 350px;
+        top: 80px;
         width: 70%;
         transform: translateX(-50%);
         padding: 50px 30px ;
@@ -284,23 +380,25 @@ export default {
         text-decoration: underline;
     }
     label{
-        font-size: 1rem;
+        font-size: 1.2rem;
     }
     .titlePhotoProfil{
         text-align: left;
+        margin-top: 20px;
     }
     .confirmBoxUpdateUser{
-        position: absolute;
-        top: 200px;
+        position: fixed;
+        top: 61px;
         left: 50%;
         width: 80%;
+        max-width: 500px;
         transform: translateX(-50%);
         font-size: 1rem;
         padding: 50px 20px;
         color: white; 
         background: black;
-        border-radius: 10px;
-        box-shadow: 0 0 200px 100px white;
+        border-radius: 0 0 10px 10px;
+        box-shadow: 0 0 5px 5px white;
     }
     .title{
         padding: 20px 0 0 0 ;
@@ -311,8 +409,29 @@ export default {
     .information{
         padding: 30px;
     }
-    .newPassword{
+    .hr{
+        width: 50%;
+        margin: 40px auto;   
+    }
+    .errorPassword{
         color: red;
+    }
+    .boxPassword1{
+        width: 80%;
+        position: relative
+    }
+    #newPassword{
+        width: 100%;
+    }
+    #ConfirmPassword{
+        width: 100%;
+    }
+    .eye{
+        position : absolute;
+        top : 10px;
+        width: 20px;
+        opacity: 50%;
+        cursor: pointer;
     }
   
 </style>

@@ -50,7 +50,6 @@
                     })
                     .then(response => response.json()) 
                     .then(() =>{
-                        console.log("j'ai recu un truc de updateCommenataire...!!!!")
                     });
                     this.closeBox()
                     this.afterUpdate()
@@ -70,8 +69,7 @@
                             }
                     })
                     .then(response => response.json()) 
-                    .then( result =>{ 
-                        console.log(result)
+                    .then( () =>{ 
                 });
                  this.afterDelete()
             },

@@ -61,19 +61,38 @@ User.deleteAccount = (bodymail) => {
 }
 
 // en test 
-User.update = (oldMail,newMail,pseudo,image) => {
+User.update = (oldMail,newMail,pseudo,image, newPassword) => {
     return new Promise((resolve, reject) =>{
-        const sql = `Update users SET 
+        if(newPassword !== undefined){  
+            bcrypt.hash(newPassword,10)
+            .then(hash => { 
+                let sql = `Update users SET 
                     email = "${newMail}",
                     pseudo = "${pseudo}",
-                    photo = "${image}"
+                    photo = "${image}",                    
+                    password = "${hash}"
                     WHERE email = "${oldMail}"`
-        db.query(sql,(err,succ) => {
-            if (err){
-                throw err
-            }else resolve(succ)
-        })
+                db.query(sql,(err,succ) => {
+                    if (err){
+                        throw err
+                    }else resolve(succ)
+                })
+            })      
+        }else {
+
+            let sql = `Update users SET 
+                        email = "${newMail}",
+                        pseudo = "${pseudo}",
+                        photo = "${image}"
+                        WHERE email = "${oldMail}"`
+            db.query(sql,(err,succ) => {
+                if (err){
+                    throw err
+                }else resolve(succ)
+            })
+        }
     })
 }
+
 
 module.exports = User  // Aurélien avait oublié de l'exporter

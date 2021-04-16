@@ -5,7 +5,6 @@ const jwt = require("jsonwebtoken")
 const User = require("../models/userSQL");
 
 exports.signUp = (req,res) => {
-
     let isAdmin = false
     if (req.body.pseudo === "admin" && req.body.password === "admin"){
         isAdmin = 1
@@ -81,7 +80,7 @@ exports.deleteUser = ( req, res) => {
 }
 
 exports.updateUser = (req, res) => {
-
+    console.log("le MP est :"+ req.body.password)
     let image = ""
     if (req.file){
          image =`${req.protocol}://${req.get('host')}/images/${req.file.filename}`
@@ -90,8 +89,8 @@ exports.updateUser = (req, res) => {
     }
 
 
-    User.update(req.body.oldMail, req.body.email, req.body.pseudo, image)
-    .then( () => 
+    User.update(req.body.oldMail, req.body.email, req.body.pseudo, image, req.body.password)
+    .then( () =>
         db.query(`SELECT * FROM users WHERE email = "${req.body.email}"`,(err , succ) => {
             if (err) {
                 throw err
@@ -104,8 +103,7 @@ exports.updateUser = (req, res) => {
             throw err
         })
     )
-
-    .catch(() => res.status(400).json({ message : "Impossible de mettre à jour le User"}))
+    .catch( err => res.status(400).json({ err : err.message}))
 }
 
 exports.refresh = (req, res) => {

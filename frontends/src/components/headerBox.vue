@@ -5,23 +5,19 @@
                 <div class="boxAffiche" v-if="affiche">
                     <div class="parametre paramHover" @click="afficheParametre()">Paramètre</div>
                     <div class="deconnexion paramHover" @click="deconnexion()" @affichePhotoUser="photoUser">déconnection</div>
+                    <div v-if="$store.state.isAdmin === 1" class="deconnexion paramHover" @click="goAdmin()" @affichePhotoUser="photoUser">Administration</div>
                 </div>
             </div>
             <img v-if="$store.state.photoProfil" :src="$store.state.photoProfil" id="photoUser" >
-            <parametre
-                    @closeParametre="closeParametre"
-                    v-if="this.affichParam"
-            />
+         
         </div>
     </div>
 </template>
 
 <script>
-import parametre from "../components/parametre"
 export default {
     name : "headerBox",
     components : {
-        parametre,
     },
     data(){
         return{
@@ -51,19 +47,22 @@ export default {
             this.$router.push('/')
         },
         afficheParametre(){
-            if (this.affichParam){
-                this.affichParam = false
-            }else this.affichParam = true
+            // if (this.affichParam){
+            //     this.affichParam = false
+            // }else this.affichParam = true
+            this.$router.push("/parametre")
         },
         closeParametre(payload){
             this.affichParam = payload.false
         },
         photoUser(){
             this.displayPhoto = true
+        },
+        goAdmin(){
+            this.$router.push("/admin")
         }
-      
     } 
-}
+} 
 </script>
 
 <style  scoped>
@@ -88,11 +87,11 @@ export default {
         transform: translateX(-50%);
     }
     .parametre{
-        border-bottom: solid 1px white;
         padding:20px;
     }
     .deconnexion{
         padding:20px;
+        border-top: solid 1px white;
     }
     .paramHover:hover{
         cursor: pointer;

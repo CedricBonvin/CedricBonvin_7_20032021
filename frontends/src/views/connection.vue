@@ -53,7 +53,6 @@ export default {
             .then(response => response.json()) 
             .then(response =>{ 
                 if (response.email){
-                    console.log("admin :" + response.isAdmin)
                     this.$store.state.pseudo = response.pseudo
                     this.$store.state.idUser = response.idUser
                     this.$store.state.photoProfil = response.photo
@@ -79,7 +78,7 @@ export default {
 <style>
     .body{
     height: 100vh;
-    background-image: url("../assets/meeting.jpg");
+    background: linear-gradient(to right, rgba(119, 119, 119, 0.664),rgba(179, 176, 176, 0.432)),url("../assets/meeting.jpg") ;
     background-size: cover;
 
            

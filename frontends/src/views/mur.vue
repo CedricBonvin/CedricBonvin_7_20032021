@@ -1,57 +1,63 @@
 <template>
-    <div class="mur" >
-        <h1 class="titleMur">Mur principal </h1>
-        <div  v-for="mess in card" :key="mess.name"  >
+    <div  class="mur">
 
-            <div  :class="$store.state.pseudo === mess.pseudoUser? 'card' : 'cardUser'"> 
-                
-                <div class="date">{{ mess.date}}</div>
-                        
-                <div class="boxNom">
-                    <img class="photoProfil" :src="mess.photo" alt="">
-                    <span class="nom"> {{ mess.pseudoUser }} </span>
+        <div v-if="allowed">
+            <h1 class="titleMur">Mur principal </h1>
+            <div  v-for="mess in card" :key="mess.name"  >
+                <div  :class="$store.state.pseudo === mess.pseudoUser? 'card' : 'cardUser'">
+            
+                    <div class="date">{{ mess.date}}</div>
+            
+                    <div class="boxNom">
+                        <img class="photoProfil" :src="mess.photo" alt="">
+                        <span class="nom"> {{ mess.pseudoUser }} </span>
+                    </div>
+                    <img  v-if="mess.image" class="imageMessage" :src="mess.image" alt=" image du post">
+                    <div class="boxMessages">{{ mess.message }}</div>
+                    <!-- PARAMETRE -->
+                    <div class="wrapperParametre">
+                        <div class="wrapperLike" >
+                            <div class="boxLike">
+                                <img @click="addLike(mess)" class="like" src="../assets/heart.svg" alt="icone like">
+                                <div :id="mess.idMESSAGES"  class="nbrLike nbr">{{mess.totalLike}}</div>
+                            </div>
+                            <div class="boxDislike">
+                                <img @click="addDislike(mess)" class="dislike" src="../assets/heartBreak.svg" alt="icone like">
+                                <div  class="nbrdislike nbr">{{mess.totalDislike}}</div>
+                            </div>
+                        </div>
+                        <div>
+                            <p @click="goCommentaire(mess.idMESSAGES, mess.photo)" class="commenter">Commenter</p>
+                        </div>
+                        <img src="../assets/param.svg" alt="paramètre du message"
+                            class="param"
+                            v-if="$store.state.pseudo === mess.pseudoUser || $store.state.isAdmin === 1"
+                            @click="displayBoxUpdate( mess.idMESSAGES), recupMessage(mess.message)"
+                        >
+                    </div>
                 </div>
-                <img  v-if="mess.image" class="imageMessage" :src="mess.image" alt="">
-                <div class="boxMessages">{{ mess.message }}</div>
 
-                <!-- PARAMETRE -->
-                <div class="wrapperParametre">
-                    <div class="wrapperLike" >
-                        <div class="boxLike">
-                            <img @click="addLike(mess)" class="like" src="../assets/heart.svg" alt="icone like">
-                            <div :id="mess.idMESSAGES"  class="nbrLike nbr">{{mess.totalLike}}</div>
-                        </div>
-                        <div class="boxDislike">
-                            <img @click="addDislike(mess)" class="dislike" src="../assets/heartBreak.svg" alt="icone like">
-                            <div  class="nbrdislike nbr">{{mess.totalDislike}}</div>
-                        </div>
-                    </div>
-                    <div>
-                        <p @click="goCommentaire(mess.idMESSAGES, mess.photo)" class="commenter">Commenter</p>
-                    </div>
-                    <img src="../assets/param.svg" alt="paramètre du message"
-                        class="param"
-                        v-if="$store.state.pseudo === mess.pseudoUser || $store.state.isAdmin === 1"
-                        @click="displayBoxUpdate( mess.idMESSAGES), recupMessage(mess.message)"
-                    >
-                </div>    
             </div>
         </div>
+        <div class="notAllowed" v-else>
+            <p>Veuillez-vous connecter !</p>
+            <button @click="goConnection()" class="buttonConnect">Connectez-vous</button>
+        </div>
             
-            <boxImage 
-                @event="afficheFromBoxImage"  
-                @includeInCard="includeNewMessage"
-                v-if="displayBoxImage" 
-                :newcard="this.recupApi"
-            />
-           <boxUpdate 
-                @newMessage="postNewMessage" 
-                @eventDelete="deleteMess" 
-                @closeBoxUpdate="closeFromUpdateMessage" 
-                v-if="modifie" 
-                :id="this.id"
-                :recupMessage="this.message"
-            />
+        <boxImage 
+            @event="afficheFromBoxImage"  
+            @includeInCard="includeNewMessage"
+            v-if="displayBoxImage" 
+            :newcard="this.recupApi"
+        />
+        <boxUpdate 
+            @newMessage="postNewMessage" 
+            @eventDelete="deleteMess" 
+            @closeBoxUpdate="closeFromUpdateMessage" 
+            v-if="modifie" 
+            :id="this.id"
+            :recupMessage="this.message"
+        />
         <footer class="footerMur">
             <div class="boxBoutton">
                 <input type="text" class="inputMessage" id="message" placeholder="Poster votre message">
@@ -80,6 +86,7 @@ export default {
             isUser : true,
             date : "",
             message : "",
+            allowed : false,
             
             displayBoxImage : false,
             isMessage : true,
@@ -96,8 +103,12 @@ export default {
             fetch("http://localhost:8080/api/message")
             .then(response => response.json())
             .then(result =>{  
-                    console.log(result)           
                     this.card = result
+                    const token = localStorage.getItem("token")
+                    if (token){
+                        this.allowed = true
+                    }
+                    
             })
         },
         getDate ()  {
@@ -132,21 +143,17 @@ export default {
                 body: JSON.stringify(obj),
                 headers: {"Content-type": "application/json; charset=UTF-8",
                         Authorization: "Bearer" +" "+ obj.token,
-
                 }
             })
             .then(response => response.json()) 
             .then(() =>{      
-               // this.card.push(obj) 
                this.recupApi()
-
             });
         },      
         postNewMessage(payload){
             const idMessage = (element) => element.idMESSAGES === this.id;
             let index = this.card.findIndex(idMessage)
             this.card[index].message = payload.message
-            console.log("pour le new"+this.card[index.message])
             this.modifie = false
         },
         deleteMess(){
@@ -173,7 +180,6 @@ export default {
             this.modifie = payload.affiches
         },
         includeNewMessage(payload){
-            console.log("le payload est : "+ payload.newMessage.pseudoUser) // pourquoi ca n'affiche pas le user et ? mais sa fonctionne !!!
             this.card.push(payload.newMessage)
         },
         recupMessage(mess){
@@ -181,27 +187,25 @@ export default {
         },
         addLike(mess){
             const obj = {
-                //idUser :  JSON.parse(localStorage.getItem("idUser")),
                 idUser :  this.$store.state.idUser,
                 idMessage : mess.idMESSAGES,
                 token : JSON.parse(localStorage.getItem("token"))
             }
             fetch('http://localhost:8080/api/message/like', {
-                method: "POST",
+                method: "PUT",
                 body: JSON.stringify(obj),
                 headers: {"Content-type": "application/json; charset=UTF-8",
                             Authorization: "Bearer" +" "+ obj.token,
                         }
                 })
                 .then(response => response.json()) 
-                .then(() =>{     
-                    //this.card = result                
+                .then( result =>{     
+                    this.card = result     // la ou sa fonctionne le mieux c'est comme ca           
                     this.recupApi()
                 });
         },
         addDislike(mess){
             const obj = {
-                //idUser :  JSON.parse(localStorage.getItem("idUser")),
                 idUser :  this.$store.state.idUser,
                 idMessage : mess.idMESSAGES,
                 token : JSON.parse(localStorage.getItem("token"))
@@ -209,24 +213,23 @@ export default {
             }
 
             fetch('http://localhost:8080/api/message/dislike', {
-                method: "POST",
+                method: "PUT",
                 body: JSON.stringify(obj),
                 headers: {"Content-type": "application/json; charset=UTF-8",
                             Authorization: "Bearer" +" "+ obj.token,
                         }
                 })
                 .then(response => response.json()) 
-                .then(() =>{      
-                        //this.card = result
-                this.recupApi()
+                .then(result => {    
+                        console.log(result)  
+                        this.card =  result
+                        this.recupApi()
             });
         },
         goCommentaire(id,photoProfil){
-            console.log("go comment")
             this.$store.state.idMessage = id
             this.$store.state.photoProfilMessage = photoProfil
             this.$router.push('/commentaire/'+ id)
-            console.log("l'id du message du store est  : " + id)
 
         },
         refresh(){
@@ -253,6 +256,9 @@ export default {
                     this.$store.state.isAdmin = result[0].isAdmin
                 });
             }
+        },
+        goConnection(){
+            this.$router.push('/')
         }
     }, 
      mounted(){
@@ -265,8 +271,9 @@ export default {
 
 <style>
     .mur{
-    height: 100%;
+    min-height: 100vh;
     padding-bottom: 100px;
+    padding-top: 100px;
     background: linear-gradient(288deg, rgba(179,179,179,1) 0%, rgba(79,79,79,1) 100%);
     background-attachment: fixed;
     }
@@ -426,7 +433,32 @@ export default {
         right: -20px;
         margin-top: -10px;
         color: rgb(68, 68, 68);
-    }   
+    }  
+    .notAllowed{
+        position : absolute;
+        top : 40%;
+        left: 50%;
+        transform: translate(-50%);
+        overflow: hidden;
+        padding: 30px 0 0 0 ;
+        width: 90%;
+        text-align: center;
+        border: solid rgb(107, 106, 106) 5px;
+        background: rgb(230, 229, 229);
+        border-radius: 20px;
+        font-size: 1.3rem;
+        font-weight: bold;
+        box-shadow: 0 0 15px 5px rgb(129, 128, 128);
+    } 
+    .buttonConnect{
+        border: none;
+        width: 100%;
+        padding: 20px 0;
+        background: green;
+        color: rgb(246, 255, 247);
+        font-size: 1.5rem;
+        margin-top: 30px;
+    }
 </style>
 
 

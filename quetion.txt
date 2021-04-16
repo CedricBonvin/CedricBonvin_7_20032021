@@ -5,11 +5,17 @@ FRONTEND
 ---------
 
 
-    - Comment fermer des box ( composant ) en cliquant à coté de la box ? 
-
-    - probleme affichage parametre ( si je met le header à fixed, les parametres sont plus grand que la page et impossible de scroller..!!)
+    - Comment fermer des box ( composant ) en cliquant à coté de la box sans faire une fonction  ? 
 
     - logo Groupomania ?? svg ?? 
+
+    - comment ajouter des meta (pour des cdn ou description ou titre de la page dans l'onglet ?)
+
+    - protection des routes par fonction dans Mur => recupApi() (est-ce une bonne pratique ?)
+
+    - à l'arriver sur la page mettre une ancre sur le footer. Et après avoir poster un message ancre sur le footer
+
+    - classification par date ?
 
 BACKEND
 -------
@@ -18,12 +24,13 @@ BACKEND
 
     - route get ( comment envoyer le token ) => et j'ai presque que mis des post comme verbe !!
 
+    -- changement de passwored
+
 
 ADMINISTRATEUR :
 ----------------
 
  - Connecté avec pseudo = admin && MP => admin
- - Est-ce que l'admin peut supprimer un compte ?
 
 
  BUG
@@ -33,5 +40,27 @@ ADMINISTRATEUR :
     - SUR LA SUPRESSION DES COMMENTAIRES ( PAREIL QUE LES LIKES C'EST ALéATOIRE !!!!!)   EST CE QUE LES VERBES ON A VOIR QUELQUE CHOSE ???
         (je rappelle l' affichage de l'api mais c'est aléatoire !!)
 
-    - updateUser, quand je update la photoProfil il ne m'est pas à jour dans les commentaires Je comprend pourquoi mais je n'arrive pas
+    - updateUser, quand je update le photoProfil il ne m'est pas à jour dans les commentaires Je comprend pourquoi mais je n'arrive pas
         a faire la requete sql ( selectionne tous les commentaires avec idCommentaire = X et le user qui correspond à l'idUser du commentaire )
+
+    -  dans commentaire ligne 32 pourquoi le v-if ne fonctionne pas quand dans le mur sa fonctionne ??
+
+
+    INFORMATION
+    -----------
+
+        - quand l'admin supprime un compte, tous les messages du Users sont supprimés ainsi que tous ces commentaires 
+            par contre les commentaires fait par un quelqu'un d'autre sur un post du User supprimé reste dans la base de donnée.
+
+        -Combien sa vaut un site comme ca ??
+
+
+
+
+
+               
+
+
+
+
+

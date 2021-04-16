@@ -25,6 +25,16 @@ const routes = [
     path: '/commentaire/:id',
     name: 'commentaire',
     component: () => import(/* webpackChunkName: "commentaire" */ '../views/commentaire.vue')
+  },
+  {
+    path: '/admin',
+    name: 'admin',
+    component: () => import(/* webpackChunkName: "commentaire" */ '../views/admin.vue')
+  },
+  {
+    path: '/parametre',
+    name: 'parametre',
+    component: () => import(/* webpackChunkName: "parametre" */ '../views/parametre.vue')
   }
 ]
 

@@ -4,17 +4,20 @@
             <div class="inputCol">
                 <label for="email">E-mail :</label>
                 <input type="text" name="email" id="inputEmail" placeholder="monEmail@hébergeur.com">
+                <p class="erreur" v-if="!validMail">Veuillez vérifier votre email</p>
             </div>
             <div class="inputCol">
                 <label for="password">Mot de passe :</label>
                 <div class="boxPassword">
                     <input type="password" name="email" id="password" placeholder="Password" >
                     <img @click="affichePassword()" class="eye" src="../assets/eye.svg" id="affichePassword" alt="">
+                    <p class="erreur" v-if="!validPW">Minimum 6 caractères</p>
                 </div>
             </div>
             <div class="inputCol">
                 <label for="pseudo">Pseudo :</label>
                 <input type="text" name="pseudo" id="pseudo" placeholder="Mon pseudo">
+                <p class="erreur" v-if="!validPseudo">Entre 3 et 15 caractères</p>
             </div>
 
             <p class="labelImage">Image de profil :</p>    
@@ -39,7 +42,11 @@ export default {
     data() {
        return {      
            ImageUser : "",
-           affiche : true      
+           affiche : true,
+           
+           validMail : true,
+           validPW : true,
+           validPseudo: true
        }
     },
     props: {
@@ -65,27 +72,32 @@ export default {
            // headers: {"Content-type": "multipart/form-data",}
             })
             .then(response => response.json()) 
-            .then(response =>{ 
-                this.$store.state.pseudo = response.pseudo
-                this.$store.state.idUser = response.idUser
-                this.$store.state.photoProfil = response.photo
-                this.$store.state.email = response.email
-                this.$store.state.isAdmin = response.isAdmin
-                console.log("le user est admin : " + response.isAdmin)
-                localStorage.setItem("token",JSON.stringify(response.token))
+            .then(response =>{
+               
+                //TEST FORMULAIRE
 
-                this.$store.state.clearPassword = Password
-
-                this.$router.push('/mur#/')        
+                let valid = true
+                if (response.erreur){
+                    valid = false 
+                    this.validPW = response.erreur.password
+                    this.validMail = response.erreur.email
+                    this.validPseudo = response.erreur.pseudo
+                }       
+                if (valid === true){
+                    this.$router.push('/mur#/')   
+                    this.$store.state.pseudo = response.pseudo
+                    this.$store.state.idUser = response.idUser
+                    this.$store.state.photoProfil = response.photo
+                    this.$store.state.email = response.email
+                    this.$store.state.isAdmin = response.isAdmin
+                    localStorage.setItem("token",JSON.stringify(response.token))                    
+                }
+                else console.log("un prob. ")
             });    
         },
          fileFunc(){
             const input = document.getElementById("file")
-          
-                // console.log(input.files[0].name)
-                console.log(input.files.get )
-                 //console.log("le this.ImageUser est : " + this.ImageUser)
-                 //this.ImageUser = input.files[0].type
+    
                 const reader = new FileReader()
                 reader.onload = function(){
                     const img = new Image()
@@ -123,7 +135,7 @@ export default {
 
 <style>
    .inscription{
-   background-image: url("../assets/meeting.jpg");
+    background: linear-gradient(to right, rgba(119, 119, 119, 0.664),rgba(179, 176, 176, 0.432)),url("../assets/meeting.jpg") ;
    background-size: cover;
    height: 100vh;
    
@@ -247,6 +259,11 @@ export default {
     }
     .labelPhotoProfil:hover{
         color:black;
+    }
+    .erreur{
+        text-align: left;
+        font-size: 0.8rem;
+        color: red;
     }
 
 

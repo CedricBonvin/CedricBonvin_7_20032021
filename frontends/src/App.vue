@@ -57,7 +57,7 @@ export default {
 <style>
 html{
   height: 100%;
-  background-color: rgb(199, 199, 199);
+  background-color: rgb(255, 255, 255);
 }
 *{
     box-sizing: border-box;
@@ -82,7 +82,7 @@ body{
 }
 
 #nav {
- 
+ position: fixed;
   width: 100%;
   max-width: 600px;
   z-index: 1000;
@@ -91,7 +91,7 @@ body{
   margin: auto;
 
   font-size: 1.5rem;  
-  padding: 20px 15px;
+  padding: 10px 15px;
   background: black;
   color: white;
 }

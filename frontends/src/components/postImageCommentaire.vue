@@ -11,14 +11,14 @@
         </div>
         <div class="boxbutton">
             <button @click="afficheBox()">Annuler</button>
-            <button @click="postImage(), afficheBox()">Poster</button> 
+            <button @click="postImage(idMessBase), afficheBox()">Poster</button> 
         </div>
     </div>
 </template>
 
 <script>
 export default {
-    name : "boxImage",
+    name : "postImageCommentaire",
     data(){
         return{
              date :"",
@@ -31,12 +31,13 @@ export default {
         }
     },
     props : {
-        newcard : Function
+        newcard : Function,
+        idMessBase : Number
     },
     
     methods : {
         afficheBox(){
-            this.$emit("event",{ affiche: false} )
+            this.$emit("event",{} )
         },
         fileFunc(){
             const input = document.getElementById("files")
@@ -70,22 +71,23 @@ export default {
             this.getDate()
            
             let formdata = new FormData()
-            formdata.append('pseudoUser' , Pseudo)
+            formdata.append('pseudo' , Pseudo)
             formdata.append('date' , this.date)     
             formdata.append('message' , mess)     
             formdata.append('image' , Image)     
-            formdata.append('idUSERS' , idUSERS)     
+            formdata.append('idUser' , idUSERS)     
             formdata.append('photoProfil' , photoProfil)     
+            formdata.append('idMessageBase' , this.$route.params.id)     
             formdata.append('token' , token)     
      
-           fetch('http://localhost:8080/api/message', {
+           fetch('http://localhost:8080/api/commentaires', {
             method: "POST",
             body: formdata,
             headers: {Authorization: "Bearer" +" "+ token,}
             })
             .then(response => response.json()) 
             .then( () =>{
-                this.newcard() // appelle de recupApi() depuis mur.vue
+                this.newcard() // appelle de recupApi() depuis commentaire.vue
             });    
         }, 
          getDate ()  {
@@ -149,15 +151,12 @@ export default {
     .boxMessage{
         display: flex;
         flex-flow: column;
-        
-
     }
     #message{
         padding: 10px;
         width: 80%;
         margin:20px  auto;
         border-radius: 90px;
-
     }
 
 </style>

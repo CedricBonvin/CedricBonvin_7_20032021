@@ -3,16 +3,16 @@
         <!-- Message de base -->
         <div class="messageOriginal">
         <h2>Message poster par :</h2>
-        <img class="photoUser" :src="photoProfil" alt="photo profil du message">
+        <img class="photoUser" :src="photo" alt="photo profil du message">
         <div class="user">{{ pseudoUser}}</div> 
-            <div class="cardMessageBase" v-for="mess in card" :key="mess.name">
+            <article class="cardMessageBase" v-for="mess in card" :key="mess.name">
                 <div class="boxNom">
-                        <img class="photoProfil" :src="mess.photoProfil" alt="">
+                        <img class="photoProfil" :src="mess.photo" alt="">
                         <span class="nomUser"> {{ mess.pseudoUser }} </span>
                     </div>
-                <img v-if="mess.image" class="image" :src="mess.image" alt="">
+                <img v-if="mess.image"  class="image" :src="mess.image" alt="image du post de base">
                 <div class="boxMessages" > {{mess.message}}</div>
-            </div>
+            </article>
             <div class="dates"> message poster le {{ date }}</div>
             <div class="separateur"></div>
         </div>
@@ -21,14 +21,17 @@
         </div>
 
         <!-- commentaire -->
-        <div  v-for="mess in commentaires" :key="mess.name">
+        <article  v-for="mess in commentaires" :key="mess.name">
             <div class="wrapperCard">
-                <div class="date">{{ mess.date }}</div>
+                <div class="dateCommentaire">{{ mess.date }}</div>
                 <div class="cardCommentaire">
                     <div class="topMessage">
-                        <img class="photoProfil" :src="mess.photoProfil" alt="">
+                        <img class="photoProfil" :src="mess.photo" alt=" photo de profil">
                         <div class="pseudoUser">{{ mess.pseudo}}</div>
                     </div>
+                    
+                        <img v-if="mess.image" class="image" :src="mess.image" alt="">   <!--si je met un truc dans alt sa fonctionne pas !!!-->
+                    
                     <div id="commentaire" class="boxMessages"> {{ mess.message }}</div>
                     <div class="boxParametre">
                         <img
@@ -39,7 +42,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </article>
         <updateCommentaire 
             v-if="afficheUpdate"
             @closeBoxUpdate="afficheUpdate = false"
@@ -48,16 +51,26 @@
             :afterUpdate="displayCommentaires"
             :recupMessage="oldCommentaire"
         />
+
+        <postImageCommentaire 
+            v-if="afficheBoxImage"
+            @event="afficheBoxImage = false"
+            :idMessBase="idCommentaire"
+            :newcard="displayCommentaires" 
+        />
         
         <!-- FOOTER -->
         <div id="footerCommentaire">
             <div class="boxRowBack">
                 <img src="../assets/iconeRow.svg" class="backMur" @click="backMur()">
             </div>
-             <div class="boxBoutton">
+            <div class="boxBoutton">
                 <input type="text" class="inputMessage" id="commentaires" placeholder="Poster votre commentaire">
                 <button class=" boxRow" v-on:click="postCommentaire()">
                     <img class="row" src="../assets/iconeRow.svg" alt="">
+                </button>
+                <button class=" boxImage" >
+                    <img @click="afficheBoxPostImage()" class="iconeImage" src="../assets/iconeImage.svg" alt=" icone poster une image">
                 </button>
             </div>
         </div>
@@ -67,10 +80,13 @@
 
 <script>
 import updateCommentaire from "../components/updateCommentaire"
+import postImageCommentaire from "../components/postImageCommentaire"
 export default {
     name : "commentaire",
     components :{
-        updateCommentaire
+        updateCommentaire,
+        postImageCommentaire
+        
     },
     data(){
         return{
@@ -81,7 +97,9 @@ export default {
             commentaires : [],
             photoProfil : "",
             afficheUpdate : false,
-            oldCommentaire : ""
+            oldCommentaire : "",
+            afficheBoxImage : false,
+            photo : ""
         }
     },
     methods : {
@@ -128,7 +146,6 @@ export default {
                 message : commentaire,
                 image : null,
                 pseudo : this.$store.state.pseudo,
-                photoProfil : this.$store.state.photoProfil,
                 date : date,
                 token : JSON.parse(localStorage.getItem("token"))
 
@@ -149,7 +166,7 @@ export default {
         displayCommentaires(){
            const idMess = this.$route.params.id
             const obj = {
-                idMessageBase : idMess
+                idMessageBase : idMess,     
             }
             fetch("http://localhost:8080/api/commentaires/recup",{
                 method: "POST",
@@ -160,9 +177,7 @@ export default {
             })
             .then(response => response.json())
             .then( result =>{
-                this.commentaires = result 
-                //console.log("je recoie un truc")            
-                //console.log("un truc est la !!!!!!!!" + result[0].pseudo )
+                this.commentaires = result      
             })
         },
         refreshUser(){
@@ -194,14 +209,15 @@ export default {
             this.afficheUpdate === false ? this.afficheUpdate = true : this.afficheUpdate = false
             this.idCommentaire = idComment  
             this.oldCommentaire = mess
-        },
-    
+        }, 
+        afficheBoxPostImage(){
+            this.afficheBoxImage === false ? this.afficheBoxImage = true : this.afficheBoxImage = false
+        }
     },
     mounted(){
         this.refreshUser(),
         this.displayCommentaires(),
         this.displayBasicMessage()
-
     }
 }
 </script>
@@ -300,6 +316,15 @@ h2{
     color: white;
     text-align: center;
 }
+.dateCommentaire{
+    color: white;
+    text-align: center;
+}
+.image{
+    display: block;
+    width: 90%;
+    margin: auto;
+}
 .separateur{
     border-bottom: solid 1px rgb(252, 250, 250);
     height: 20px;
@@ -359,6 +384,22 @@ h2{
     height: 30px;
     margin: 0;
 }
+.boxImage{
+      position: relative;
+    left: -5px;
+    top: 1px;
+    border: solid 1px black;
+    background: rgb(102, 209, 102);
+    border-radius: 50%;
+    padding: 10px;
+    margin: 0 0 0 5px;
+
+}
+.iconeImage{
+    width: 30px;
+    height: 30px;
+    margin: 0;
+}
 .boxParametre{
     text-align: right;
     padding: 3px;
@@ -373,6 +414,4 @@ h2{
     opacity: 60%;
     cursor: pointer;
 }
-
-
 </style>
