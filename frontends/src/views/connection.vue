@@ -4,7 +4,7 @@
             <div class="inputCol">
                 <label for="email">E-mail :</label>
                 <input type="text" name="email" id="connectInputEmail" placeholder="monEmail@hébergeur.com">
-                <div v-if="!isEmail" class="isFalse">* Veulliez vérifier votre E-email</div>
+                <div v-if="erreurMail" class="isFalse">{{erreurMail}}</div>
             </div>
             <div class="inputCol">
                 <label for="password">Mot de passe :</label>
@@ -12,7 +12,7 @@
                     <input type="password" name="email" id="connectPassword" placeholder="Password" >
                     <img class="eye" src="../assets/eye.svg" alt="" @click="showPassword()">
                 </div>
-                <div v-if="!isPassword" class="isFalse">* Mot de passe incorrect</div>
+                <div v-if="erreurPW" class="isFalse">{{ erreurPW }}</div>
 
                 <div class="boxLinkInscription"><router-link to="/inscription">Créer un compte</router-link> </div>
             </div>
@@ -29,8 +29,8 @@ export default {
     name: 'connection',
     data() {
         return { 
-            isEmail : true,
-            isPassword : true
+            erreurPW : "",
+            erreurMail : ""
         }
     },  
     methods : {
@@ -52,7 +52,13 @@ export default {
             })
             .then(response => response.json()) 
             .then(response =>{ 
-                if (response.email){
+                let valid = true
+                if (response.erreur){
+                    valid = false
+                    this.erreurMail = response.erreur.email
+                    this.erreurPW = response.erreur.password
+                }
+                 if (valid === true){
                     this.$store.state.pseudo = response.pseudo
                     this.$store.state.idUser = response.idUser
                     this.$store.state.photoProfil = response.photo

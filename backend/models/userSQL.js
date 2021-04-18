@@ -31,16 +31,12 @@ User.findOne = (bodyMail,bodyPassword) => {
             }  
             if (succ.length > 0) {
                 if (bodyMail === succ[0].email){
-                    console.log("l'emai à été trouvé !")
                     bcrypt.compare(bodyPassword, succ[0].password)
                     .then(valid => {
                         if (!valid){
-                            console.log("Mot de passe non valide ...!")
                             resolve(1)
-                            return
-                            
+                            return     
                         } else 
-                        console.log("Le password est ok : " + succ[0].password);
                         resolve(succ)
                     })
                 }       
@@ -59,37 +55,88 @@ User.deleteAccount = (bodymail) => {
         })
     })
 }
-
-// en test 
-User.update = (oldMail,newMail,pseudo,image, newPassword) => {
+User.update = (oldMail,newMail,pseudo,image, newPassword,confirmPassword) => {
     return new Promise((resolve, reject) =>{
-        if(newPassword !== undefined){  
+        if(newPassword !== undefined || confirmPassword !== undefined){  
             bcrypt.hash(newPassword,10)
             .then(hash => { 
-                let sql = `Update users SET 
-                    email = "${newMail}",
-                    pseudo = "${pseudo}",
-                    photo = "${image}",                    
-                    password = "${hash}"
-                    WHERE email = "${oldMail}"`
-                db.query(sql,(err,succ) => {
-                    if (err){
-                        throw err
-                    }else resolve(succ)
-                })
-            })      
-        }else {
+                let valid = true
+                let erreur = {
+                    email : "",
+                    pseudo : "",
+                    password : ""
+                }
+                // test du mail
+                const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+                if (!regex.test(newMail)){
+                    erreur.email = "Votre email ne semble pas être correct !"
+                    valid = false
+                }
+                // test du nouveau Pseudo
+                if (pseudo.length < 3 || pseudo.length > 15){
+                    erreur.pseudo = "Entre 3 et 15 caractères"
+                    valid = false
+                }
+                // test password
+                if (newPassword.length < 6 ){
+                    valid = false
+                    erreur.password = "Minimum 6 caractères"
+                }
+                if(newPassword !== confirmPassword){
+                    valid = false
+                    erreur.password = "Veuillez rentrer le même mot de passe"
+                }
 
-            let sql = `Update users SET 
+                ///////////
+                if (valid === true){
+                    let sql = `Update users SET 
                         email = "${newMail}",
                         pseudo = "${pseudo}",
-                        photo = "${image}"
+                        photo = "${image}",                    
+                        password = "${hash}"
                         WHERE email = "${oldMail}"`
-            db.query(sql,(err,succ) => {
-                if (err){
-                    throw err
-                }else resolve(succ)
-            })
+                    db.query(sql,(err,succ) => {
+                        if (err){
+                            throw err
+                        }else resolve(succ)
+                    })
+                }else if (valid === false) {
+                    resolve({erreur})
+                }
+            })      
+        }else {
+            let valid = true
+                let erreur = {
+                    email : "",
+                    pseudo : "",
+                    password : ""
+                }
+                // test du mail
+                const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+                if (!regex.test(newMail)){
+                    erreur.email = "Votre email ne semble pas être correct !"
+                    valid = false
+                }
+                // test du nouveau Pseudo
+                if (pseudo.length < 3 || pseudo.length > 15){
+                    erreur.pseudo = "Entre 3 et 15 caractères"
+                    valid = false
+                }
+                ///////////
+                if(valid === true){
+                    let sql = `Update users SET 
+                                email = "${newMail}",
+                                pseudo = "${pseudo}",
+                                photo = "${image}"
+                                WHERE email = "${oldMail}"`
+                    db.query(sql,(err,succ) => {
+                        if (err){
+                            throw err
+                        }else resolve(succ)
+                    })
+                }else if (valid === false){
+                    resolve({erreur})
+                }
         }
     })
 }

@@ -2,6 +2,7 @@
     <div id="updateMessage">
         <h3> Modifier votre message </h3>
         <textarea  id="newCommentaire"  v-model="message" placeholder="Votre nouveau message" rows="5"></textarea>
+        <p class="erreur" v-if="erreur"> {{erreur}}</p>
         <div class="boxBoutton">
             <button @click="updateCommentaire(id)" title="Mettre à jour le message">Mettre à jour</button>
             <!--<button @click="deleteMessage(id)">Supprimer</button> -->
@@ -26,7 +27,8 @@
         data(){
             return {
                 cancel : true,
-                message : this.recupMessage,    
+                message : this.recupMessage,   
+                erreur : "" 
             }
         },
        
@@ -49,10 +51,14 @@
                             }
                     })
                     .then(response => response.json()) 
-                    .then(() =>{
+                    .then( response =>{
+                        if (response.erreur) {
+                            this.erreur = response.erreur
+                        }else{
+                            this.closeBox()
+                            this.afterUpdate()
+                        }
                     });
-                    this.closeBox()
-                    this.afterUpdate()
             },      
             deleteCommentaire(id){
                 this.$emit("eventDelete",{})
@@ -120,6 +126,10 @@
         cursor: pointer;
     }
     #newMessage{
-    padding: 5px 20px;}
+        padding: 5px 20px;
+    }
+    .erreur{
+        color: red;
+    }
 
 </style>

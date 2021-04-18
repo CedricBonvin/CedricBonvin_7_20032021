@@ -4,20 +4,20 @@
             <div class="inputCol">
                 <label for="email">E-mail :</label>
                 <input type="text" name="email" id="inputEmail" placeholder="monEmail@hébergeur.com">
-                <p class="erreur" v-if="!validMail">Veuillez vérifier votre email</p>
+                <p class="erreur" v-if="validMail">{{validMail}}</p>
             </div>
             <div class="inputCol">
                 <label for="password">Mot de passe :</label>
                 <div class="boxPassword">
                     <input type="password" name="email" id="password" placeholder="Password" >
                     <img @click="affichePassword()" class="eye" src="../assets/eye.svg" id="affichePassword" alt="">
-                    <p class="erreur" v-if="!validPW">Minimum 6 caractères</p>
+                    <p class="erreur" v-if="validPW"> {{validPW}}</p>
                 </div>
             </div>
             <div class="inputCol">
                 <label for="pseudo">Pseudo :</label>
                 <input type="text" name="pseudo" id="pseudo" placeholder="Mon pseudo">
-                <p class="erreur" v-if="!validPseudo">Entre 3 et 15 caractères</p>
+                <p class="erreur" v-if="validPseudo"> {{validPseudo}}</p>
             </div>
 
             <p class="labelImage">Image de profil :</p>    
@@ -44,9 +44,9 @@ export default {
            ImageUser : "",
            affiche : true,
            
-           validMail : true,
-           validPW : true,
-           validPseudo: true
+           validMail : "",
+           validPW : "",
+           validPseudo: ""
        }
     },
     props: {
@@ -75,9 +75,9 @@ export default {
             .then(response =>{
                
                 //TEST FORMULAIRE
-
                 let valid = true
                 if (response.erreur){
+                    console.log("la réponse du mail est : " + response.erreur.email)
                     valid = false 
                     this.validPW = response.erreur.password
                     this.validMail = response.erreur.email
@@ -150,7 +150,7 @@ export default {
         flex-flow: column;
         justify-content: space-between;
         position : absolute;
-        top: 100px;
+        top: 60px;
         left: 50%;
         padding: 0;
         transform: translateX(-50%);
@@ -262,7 +262,7 @@ export default {
     }
     .erreur{
         text-align: left;
-        font-size: 0.8rem;
+        font-size: 0.9rem;
         color: red;
     }
 

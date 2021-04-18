@@ -13,9 +13,7 @@ export default new Vuex.Store({
 
     idMessage : 0,
 
-    isAdmin : true
-
-    
+    isAdmin : true 
   },
   mutations: {
     PUT_CLEAR_PASSWORD(state,password){

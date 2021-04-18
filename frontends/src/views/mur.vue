@@ -59,6 +59,7 @@
             :recupMessage="this.message"
         />
         <footer class="footerMur">
+            <div class="erreur" v-if="erreur">{{erreur}}</div>
             <div class="boxBoutton">
                 <input type="text" class="inputMessage" id="message" placeholder="Poster votre message">
                 <button class="buttonImage row" v-on:click="postMessage()"><img src="../assets/iconeRow.svg" alt=""></button>
@@ -94,7 +95,8 @@ export default {
             like : 0,
             dislike : 0,
 
-            isAdmin : 0
+            isAdmin : 0,
+            erreur : ""
         }
     },                                            
     methods : {
@@ -146,7 +148,10 @@ export default {
                 }
             })
             .then(response => response.json()) 
-            .then(() =>{      
+            .then( response =>{ 
+                if (response.erreur){
+                    this.erreur = response.erreur
+                }else this.erreur = ""   
                this.recupApi()
             });
         },      
@@ -459,6 +464,10 @@ export default {
         font-size: 1.5rem;
         margin-top: 30px;
     }
+    .erreur{
+        color: red;
+    }
+   
 </style>
 
 

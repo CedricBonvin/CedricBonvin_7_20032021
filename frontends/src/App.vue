@@ -4,7 +4,7 @@
      <!-- <router-link to="/">Home</router-link> |
       <router-link to="/about">About</router-link> -->
         <!-- <div class="logo">Groupomania</div> -->
-        <img class="logo" src="./assets/Groupomania/icon-left-font-monochrome-white.svg" alt="">
+        <img @click="backMur()" class="logo" src="./assets/Groupomania/icon-left-font-monochrome-white.svg" alt="">
         <headerBox  :class="afficheUser()" 
                     :pseudo="this.pseudoUser"
                     :photo="this.photoUrl" 
@@ -47,6 +47,9 @@ export default {
         func(payload){
           this.photoUrl = payload.photoUrl
           this.pseudoUser = payload.pseudoUser
+        },
+        backMur(){
+          this.$router.push("/mur")
         }
         // parametre
         
@@ -107,6 +110,7 @@ body{
 }
 .logo{
   width: 150px;
+  cursor: pointer;
   
 }
 

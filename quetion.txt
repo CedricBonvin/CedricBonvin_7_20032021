@@ -13,9 +13,8 @@ FRONTEND
 
     - protection des routes par fonction dans Mur => recupApi() (est-ce une bonne pratique ?)
 
-    - à l'arriver sur la page mettre une ancre sur le footer. Et après avoir poster un message ancre sur le footer
+    - à l'arriver sur la page mettre une ancre sur le footer. Et après avoir poster un message ancré sur le footer
 
-    - classification par date ?
 
 BACKEND
 -------
@@ -24,7 +23,10 @@ BACKEND
 
     - route get ( comment envoyer le token ) => et j'ai presque que mis des post comme verbe !!
 
-    -- changement de passwored
+    -- back => middleware => testSignup, impossible de changer l'objet erreur après une requète ?? c'est un truc de dingue !!!
+
+    -- dans admin, a l'affichage de supprimer le compte, comment faire pour que au click il se referme (j'ai l'impression qu'avec Vue 
+        on ne peut le faire, faudra le faire en Vanilla JS) ?
 
 
 ADMINISTRATEUR :
@@ -40,10 +42,7 @@ ADMINISTRATEUR :
     - SUR LA SUPRESSION DES COMMENTAIRES ( PAREIL QUE LES LIKES C'EST ALéATOIRE !!!!!)   EST CE QUE LES VERBES ON A VOIR QUELQUE CHOSE ???
         (je rappelle l' affichage de l'api mais c'est aléatoire !!)
 
-    - updateUser, quand je update le photoProfil il ne m'est pas à jour dans les commentaires Je comprend pourquoi mais je n'arrive pas
-        a faire la requete sql ( selectionne tous les commentaires avec idCommentaire = X et le user qui correspond à l'idUser du commentaire )
-
-    -  dans commentaire ligne 32 pourquoi le v-if ne fonctionne pas quand dans le mur sa fonctionne ??
+    -  dans le Front => commentaire ligne 33 pourquoi le v-if ne fonctionne pas quand dans le mur sa fonctionne ??
 
 
     INFORMATION

@@ -9,9 +9,10 @@
             <label class="labelMessage" for="message">Ajouter une légende !</label>
             <input type="text-area"  id="message">
         </div>
+        <p class="erreur" v-if="erreur">{{ erreur }}</p>
         <div class="boxbutton">
             <button @click="afficheBox()">Annuler</button>
-            <button @click="postImage(idMessBase), afficheBox()">Poster</button> 
+            <button @click="postImage(idMessBase)">Poster</button> 
         </div>
     </div>
 </template>
@@ -21,13 +22,14 @@ export default {
     name : "postImageCommentaire",
     data(){
         return{
-             date :"",
-             objetMessage : {
-                 pseudoUser : "",
-                 Message : "",
-                 image : "",
-                 photo : ""
-             }
+            date :"",
+            objetMessage : {
+                pseudoUser : "",
+                Message : "",
+                image : "",
+                photo : "",
+            },
+            erreur : ""
         }
     },
     props : {
@@ -80,14 +82,20 @@ export default {
             formdata.append('idMessageBase' , this.$route.params.id)     
             formdata.append('token' , token)     
      
-           fetch('http://localhost:8080/api/commentaires', {
+           fetch('http://localhost:8080/api/commentaires/image', {
             method: "POST",
             body: formdata,
             headers: {Authorization: "Bearer" +" "+ token,}
             })
             .then(response => response.json()) 
-            .then( () =>{
-                this.newcard() // appelle de recupApi() depuis commentaire.vue
+            .then( response =>{
+                if (response.erreur){
+                    this.erreur = response.erreur
+                }else{
+                  
+                    this.afficheBox()
+                    this.newcard() // appelle de recupApi() depuis commentaire.vue
+                }
             });    
         }, 
          getDate ()  {
@@ -107,7 +115,7 @@ export default {
 
     .wrapper{
         position: fixed;
-        top: 100px;
+        top: 60px;
         left: 50%;
         transform: translateX(-50%);
         background: rgba(0, 0, 0, 0.966);
@@ -117,7 +125,7 @@ export default {
         color: white;
         font-size: 1.3rem;
         padding: 10px;
-        border-radius: 20px;
+        border-radius: 0 0 20px 20px;
     }
     #sampleImage{
         position: relative;
@@ -157,6 +165,14 @@ export default {
         width: 80%;
         margin:20px  auto;
         border-radius: 90px;
+    }
+    .erreur{
+        color: red;
+        text-align: center;
+        font-size: 0.8rem;
+    }
+    button{
+        cursor: pointer;
     }
 
 </style>

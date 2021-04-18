@@ -61,17 +61,18 @@
         
         <!-- FOOTER -->
         <div id="footerCommentaire">
-            <div class="boxRowBack">
-                <img src="../assets/iconeRow.svg" class="backMur" @click="backMur()">
-            </div>
-            <div class="boxBoutton">
-                <input type="text" class="inputMessage" id="commentaires" placeholder="Poster votre commentaire">
-                <button class=" boxRow" v-on:click="postCommentaire()">
-                    <img class="row" src="../assets/iconeRow.svg" alt="">
-                </button>
-                <button class=" boxImage" >
-                    <img @click="afficheBoxPostImage()" class="iconeImage" src="../assets/iconeImage.svg" alt=" icone poster une image">
-                </button>
+          
+            <div class="foot">
+                <p class="erreur emptyMessage" v-if="erreur"> {{erreur}}</p>
+                <div class="boxBoutton">
+                    <input type="text" class="inputMessage" id="commentaires" placeholder="Poster votre commentaire">
+                    <button class=" boxRow" v-on:click="postCommentaire()">
+                        <img class="row" src="../assets/iconeRow.svg" alt="">
+                    </button>
+                    <button class=" boxImage" >
+                        <img @click="afficheBoxPostImage()" class="iconeImage" src="../assets/iconeImage.svg" alt=" icone poster une image">
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -99,7 +100,8 @@ export default {
             afficheUpdate : false,
             oldCommentaire : "",
             afficheBoxImage : false,
-            photo : ""
+            photo : "",
+            erreur : ""
         }
     },
     methods : {
@@ -159,8 +161,13 @@ export default {
                 }
             })
             .then(response => response.json()) 
-            .then( () =>{ 
-                this.displayCommentaires()
+            .then( response =>{ 
+                if (response.erreur){
+                    this.erreur = response.erreur
+                }else{
+                    this.erreur = ""
+                    this.displayCommentaires()
+                }
             });
         },
         displayCommentaires(){
@@ -225,7 +232,7 @@ export default {
 <style scoped>
 
 .commentaire{
-    padding-bottom: 100px;
+    padding-bottom: 120px;
      background: linear-gradient(288deg, rgba(179,179,179,1) 0%, rgba(79,79,79,1) 100%);
     background-attachment: fixed;
 }
@@ -265,7 +272,7 @@ h2{
     border: 2px rgb(131, 128, 128) solid;
 }
 .wrapperCard{
-    margin: 30px auto;
+    margin: 30px auto 0 auto;
     width: 80%;
     max-width: 500px;
 }
@@ -339,9 +346,6 @@ h2{
     position: fixed;
     bottom: 0;
     width: 100%;
-   
-    background:none;
-    width: 100%;
     max-width: 600px;
     padding: 0;
 }
@@ -360,12 +364,6 @@ h2{
     background: none;
     transform: rotateY(-180deg);
 }
-.boxRowBack{
-    text-align: right;
-}
-.backMur:hover{
-    color: rgb(192, 192, 192);
-}
 .inputMessage{
     width: 70%;
     border-radius: 10px 0 0 10px;
@@ -383,6 +381,7 @@ h2{
     width: 30px;
     height: 30px;
     margin: 0;
+    cursor: pointer;
 }
 .boxImage{
       position: relative;
@@ -399,6 +398,7 @@ h2{
     width: 30px;
     height: 30px;
     margin: 0;
+    cursor: pointer;
 }
 .boxParametre{
     text-align: right;
@@ -413,5 +413,12 @@ h2{
     width: 20px;
     opacity: 60%;
     cursor: pointer;
+}
+.foot{
+    background: black;
+}
+.emptyMessage{
+    padding-top: 5px;
+    color: red;
 }
 </style>

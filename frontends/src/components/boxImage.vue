@@ -9,9 +9,10 @@
             <label class="labelMessage" for="message">Ajouter une légende !</label>
             <input type="text-area"  id="message">
         </div>
+        <p class="erreur" v-if="erreur">{{ erreur }}</p>
         <div class="boxbutton">
             <button @click="afficheBox()">Annuler</button>
-            <button @click="postImage(), afficheBox()">Poster</button> 
+            <button @click="postImage()">Poster</button> 
         </div>
     </div>
 </template>
@@ -27,7 +28,8 @@ export default {
                  Message : "",
                  image : "",
                  photo : ""
-             }
+             },
+             erreur : ""
         }
     },
     props : {
@@ -78,14 +80,19 @@ export default {
             formdata.append('photoProfil' , photoProfil)     
             formdata.append('token' , token)     
      
-           fetch('http://localhost:8080/api/message', {
+           fetch('http://localhost:8080/api/message/image', {
             method: "POST",
             body: formdata,
             headers: {Authorization: "Bearer" +" "+ token,}
             })
             .then(response => response.json()) 
-            .then( () =>{
-                this.newcard() // appelle de recupApi() depuis mur.vue
+            .then( response =>{
+                if (response.erreur){
+                    this.erreur = response.erreur
+                }else{
+                    this.afficheBox()
+                    this.newcard() // appelle de recupApi() depuis mur.vue
+                }
             });    
         }, 
          getDate ()  {
@@ -105,7 +112,7 @@ export default {
 
     .wrapper{
         position: fixed;
-        top: 100px;
+        top: 60px;
         left: 50%;
         transform: translateX(-50%);
         background: rgba(0, 0, 0, 0.966);
@@ -115,7 +122,7 @@ export default {
         color: white;
         font-size: 1.3rem;
         padding: 10px;
-        border-radius: 20px;
+        border-radius: 0 0 20px 20px;
     }
     #sampleImage{
         position: relative;
@@ -149,15 +156,15 @@ export default {
     .boxMessage{
         display: flex;
         flex-flow: column;
-        
-
     }
     #message{
         padding: 10px;
         width: 80%;
         margin:20px  auto;
         border-radius: 90px;
-
+    }
+    .erreur{
+        font-size: 0.9rem;
     }
 
 </style>

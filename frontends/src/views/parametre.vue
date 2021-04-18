@@ -4,13 +4,17 @@
         <div class="colInput">
             <label for="email">Email :</label>
             <input @change="changeEmail()"  type="email" id="email" name="email" :value="this.email">
+            <p class="erreur" v-if="erreurMail"> {{ erreurMail}} </p>
         </div>
        
         <div class="colInput">
             <label for="pseudo">Pseudo :</label>
             <input @change="changePseudo()" type="pseudo" id="pseudo" name="pseudo" :value="this.pseudo">
+             <p class="erreur" v-if="erreurPseudo"> {{erreurPseudo}} </p>
+
         </div>
-        
+
+        <!-- password -->
         <label>Password :</label>
         <p @click="afficheNewPassword()" class="modifPassword">Modifier votre password</p>
         <div v-if="newPassword" class="colInput password" id="boxPassword">
@@ -20,7 +24,7 @@
                     <input  type="password" id="newPassword" name="newPassword">
                     <img @click="affichePasswore1()" class="eye" src="../assets/eye.svg" alt="icone affiche password">
                 </div>
-                <p v-if="errorPassword" class="errorPassword">Veuillez rentrer le même mot de passe</p>
+                <p v-if="erreurPW" class="errorPassword"> {{ erreurPW }}</p>
 
                 <label class="password" for="newPassword">Confirmer votre nouveau password :</label>
                 <div class="boxPassword1">
@@ -28,10 +32,11 @@
                     <img @click="affichePassword2()" class="eye" src="../assets/eye.svg" alt="icone affiche password">
                 </div>
 
-                <p v-if="errorPassword" class="errorPassword">Veuillez rentrer le même mot de passe</p>
+                <p v-if="erreurPW" class="errorPassword">{{ erreurPW }}</p>
             </div> 
         </div>
         <hr class="hr">
+
         <!-- PHOTO DE PROFIL -->
         <p class="titlePhotoProfil">Photo de profil : </p>
         <div>
@@ -44,7 +49,7 @@
 
         <!--BUTTON -->
         <div class="boxButton">
-            <button @click="  userUpdate()"  class="button ">Mettre à jour</button>
+            <button @click="userUpdate()"  class="button ">Mettre à jour</button>
             <button @click="afficheBox(), goMur()" class="button">Annuler</button>
         </div>
         <button @click="afficheConfirm()" class="supprimer">Supprimer votre compte</button>
@@ -84,8 +89,11 @@ export default {
             afficheConfirmation : false,
             confirmUpdate : false,
             newPassword : false,
-            errorPassword : false,
-            passwordText : "inchangé"
+            passwordText : "inchangé",
+
+            erreurMail : "",
+            erreurPseudo : "",
+            erreurPW : "",
         }
     },
     methods : {
@@ -151,14 +159,9 @@ export default {
             const oldPhotoUser = this.$store.state.photoProfil
             const token = JSON.parse(localStorage.getItem("token"))
 
-            //Check Password
+            //Check Password depuis le front
             let validPassword = true
 
-            if (this.newPassword) {
-                const newPassword = document.getElementById("newPassword").value
-                const confirmPassword = document.getElementById("ConfirmPassword").value
-                newPassword === confirmPassword ? validPassword = true : validPassword = false
-            }
 
             //FORMDATA
             const formdata = new FormData()
@@ -172,18 +175,17 @@ export default {
 
                 if (this.newPassword){
                     const newPassword = document.getElementById("newPassword").value
+                    const confirmPassword = document.getElementById("ConfirmPassword").value
                     formdata.append("password", newPassword)
+                    formdata.append("confirmPassword", confirmPassword)
 
                     newPassword.length > 0 ? this.passwordText = "mis à jour" : this.passwordText = "inchangé"
-                  
-                    if (newPassword.length === 0){
-                        validPassword = false
-                    }
+        
                 }
             
 
             if (validPassword === true){
-                this.confirmUpdate = true
+               // this.confirmUpdate = true
                fetch('http://localhost:8080/api/user/update', {
                 method: "POST",
                 body: formdata,
@@ -192,9 +194,20 @@ export default {
                         }
                 })
                 .then(response => response.json()) 
-                .then (res => {   
-                    this.email = res.email
-                    this.pseudo = res.pseudo
+                .then (response => {  
+                    console.log(response)
+                    if( response.erreur){
+                        this.confirmUpdate = false
+                        this.erreurMail = response.erreur.email
+                        this.erreurPseudo = response.erreur.pseudo
+                        this.erreurPW = response.erreur.password
+                    }else{
+                        this.confirmUpdate = true
+                        this.erreurEmail = ""
+                        this.erreurPseudo = ""
+                        this.email = response.email
+                        this.pseudo = response.pseudo
+                    } 
                 })  
             }else {
                 console.log("le password est faux") 
@@ -432,6 +445,9 @@ export default {
         width: 20px;
         opacity: 50%;
         cursor: pointer;
+    }
+    .erreur{
+        color: red;
     }
   
 </style>

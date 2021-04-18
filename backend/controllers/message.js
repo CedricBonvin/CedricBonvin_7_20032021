@@ -22,20 +22,30 @@ exports.postMessage = (req,res) => {
         ...req.body, 
         image : null  
     }
-    let message = new Message(obj);        
-    Message.create(message, (err,succ) => {
-        if(err){
-            throw err
-        }
-        res.status(201).json(message)
-    })
+    let message = new Message(obj); 
+    // si message vide renvoie une erreur
+    if (req.body.message.length === 0){
+        res.status(400).json( {erreur : " !! Le message ne peut pas être vide !! "})
+    }
+    else {
+        Message.create(message, (err,succ) => {
+            if(err){
+                throw err
+            }
+            res.status(201).json(message)
+        })
+    }      
 }
 
 // avec CallBack
 exports.upDateMessage = (req,res) => {
-    Message.update(req.body.message, req.body.idMESSAGES, () => {
-        res.status(202).json({ message : " le message à bien été modifié...!"})
-   })
+    if (req.body.message.length === 0){
+        res.status(400).json({ erreur : " ! le message ne peut pas être vide !"})
+    }else{
+        Message.update(req.body.message, req.body.idMESSAGES, () => {         
+            res.status(202).json({ message : " le message à bien été modifié...!"})
+       })
+    }
 }
 
 // avec promise
@@ -181,6 +191,33 @@ exports.dislike = (req,res,next) => {
     //   .catch(()=> res.status(400).json({ message : "Impossible de renvoyer les données demandé " }))
     next()
     
+}
+
+exports.createMessageImage = (req,res) => {
+    let obj = {}
+    if (req.file){
+         obj = {
+            ...req.body,   
+            image: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
+        }
+    }else
+     obj = {
+        ...req.body, 
+        image : null  
+    }
+    let message = new Message(obj); 
+    // si message vide renvoie une erreur
+    if (req.body.message.length === 0 && req.file === undefined){
+        res.status(400).json( {erreur : " !! Le message doit contenir une photo ou un message !! "})
+    }
+    else {
+        Message.create(message, (err,succ) => {
+            if(err){
+                throw err
+            }
+            res.status(201).json(message)
+        })
+    }      
 }
 
 
