@@ -3,14 +3,15 @@ const db = require("../sqlConfig");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken")
 const User = require("../models/userSQL");
+require("dotenv").config()
+
 
 exports.signUp = (req,res) => {
     let isAdmin = false
-    if (req.body.pseudo === "admin" && req.body.password === "admin"){
+    if (req.body.pseudo === process.env.SECURE_ADMIN && req.body.password === process.env.SECURE_ADMIN){
         isAdmin = 1
     }
     
-
     bcrypt.hash(req.body.password,10)
     .then(hash => {
         let obj = {}
@@ -35,7 +36,7 @@ exports.signUp = (req,res) => {
         User.create(newUser, (err,succes) => {
             newUser.token = jwt.sign(
                 { idUser: newUser.idUser},
-                'RANDOM_TOKEN_SECRET',
+                process.env.SECURE_TOKEN,
                 { expiresIn: '24h' }
             )
             if(err){
@@ -79,7 +80,7 @@ exports.login = ( req, res) => {
                 isAdmin : result[0].isAdmin,
                 token: jwt.sign(
                     { idUser: result[0].idUser},
-                    'RANDOM_TOKEN_SECRET',
+                    process.env.SECURE_TOKEN,
                     { expiresIn: '24h' }
                 )
             })
@@ -132,7 +133,7 @@ exports.updateUser = (req, res) => {
 }
 
 exports.refresh = (req, res) => {
-    const token = jwt.verify(req.body.token, 'RANDOM_TOKEN_SECRET');
+    const token = jwt.verify(req.body.token, process.env.SECURE_TOKEN);
     const userId = token.idUser
     console.log("le token recu de malade est : " + userId)
     const sql = `SELECT * FROM users WHERE idUser = "${userId}"`

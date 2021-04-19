@@ -1,0 +1,27 @@
+---- VARIABLE D'ENVIRONNEMENT -----
+
+
+///// CONNECTION BASE DE DONNEES   ///////
+
+DB_HOST = "entrer le nom de l'hôte"
+DB_USER = "entrer le User "
+DB_PW = "entrer votre password"
+DB_DATABASE = "nom de la base de donné"
+
+
+///// PORT  ///////
+
+PORT = "port à utiliser, par défaut le port 8080 sera utilisé "
+
+
+///// CRYPTAGE ////// 
+
+SECURE_TOKEN = " ici entré la clef de cryptage pour le token" 
+
+
+///// ADMINISTRATEUR ////// 
+    (Pour ce connecter en tant que Administrateur, lors de la cération du compte veuillez entrer comme Pseudo ainsi que comme Password 
+    exactement le même nom que vous renseigner pour SECURE_ADMIN  !!!!! ATTENTION UN MINIMUM DE 6 CARACTERES EST REQUIS, vous pourrez
+    ensuite changer le pseudo et le mot de passe )
+
+SECURE_ADMIN = " ici entrer la clef pour ce connecter en tant que administrateur" 

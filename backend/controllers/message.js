@@ -58,17 +58,12 @@ exports.deleteMessage = (req,res) => {
 
 exports.like = (req,res, next) => {
     let userExiste = false
-
-    // RECHECHE SQL 
-    const alreadyExiste = `SELECT * FROM likes WHERE idMessage = ${req.body.idMessage} AND idUser = ${req.body.idUser}`
-    const insertLike = `INSERT INTO likes (idMessage, idUser) VALUES("${req.body.idMessage}", ${req.body.idUser})` 
-    const deleteLike = `DELETE FROM likes WHERE idUser = ${req.body.idUser} AND idMessage = ${req.body.idMessage}`
-    const verifDislike = `SELECT * FROM dislikes WHERE idMessage = ${req.body.idMessage} AND idUser = ${req.body.idUser}`
-    const deleteDisLike = `DELETE FROM dislikes WHERE idUser = ${req.body.idUser} AND idMessage = ${req.body.idMessage}`
-
+    
     // VERIFIE DANS DISLIKE SI USER EXISTE
+     const verifDislike = `SELECT * FROM dislikes WHERE idMessage = ${req.body.idMessage} AND idUser = ${req.body.idUser}`
      db.query(verifDislike,(err, succ) => {
         if (succ.length > 0){
+            const deleteDisLike = `DELETE FROM dislikes WHERE idUser = ${req.body.idUser} AND idMessage = ${req.body.idMessage}`
             db.query(deleteDisLike,(err,succ) => {
                 if (err) throw err
             })
@@ -82,6 +77,7 @@ exports.like = (req,res, next) => {
             })
         }
     })
+    const alreadyExiste = `SELECT * FROM likes WHERE idMessage = ${req.body.idMessage} AND idUser = ${req.body.idUser}`
     db.query(alreadyExiste, (err, succ) => {
   
         if (err) throw err
@@ -90,6 +86,7 @@ exports.like = (req,res, next) => {
         if (userExiste === false){
             console.log("user existe pas")
             // insert du message dans la table like
+            const insertLike = `INSERT INTO likes (idMessage, idUser) VALUES("${req.body.idMessage}", ${req.body.idUser})` 
             db.query(insertLike,(error ,succes) => {
                 if (error) throw error 
             })
@@ -105,6 +102,7 @@ exports.like = (req,res, next) => {
         // SI LE USER EXISTE
         if(userExiste === true){
             console.log("user existe")
+            const deleteLike = `DELETE FROM likes WHERE idUser = ${req.body.idUser} AND idMessage = ${req.body.idMessage}`
             db.query(deleteLike, (err,succ) => {
                 if (err) throw err
             })
@@ -130,16 +128,13 @@ exports.dislike = (req,res,next) => {
     let userExiste = false
 
     // RECHECHE SQL 
-    const alreadyExiste = `SELECT * FROM dislikes WHERE idMessage = ${req.body.idMessage} AND idUser = ${req.body.idUser}`
-    const insertdislike = `INSERT INTO dislikes (idMessage, idUser) VALUES("${req.body.idMessage}", ${req.body.idUser})` 
-    const deleteDislike = `DELETE FROM dislikes WHERE idUser = ${req.body.idUser} AND idMessage = ${req.body.idMessage}`
-    const verifLike = `SELECT * FROM likes WHERE idMessage = ${req.body.idMessage} AND idUser = ${req.body.idUser}`
-    const deleteLike = `DELETE FROM likes WHERE idUser = ${req.body.idUser} AND idMessage = ${req.body.idMessage}`
-
+    
     // VERIFIE DANS LIKES SI USER EXISTE
+    const verifLike = `SELECT * FROM likes WHERE idMessage = ${req.body.idMessage} AND idUser = ${req.body.idUser}`
     db.query(verifLike,(err, succ) => {
         //si il existe dans les likes
         if (succ.length > 0){
+            const deleteLike = `DELETE FROM likes WHERE idUser = ${req.body.idUser} AND idMessage = ${req.body.idMessage}`
             db.query(deleteLike,(err,succ) => {
                 if (err) throw err
             })
@@ -153,12 +148,14 @@ exports.dislike = (req,res,next) => {
             })
         }       
     })
+    const alreadyExiste = `SELECT * FROM dislikes WHERE idMessage = ${req.body.idMessage} AND idUser = ${req.body.idUser}`
     db.query(alreadyExiste, (err, succ) => {
         if (err) throw err
         
         succ.length > 0 ? userExiste = true :userExiste = false
         // SI LE USER N'EXISTE PAS
         if (userExiste === false){
+            const insertdislike = `INSERT INTO dislikes (idMessage, idUser) VALUES("${req.body.idMessage}", ${req.body.idUser})` 
             db.query(insertdislike,(error ,succes) => {
                 if (error) throw error       
             })
@@ -173,6 +170,7 @@ exports.dislike = (req,res,next) => {
         } 
         // SI LE USER EXISTE
         if(userExiste === true){
+            const deleteDislike = `DELETE FROM dislikes WHERE idUser = ${req.body.idUser} AND idMessage = ${req.body.idMessage}`
             db.query(deleteDislike, (err,succ) => {
                 if (err) throw err
             })

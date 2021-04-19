@@ -36,7 +36,6 @@
                         >
                     </div>
                 </div>
-
             </div>
         </div>
         <div class="notAllowed" v-else>
@@ -104,13 +103,16 @@ export default {
         recupApi(){
             fetch("http://localhost:8080/api/message")
             .then(response => response.json())
+          
             .then(result =>{  
+                     
                     this.card = result
                     const token = localStorage.getItem("token")
                     if (token){
                         this.allowed = true
                     }
                     
+                        //window.scrollTo(0,document.body.scrollHeight) // fonctionne pas ? 
             })
         },
         getDate ()  {
@@ -151,8 +153,11 @@ export default {
             .then( response =>{ 
                 if (response.erreur){
                     this.erreur = response.erreur
-                }else this.erreur = ""   
-               this.recupApi()
+                }else {
+                    this.erreur = ""   
+                   this.recupApi()
+                   window.scrollTo(0,document.body.scrollHeight)
+                }
             });
         },      
         postNewMessage(payload){
@@ -259,6 +264,7 @@ export default {
                     this.$store.state.idUser = result[0].idUser
                     this.$store.state.email = result[0].email
                     this.$store.state.isAdmin = result[0].isAdmin
+                    window.scrollTo(0,document.body.scrollHeight)
                 });
             }
         },

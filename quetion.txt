@@ -13,7 +13,7 @@ FRONTEND
 
     - protection des routes par fonction dans Mur => recupApi() (est-ce une bonne pratique ?)
 
-    - à l'arriver sur la page mettre une ancre sur le footer. Et après avoir poster un message ancré sur le footer
+    - à l'arriver sur la page mettre une ancre sur le footer. Et après avoir poster un message ancré sur le footer ( srollTo ) 
 
 
 BACKEND
