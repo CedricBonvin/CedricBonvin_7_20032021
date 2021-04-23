@@ -156,7 +156,7 @@ export default {
         width: 100%;
         padding: 10px 50px;
         border-radius: 0 0 20px 20px;
-        background: rgb(197, 55, 45);
+        background: rgba(196, 96, 96);
         color: white;
         font-size: 1.5rem;
         cursor: pointer;

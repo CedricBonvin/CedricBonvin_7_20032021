@@ -118,7 +118,7 @@ export default {
         top: 60px;
         left: 50%;
         transform: translateX(-50%);
-        background: rgba(0, 0, 0, 0.966);
+        background: rgba(10, 34, 66, 0.966);
         width: 80%;
         max-width: 500px;
         margin: auto;
@@ -151,7 +151,7 @@ export default {
     button{
         padding: 10px 30px;
         font-size: 1rem;
-        background: red;
+        background: rgb(196, 96, 96);
         border-radius: 20px;
         margin: 20px;
         color: white;

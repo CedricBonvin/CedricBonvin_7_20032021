@@ -68,10 +68,13 @@ export default {
 <style  scoped>
     .userPseudo{
         position: relative;
+        top: 5px;
         z-index: 20;
-        color: red;
+        color: rgba(196, 96, 96);
         cursor: pointer;
         margin-right: 10px;
+        font-weight: bold;
+        font-size: 1.3rem;
     }
     .headerBox{
      

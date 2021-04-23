@@ -59,7 +59,7 @@ export default {
 
 <style>
 html{
-  height: 100%;
+  min-height: 100vh;
   background-color: rgb(255, 255, 255);
 }
 *{
@@ -69,13 +69,13 @@ html{
 }
 body{
     position: relative;
-    min-height: 100%;
+    min-height: 100vh;
     width: 100%;
     max-width: 600px;
     margin: auto;
-    /*background: linear-gradient(288deg, rgba(179,179,179,1) 0%, rgba(79,79,79,1) 100%);
+    background: linear-gradient(288deg, rgba(85, 85, 87, 0.801) 50%, rgba(137, 138, 139, 0.712) 100%);
     background-attachment: fixed;
-    box-shadow: 0 0 55px 5px rgb(211, 211, 211);*/
+    box-shadow: 0 0 55px 5px rgb(0, 0, 0);
 }
 #app {
     font-family: Avenir, Helvetica, Arial, sans-serif;
@@ -95,7 +95,7 @@ body{
 
   font-size: 1.5rem;  
   padding: 10px 15px;
-  background: black;
+  background: rgb(10, 34, 66);
   color: white;
 }
 

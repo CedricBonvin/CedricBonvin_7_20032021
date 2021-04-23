@@ -112,17 +112,17 @@ export default {
 
     .wrapper{
         position: fixed;
-        top: 60px;
+        top: 100px;
         left: 50%;
         transform: translateX(-50%);
-        background: rgba(0, 0, 0, 0.966);
+        background:  rgba(10, 34, 66, 0.959);
         width: 80%;
         max-width: 500px;
         margin: auto;
         color: white;
         font-size: 1.3rem;
         padding: 10px;
-        border-radius: 0 0 20px 20px;
+        border-radius: 20px;
     }
     #sampleImage{
         position: relative;
@@ -148,7 +148,7 @@ export default {
     button{
         padding: 10px 30px;
         font-size: 1rem;
-        background: red;
+        background:  rgba(196, 96, 96);
         border-radius: 20px;
         margin: 20px;
         color: white;

@@ -1,92 +1,94 @@
 <template>
     <div class="commentaire">
-        <!-- Message de base -->
-        <div class="messageOriginal">
-        <h2>Message poster par :</h2>
-        <img class="photoUser" :src="photo" alt="photo profil du message">
-        <div class="user">{{ pseudoUser}}</div> 
-            <article class="cardMessageBase" v-for="mess in card" :key="mess.name">
-                <div class="boxNom">
-                        <img class="photoProfil" :src="mess.photo" alt="">
-                        <span class="nomUser"> {{ mess.pseudoUser }} </span>
+        <div v-if="allowed">
+            <!-- Message de base -->
+            <div class="messageOriginal">
+            <h2>Message poster par :</h2>
+            <img class="photoUser" :src="photo" alt="photo profil du message">
+            <div class="user">{{ pseudoUser}}</div>
+                <article class="cardMessageBase" v-for="mess in card" :key="mess.name">
+                    <div class="boxNom">
+                            <img class="photoProfil" :src="mess.photo" alt="">
+                            <span class="nomUser"> {{ mess.pseudoUser }} </span>
+                        </div>
+                    <img v-if="mess.image"  class="image" :src="mess.image" alt="image du post de base">
+                    <div class="boxMessages" > {{mess.message}}</div>
+                </article>
+                <div class="dates"> message poster le {{ date }}</div>
+                <div class="separateur"></div>
+            </div>
+            <div>
+                <h2 class="titleCommentaire">commentaire :</h2>
+            </div>
+            <!-- commentaire -->
+            <article  v-for="mess in commentaires" :key="mess.name">
+                <div class="wrapperCard">
+                    <div class="dateCommentaire">{{ mess.date }}</div>
+                    <div class="cardCommentaire">
+                        <div class="topMessage">
+                            <img class="photoProfil" :src="mess.photo" alt=" photo de profil">
+                            <div class="pseudoUser">{{ mess.pseudo}}</div>
+                        </div>
+            
+                            <img v-if="mess.image" class="image" :src="mess.image" alt="">   <!--si je met un truc dans alt sa fonctionne pas !!!-->
+            
+                        <div id="commentaire" class="boxMessages"> {{ mess.message }}</div>
+                        <div class="boxParametre">
+                            <img
+                                v-if="mess.pseudo === $store.state.pseudo || $store.state.isAdmin === 1"
+                                @click="afficheUpdateCommentaire(mess.idCommentaire, mess.message)"
+                                class="iconeParametre" src="../assets/param.svg" alt="icone parametre du commentaire"
+                            >
+                        </div>
                     </div>
-                <img v-if="mess.image"  class="image" :src="mess.image" alt="image du post de base">
-                <div class="boxMessages" > {{mess.message}}</div>
+                </div>
             </article>
-            <div class="dates"> message poster le {{ date }}</div>
-            <div class="separateur"></div>
-        </div>
-        <div>
-            <h2 class="titleCommentaire">commentaire :</h2>
-        </div>
-
-        <!-- commentaire -->
-        <article  v-for="mess in commentaires" :key="mess.name">
-            <div class="wrapperCard">
-                <div class="dateCommentaire">{{ mess.date }}</div>
-                <div class="cardCommentaire">
-                    <div class="topMessage">
-                        <img class="photoProfil" :src="mess.photo" alt=" photo de profil">
-                        <div class="pseudoUser">{{ mess.pseudo}}</div>
-                    </div>
-                    
-                        <img v-if="mess.image" class="image" :src="mess.image" alt="">   <!--si je met un truc dans alt sa fonctionne pas !!!-->
-                    
-                    <div id="commentaire" class="boxMessages"> {{ mess.message }}</div>
-                    <div class="boxParametre">
-                        <img
-                            v-if="mess.pseudo === $store.state.pseudo || $store.state.isAdmin === 1"
-                            @click="afficheUpdateCommentaire(mess.idCommentaire, mess.message)"
-                            class="iconeParametre" src="../assets/param.svg" alt="icone parametre du commentaire"
-                        >
+            <updateCommentaire
+                v-if="afficheUpdate"
+                @closeBoxUpdate="afficheUpdate = false"
+                :id="this.idCommentaire"
+                :afterDelete="displayCommentaires"
+                :afterUpdate="displayCommentaires"
+                :recupMessage="oldCommentaire"
+            />
+            <postImageCommentaire
+                v-if="afficheBoxImage"
+                @event="afficheBoxImage = false"
+                :idMessBase="idCommentaire"
+                :newcard="displayCommentaires"
+            />
+            
+            <!-- FOOTER -->
+            <div id="footerCommentaire">
+            
+                <div class="foot">
+                    <p class="erreur emptyMessage" v-if="erreur"> {{erreur}}</p>
+                    <div class="boxBoutton">
+                        <input type="text" class="inputMessage" id="commentaires" placeholder="Poster votre commentaire">
+                        <button class=" boxRow" v-on:click="postCommentaire()">
+                            <img class="row" src="../assets/iconeRow.svg" alt="">
+                        </button>
+                        <button class=" boxImage" >
+                            <img @click="afficheBoxPostImage()" class="iconeImage" src="../assets/iconeImage.svg" alt=" icone poster une image">
+                        </button>
                     </div>
                 </div>
             </div>
-        </article>
-        <updateCommentaire 
-            v-if="afficheUpdate"
-            @closeBoxUpdate="afficheUpdate = false"
-            :id="this.idCommentaire"
-            :afterDelete="displayCommentaires"
-            :afterUpdate="displayCommentaires"
-            :recupMessage="oldCommentaire"
-        />
-
-        <postImageCommentaire 
-            v-if="afficheBoxImage"
-            @event="afficheBoxImage = false"
-            :idMessBase="idCommentaire"
-            :newcard="displayCommentaires" 
-        />
-        
-        <!-- FOOTER -->
-        <div id="footerCommentaire">
-          
-            <div class="foot">
-                <p class="erreur emptyMessage" v-if="erreur"> {{erreur}}</p>
-                <div class="boxBoutton">
-                    <input type="text" class="inputMessage" id="commentaires" placeholder="Poster votre commentaire">
-                    <button class=" boxRow" v-on:click="postCommentaire()">
-                        <img class="row" src="../assets/iconeRow.svg" alt="">
-                    </button>
-                    <button class=" boxImage" >
-                        <img @click="afficheBoxPostImage()" class="iconeImage" src="../assets/iconeImage.svg" alt=" icone poster une image">
-                    </button>
-                </div>
-            </div>
         </div>
-
+        <boxAllowed v-else/>
     </div>
 </template>
 
 <script>
 import updateCommentaire from "../components/updateCommentaire"
 import postImageCommentaire from "../components/postImageCommentaire"
+import boxAllowed from "../components/notAllowed"
 export default {
     name : "commentaire",
     components :{
         updateCommentaire,
-        postImageCommentaire
+        postImageCommentaire,
+        boxAllowed
         
     },
     data(){
@@ -101,7 +103,8 @@ export default {
             oldCommentaire : "",
             afficheBoxImage : false,
             photo : "",
-            erreur : ""
+            erreur : "",
+            allowed : false,
         }
     },
     methods : {
@@ -184,7 +187,12 @@ export default {
             })
             .then(response => response.json())
             .then( result =>{
-                this.commentaires = result      
+                this.commentaires = result  
+                this.card = result
+                    const token = localStorage.getItem("token")
+                    if (token){
+                        this.allowed = true
+                    }   
             })
         },
         refreshUser(){
@@ -232,12 +240,15 @@ export default {
 <style scoped>
 
 .commentaire{
-    padding-bottom: 120px;
-     background: linear-gradient(288deg, rgba(179,179,179,1) 0%, rgba(79,79,79,1) 100%);
+    min-height: 100vh;
+    padding-bottom: 220px;
+    background: linear-gradient(288deg, rgba(85, 85, 87, 0.932) 50%, rgba(137, 138, 139, 0.712) 100%),url("../assets/poing.jpg");
     background-attachment: fixed;
+    background-size: cover;
+    background-position: center;
 }
 .messageOriginal{
-    background: rgb(63, 62, 62);
+    background: rgba(63, 62, 62, 0.658);
     padding: 20px;
 
 }
@@ -260,7 +271,7 @@ h2{
     position: relative;
     top : -10px;
     left: 5px;
-    color: red;
+    color:rgb(196, 96, 96);
 }
 .cardMessageBase{
      margin: 30px auto;
@@ -275,6 +286,7 @@ h2{
     margin: 30px auto 0 auto;
     width: 80%;
     max-width: 500px;
+    min-width: 100%;
 }
 .date{
     color: white;
@@ -287,6 +299,7 @@ h2{
     border-radius: 20px;
     border: 2px rgb(131, 128, 128) solid;
     border: solid 3px white;
+    margin:  0 10%;
     overflow: hidden;
 }
 .topMessage{
@@ -295,9 +308,11 @@ h2{
     position: relative;
 }
 .user{
-    color: red;
-    font-size: 2.5rem;
+    color: rgb(196, 96, 96);
+    font-size: 2rem;
     text-align: center;
+    font-size: 1.4rem;
+    font-weight: bold;
 }
 .photoProfil{
     width: 30px;
@@ -317,7 +332,7 @@ h2{
     left: 50px;
     top : 50%;
     transform: translateY(-50%);
-    color: red;
+    color: rgb(196, 96, 96);
 }
 .dates{
     color: white;
@@ -348,11 +363,11 @@ h2{
     width: 100%;
     max-width: 600px;
     padding: 0;
+    background: rgb(10, 34, 66);
 }
 .boxBoutton{
     display: flex;
     justify-content: center;
-    background: black;
     padding: 10px;
 }
 .backMur{
@@ -367,15 +382,15 @@ h2{
 .inputMessage{
     width: 70%;
     border-radius: 10px 0 0 10px;
-    padding: 10px;
+    border: none;
 }
 .boxRow{
-    position: relative;
-    left: -5px;
+   
     top: 1px;
-    background: rgb(102, 209, 102);
+    background:white;
     border-radius: 0 10px 10px 0%;
     padding: 10px;
+    border: none;
 }
 .row{
     width: 30px;
@@ -384,14 +399,13 @@ h2{
     cursor: pointer;
 }
 .boxImage{
-      position: relative;
-    left: -5px;
+ 
     top: 1px;
     border: solid 1px black;
-    background: rgb(102, 209, 102);
+    background:white;
     border-radius: 50%;
     padding: 10px;
-    margin: 0 0 0 5px;
+    margin:  0px 0 0  10px;
 
 }
 .iconeImage{
@@ -414,9 +428,7 @@ h2{
     opacity: 60%;
     cursor: pointer;
 }
-.foot{
-    background: black;
-}
+
 .emptyMessage{
     padding-top: 5px;
     color: red;

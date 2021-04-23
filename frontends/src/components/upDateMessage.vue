@@ -92,7 +92,7 @@
         transform: translateX(-50%);
         color: white;
 
-        background: rgba(0, 0, 0, 0.931);
+        background: rgba(10, 34, 66, 0.931);
         width: 80%;
         max-width: 500px;
         padding: 20px;
@@ -110,7 +110,7 @@
     }
     button{
         display: block;
-        background: rgba(236, 59, 59, 0.87);
+        background: rgba(196, 96, 96);
         padding: 10px 20px;
         margin: 10px 5px;
         color : white;

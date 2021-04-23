@@ -4,10 +4,17 @@ const Message = require("../models/messageSQL");
 exports.deleteCommentaire = (req, res ) => {
 
     const sql = `DELETE FROM commentaires WHERE idcommentaire = ${req.body.idCommentaire}`
-    db.query(sql, (err, succ) => {
-        if (err) throw err
-        res.status(200).json({ Message : "le commentaire est supprimé avec l'id : " + req.body.idCommentaire})
-    })     
+    function func(){
+        return new Promise((resolve, reject) => {
+            db.query(sql, (err, succ) => {
+                if (err) throw err               
+            }) 
+            resolve()    
+        })
+    }
+    func()
+    .then(() => res.status(200).json({ Message : "le commentaire est supprimé avec l'id : " + req.body.idCommentaire}) )
+    .catch(err => res.status(400).json({ err : err.message}))
 }
 
 exports.createCommantaire = (req, res) => {

@@ -22,7 +22,7 @@ app.use((req, res, next) => {
     next();
 });
 
-app.use(bodyParser.json()) 
+app.use(bodyParser.json()) // déprécié mais sa fonctionne pas sans
 
 app.use("/images",express.static(path.join(__dirname,"images")))
 

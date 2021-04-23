@@ -1,7 +1,7 @@
 <template>
     <div class="pageAdmin">
-        <div class="adminTop">
-           
+        <div v-if="allowed">
+            <div class="adminTop">
                 <div class="boxAdmin">
                     <h1>Admin :</h1>
                     <div>
@@ -11,46 +11,53 @@
                         <img @click="backMur()" class="iconeRow" src="../assets/iconeRow.svg" alt="">
                     </div>
                 </div>
-         
-        </div>
-            <h3>Tous les utilisateurs :</h3>
-            <section class="sectionCard">
-                <div  v-for="mess in allUsers" :key="mess.email"  >
-                    <div class="cardUsers" :id="mess.pseudo" @click="afficheParam(mess.pseudo, mess.idUser)">
-                        <div class="data">
-                            <img class="photoUser" :src="mess.photo" alt="photoProfil">
-                            <p class="pseudo">{{mess.pseudo}}</p>
-                        </div>
-                    </div>
-                        <div class="boxParam" v-if="pseudo === mess.pseudo">
-                            <p @click="afficheConfirmDelete()" class="supprimer">Supprimer  le compte</p>
-                        </div>
+            
                 </div>
-                <div class="boxDelete" v-if="afficheBoxConfirmDelete">
-                    <div>Etes-vous sûr de vouloir supprimer le compte ?</div>
-                    <div class="buttonBox">
-                        <button class="buttonSupprimer cancel" @click="cancel()">Annuler</button>
-                        <button class="buttonSupprimer" @click="deleteUser()">Supprimer</button>
-                    </div>
-                </div>
-            </section>
-        <div>
-
+                    <h3 class="titleAllUser">Tous les utilisateurs :</h3>
+                    <section class="sectionCard">
+                        <div  v-for="mess in allUsers" :key="mess.email"  >
+                            <div class="cardUsers" :id="mess.pseudo" @click="afficheParam(mess.pseudo, mess.idUser)">
+                                <div class="data">
+                                    <img class="photoUser" :src="mess.photo" alt="photoProfil">
+                                    <p class="pseudo">{{mess.pseudo}}</p>
+                                </div>
+                            </div>
+                                <div class="boxParam" v-if="pseudo === mess.pseudo">
+                                    <p @click="afficheConfirmDelete()" class="supprimer">Supprimer  le compte</p>
+                                </div>
+                        </div>
+                        <div class="boxDelete" v-if="afficheBoxConfirmDelete">
+                            <div>Etes-vous sûr de vouloir supprimer le compte ?</div>
+                            <div class="buttonBox">
+                                <button class="buttonSupprimer cancel" @click="cancel()">Annuler</button>
+                                <button class="buttonSupprimer" @click="deleteUser()">Supprimer</button>
+                            </div>
+                        </div>
+                    </section>
+                <div>
+            </div>
         </div>
+        <boxAllowed v-else />
     
     </div>
 </template>
 
 <script>
+import boxAllowed from "../components/notAllowed"
+
 export default {
     name : "admin",
+    components :{
+        boxAllowed
+    },
     data(){
         return{
             allUsers : [],
             afficheParametre : false,
             pseudo : "",
             idUser : "",
-            afficheBoxConfirmDelete : false
+            afficheBoxConfirmDelete : false,
+            allowed : false
         }
     },
   
@@ -115,6 +122,9 @@ export default {
                     this.$store.state.idUser = result[0].idUser
                     this.$store.state.email = result[0].email
                     this.$store.state.isAdmin = result[0].isAdmin
+
+                    if (this.$store.state.isAdmin === 1)
+                    this.allowed = true
                 });
             }
         },
@@ -126,9 +136,16 @@ export default {
         },
         cancel(){
             this.afficheBoxConfirmDelete = false
+        },
+        tryConnection(){
+           
+                if (this.$store.state.isAdmin === 1)
+                this.allowed = true
+            
         }
     },
     mounted(){
+        this.tryConnection()
         this.getAllUsers()
         this.refresh()
     }
@@ -138,14 +155,18 @@ export default {
 
 <style scoped>
     .pageAdmin{
-        background: rgb(219, 219, 219);
+        background: linear-gradient(288deg, rgba(85, 85, 87, 0.932) 50%, rgba(137, 138, 139, 0.712) 100%),url("../assets/poing.jpg");
+        background-attachment: fixed;
+        background-size: cover;
+        background-position: center;
         min-height: 100vh;
         padding-top: 60px;
     }
      .adminTop{
         position: relative;
-        background: rgb(97, 96, 96);
+        background: rgb(214, 212, 212);
         padding: 20px;
+        color: rgb(114, 111, 111);
     }
     .boxAdmin{
         display: flex;
@@ -166,9 +187,11 @@ export default {
     }
     h1{
         text-align: center;
-        color: white;
         text-align: left;
         font-size: 1.4rem;
+    }
+    .titleAllUser{
+        color: white;
     }
     .sectionCard{
         display: flex;
@@ -179,17 +202,19 @@ export default {
         display: inline-block;
         margin: 20px;
         margin-bottom: 0;
-        height: 100px;
+        height: 102px;
         background-color: rgb(255, 255, 255);
         border-radius: 50px;
-        border: solid 3px rgb(138, 134, 134);
+        border: solid 3px rgb(92, 90, 90);
         padding-right: 10px;
         cursor: pointer;
+        color:black;
     }
     .cardUsers:hover{
         transform: scale(1.05);
-        background: rgb(194, 196, 193);
+        background: rgba(196, 96, 96, 0.705);
         border: solid white 3px;
+        color: black;
     }
     .photoProfil{
         width: 70px;
@@ -231,6 +256,7 @@ export default {
         width: 100%;
         text-align: center;
         cursor: pointer;
+        color: white;
     }
     .supprimer:hover{
         color: red   

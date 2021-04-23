@@ -41,7 +41,7 @@ Veuillez suivre les instructions suivantes pour lancer le projet
   PRIMARY KEY (`idUser`),
   UNIQUE KEY `email` (`email`),
   UNIQUE KEY `pseudo` (`pseudo`)
-) ENGINE=InnoDB AUTO_INCREMENT DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
     ---  MESSAGE -----
 
@@ -56,7 +56,7 @@ Veuillez suivre les instructions suivantes pour lancer le projet
   `totalDislike` int(11) DEFAULT NULL,
   `photoProfil` varchar(200) DEFAULT NULL,
   PRIMARY KEY (`idMESSAGES`)
-) ENGINE=InnoDB AUTO_INCREMENT DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
     -- LIKES --
 
@@ -66,7 +66,7 @@ Veuillez suivre les instructions suivantes pour lancer le projet
   `idUser` int(11) DEFAULT NULL,
   `totalLike` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 
     -- DISLIKES --
@@ -77,7 +77,7 @@ CREATE TABLE `dislikes` (
   `idUser` int(11) DEFAULT NULL,
   `totalLike` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 
     -- COMMENTAIRES --
@@ -91,6 +91,6 @@ CREATE TABLE `commentaires` (
   `pseudo` varchar(50) DEFAULT NULL,
   `date` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`idCommentaire`)
-) ENGINE=InnoDB AUTO_INCREMENT DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
 
 

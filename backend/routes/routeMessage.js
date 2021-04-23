@@ -14,8 +14,8 @@ router.post('/message/image',auth, multer, messageCtlr.createMessageImage); // a
 
 router.post('/message/update', auth, messageCtlr.upDateMessage); // auth ok
 router.post('/message/delete',auth, messageCtlr.deleteMessage); // auth ok 
-router.put('/message/like',auth, messageCtlr.like, messageCtlr.displayMessages); // auth ok
-router.put('/message/dislike',auth, messageCtlr.dislike, messageCtlr.displayMessages); // auth ok
+router.put('/message/like',auth, messageCtlr.like); // auth ok
+router.put('/message/dislike',auth, messageCtlr.dislike); // auth ok
 
 
 module.exports = router

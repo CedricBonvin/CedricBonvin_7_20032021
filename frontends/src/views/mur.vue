@@ -38,10 +38,7 @@
                 </div>
             </div>
         </div>
-        <div class="notAllowed" v-else>
-            <p>Veuillez-vous connecter !</p>
-            <button @click="goConnection()" class="buttonConnect">Connectez-vous</button>
-        </div>
+        <notAllowed v-else />
             
         <boxImage 
             @event="afficheFromBoxImage"  
@@ -71,11 +68,14 @@
 <script>
 import boxUpdate from "../components/upDateMessage.vue"
 import boxImage from "../components/boxImage.vue"
+import notAllowed from "../components/notAllowed.vue"
 export default {
     name: 'Home',
     components : {
         boxUpdate,
         boxImage,
+        notAllowed
+
     },
     data(){
         return{
@@ -156,7 +156,7 @@ export default {
                 }else {
                     this.erreur = ""   
                    this.recupApi()
-                   window.scrollTo(0,document.body.scrollHeight)
+                   this.getDown()
                 }
             });
         },      
@@ -209,8 +209,7 @@ export default {
                         }
                 })
                 .then(response => response.json()) 
-                .then( result =>{     
-                    this.card = result     // la ou sa fonctionne le mieux c'est comme ca           
+                .then( () =>{     
                     this.recupApi()
                 });
         },
@@ -228,12 +227,10 @@ export default {
                 headers: {"Content-type": "application/json; charset=UTF-8",
                             Authorization: "Bearer" +" "+ obj.token,
                         }
-                })
+            })
                 .then(response => response.json()) 
-                .then(result => {    
-                        console.log(result)  
-                        this.card =  result
-                        this.recupApi()
+            .then(() => {              
+                    this.recupApi()
             });
         },
         goCommentaire(id,photoProfil){
@@ -270,11 +267,16 @@ export default {
         },
         goConnection(){
             this.$router.push('/')
+        }, 
+        getDown(){
+            window.scrollTo(0,document.body.scrollHeight)
         }
+
     }, 
      mounted(){
        this.recupApi(),
        this.refresh()
+       this.getDown()
      },
 }
 </script>
@@ -285,8 +287,11 @@ export default {
     min-height: 100vh;
     padding-bottom: 100px;
     padding-top: 100px;
-    background: linear-gradient(288deg, rgba(179,179,179,1) 0%, rgba(79,79,79,1) 100%);
+    background: linear-gradient(288deg, rgba(85, 85, 87, 0.932) 50%, rgba(137, 138, 139, 0.712) 100%),url("../assets/poing.jpg");
     background-attachment: fixed;
+    background-size: cover;
+    background-position: center;
+    
     }
    
     .titleMur{
@@ -339,7 +344,7 @@ export default {
     .nom{
         position: relative;
         top: -10px;
-        color: rgb(175, 56, 56);
+        color: rgba(196, 96, 96);       
         text-align: left;
         margin-top: 0;
         font-weight: bold;
@@ -360,7 +365,7 @@ export default {
         bottom: 0;
         left: 0;
         right: 0;
-        background: black;
+        background: rgb(10, 34, 66);
         padding: 10px 15px 10px 15px;    
         color: white;
     }
@@ -376,19 +381,22 @@ export default {
         height: 50px;
         padding: 0px 10px;
         border-radius: 30px 0 0 30px;
+        border: none;
     }
     footer button{
+  
         width: 50px;
-        height: 50px;
+        height:50px;
         margin-left:  10px;
         background: rgb(89, 163, 86);
         border-radius: 50%;
-        border: solid 2px green;
+        border: solid 2px white;
         color: white;
         cursor: pointer;
     }
     .buttonImage{
-        padding: 10px
+        padding: 10px;
+        background: white;
     }
     .row{
         border-radius: 0 30px 30px 0;
@@ -445,31 +453,8 @@ export default {
         margin-top: -10px;
         color: rgb(68, 68, 68);
     }  
-    .notAllowed{
-        position : absolute;
-        top : 40%;
-        left: 50%;
-        transform: translate(-50%);
-        overflow: hidden;
-        padding: 30px 0 0 0 ;
-        width: 90%;
-        text-align: center;
-        border: solid rgb(107, 106, 106) 5px;
-        background: rgb(230, 229, 229);
-        border-radius: 20px;
-        font-size: 1.3rem;
-        font-weight: bold;
-        box-shadow: 0 0 15px 5px rgb(129, 128, 128);
-    } 
-    .buttonConnect{
-        border: none;
-        width: 100%;
-        padding: 20px 0;
-        background: green;
-        color: rgb(246, 255, 247);
-        font-size: 1.5rem;
-        margin-top: 30px;
-    }
+  
+   
     .erreur{
         color: red;
     }

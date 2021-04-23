@@ -1,85 +1,83 @@
 <template>
-    <div class="parametre">
-        <h3>Paramètres du compte</h3>
-        <div class="colInput">
-            <label for="email">Email :</label>
-            <input @change="changeEmail()"  type="email" id="email" name="email" :value="this.email">
-            <p class="erreur" v-if="erreurMail"> {{ erreurMail}} </p>
-        </div>
-       
-        <div class="colInput">
-            <label for="pseudo">Pseudo :</label>
-            <input @change="changePseudo()" type="pseudo" id="pseudo" name="pseudo" :value="this.pseudo">
-             <p class="erreur" v-if="erreurPseudo"> {{erreurPseudo}} </p>
-
-        </div>
-
-        <!-- password -->
-        <label>Password :</label>
-        <p @click="afficheNewPassword()" class="modifPassword">Modifier votre password</p>
-        <div v-if="newPassword" class="colInput password" id="boxPassword">
-            <div class="boxPassword">
-                <label class="password" for="newPassword"> Nouveau Password :</label>
-                <div class="boxPassword1">
-                    <input  type="password" id="newPassword" name="newPassword">
-                    <img @click="affichePasswore1()" class="eye" src="../assets/eye.svg" alt="icone affiche password">
+    <div  class="parametre">
+        <div v-if="allowed">
+            <h3>Paramètres du compte</h3>
+            <div class="colInput">
+                <label for="email">Email :</label>
+                <input @change="changeEmail()"  type="email" id="email" name="email" :value="this.email">
+                <p class="erreur" v-if="erreurMail"> {{ erreurMail}} </p>
+            </div>
+            <div class="colInput">
+                <label for="pseudo">Pseudo :</label>
+                <input @change="changePseudo()" type="pseudo" id="pseudo" name="pseudo" :value="this.pseudo">
+                 <p class="erreur" v-if="erreurPseudo"> {{erreurPseudo}} </p>
+            </div>
+            <!-- password -->
+            <label>Password :</label>
+            <p @click="afficheNewPassword()" class="modifPassword">Modifier votre password</p>
+            <div v-if="newPassword" class="colInput password" id="boxPassword">
+                <div class="boxPassword">
+                    <label class="password" for="newPassword"> Nouveau Password :</label>
+                    <div class="boxPassword1">
+                        <input  type="password" id="newPassword" name="newPassword">
+                        <img @click="affichePasswore1()" class="eye" src="../assets/eye.svg" alt="icone affiche password">
+                    </div>
+                    <p v-if="erreurPW" class="errorPassword"> {{ erreurPW }}</p>
+                    <label class="password" for="newPassword">Confirmer votre nouveau password :</label>
+                    <div class="boxPassword1">
+                        <input  type="password" id="ConfirmPassword" name="ConfirmPassword" >
+                        <img @click="affichePassword2()" class="eye" src="../assets/eye.svg" alt="icone affiche password">
+                    </div>
+                    <p v-if="erreurPW" class="errorPassword">{{ erreurPW }}</p>
                 </div>
-                <p v-if="erreurPW" class="errorPassword"> {{ erreurPW }}</p>
-
-                <label class="password" for="newPassword">Confirmer votre nouveau password :</label>
-                <div class="boxPassword1">
-                    <input  type="password" id="ConfirmPassword" name="ConfirmPassword" >
-                    <img @click="affichePassword2()" class="eye" src="../assets/eye.svg" alt="icone affiche password">
+            </div>
+            <hr class="hr">
+            <!-- PHOTO DE PROFIL -->
+            <p class="titlePhotoProfil">Photo de profil : </p>
+            <div>
+                <div class="renduImage" id="renduImages">
+                    <img class="photoProfil" :src="$store.state.photoProfil" alt="photo de profil">
+                    <input @change="fileFunc()"  type="file" id="fileUser" name="fileUser">
                 </div>
-
-                <p v-if="erreurPW" class="errorPassword">{{ erreurPW }}</p>
-            </div> 
-        </div>
-        <hr class="hr">
-
-        <!-- PHOTO DE PROFIL -->
-        <p class="titlePhotoProfil">Photo de profil : </p>
-        <div>
-            <div class="renduImage" id="renduImages">
-                <img class="photoProfil" :src="$store.state.photoProfil" alt="photo de profil">
-                <input @change="fileFunc()"  type="file" id="fileUser" name="fileUser">
+                    <label class="labelChangeFile" for="fileUser">Modifier la photo de profil</label>
             </div>
-                <label class="labelChangeFile" for="fileUser">Modifier la photo de profil</label>
-        </div>
-
-        <!--BUTTON -->
-        <div class="boxButton">
-            <button @click="userUpdate()"  class="button ">Mettre à jour</button>
-            <button @click="afficheBox(), goMur()" class="button">Annuler</button>
-        </div>
-        <button @click="afficheConfirm()" class="supprimer">Supprimer votre compte</button>
-
-        <!-- BOX CONFIRMATION DE LA SUPPRESSION DU COMPTE -->
-        <div class="confirmDeleteAccount" v-if="this.afficheConfirmation">
-            <p>Etes-vous sûr de vouloir supprimer votre compte ? <br>( Cette action est irréversible !)</p>
-            <div class="boxButton" >
-                <button class="button"  @click="afficheConfirm()" >annuler</button>
-                <button class="button danger" @click="afficheBox() ,deleteAccount()">Supprimer</button>
+            <!--BUTTON -->
+            <div class="boxButton">
+                <button @click="userUpdate()"  class="button ">Mettre à jour</button>
+                <button @click="afficheBox(), goMur()" class="button">Annuler</button>
+            </div>
+            <button @click="afficheConfirm()" class="supprimer">Supprimer votre compte</button>
+            <!-- BOX CONFIRMATION DE LA SUPPRESSION DU COMPTE -->
+            <div class="confirmDeleteAccount" v-if="this.afficheConfirmation">
+                <p>Etes-vous sûr de vouloir supprimer votre compte ? <br>( Cette action est irréversible !)</p>
+                <div class="boxButton" >
+                    <button class="button"  @click="afficheConfirm()" >annuler</button>
+                    <button class="button danger" @click="afficheBox() ,deleteAccount()">Supprimer</button>
+                </div>
+            </div>
+            <!--BOX CONFIRMATION UPDATE USER -->
+            <div v-if="confirmUpdate" class="confirmBoxUpdateUser">
+                <p class="title">! Votre profil à bien été mise à jour ! </p>
+                <div class="information">
+                    <p> email : {{this.email}}</p>
+                    <p> pseudo : {{this.pseudo}}</p>
+                    <p> password : {{this.passwordText}} </p>
+                </div>
+                <p>Veuillez vous reconnecter..</p>
+                <button @click="afficheBox(), goConnection()"  class="button">ok</button>
             </div>
         </div>
-
-        <!--BOX CONFIRMATION UPDATE USER --> 
-        <div v-if="confirmUpdate" class="confirmBoxUpdateUser"> 
-            <p class="title">! Votre profil à bien été mise à jour ! </p>
-            <div class="information">
-                <p> email : {{this.email}}</p>
-                <p> pseudo : {{this.pseudo}}</p>
-                <p> password : {{this.passwordText}} </p>
-            </div>
-            <p>Veuillez vous reconnecter..</p>
-            <button @click="afficheBox(), goConnection()"  class="button">ok</button>
-        </div>
+        <notAllowed v-else />
     </div>
 </template>
 
 <script>
+import notAllowed from "../components/notAllowed.vue"
 export default {
     name : "parametre",
+    components :{
+        notAllowed,
+    },
     data(){
         return{
             pseudo : this.$store.state.pseudo,
@@ -94,6 +92,7 @@ export default {
             erreurMail : "",
             erreurPseudo : "",
             erreurPW : "",
+            allowed : false
         }
     },
     methods : {
@@ -253,7 +252,7 @@ export default {
                 pw.setAttribute("type", "text")
             } else pw.setAttribute("type","password")
         },
-         refresh(){
+        refresh(){
             if (!this.$store.state.email){
                 const obj = {
                     token : JSON.parse(localStorage.getItem("token"))    
@@ -281,9 +280,17 @@ export default {
                 });
             }
         },
+        tryConnection(){
+             const token = localStorage.getItem("token")
+                    if (token){
+                        this.allowed = true
+                    }
+        },
+       
     },
     mounted(){
         this.refresh()
+        this.tryConnection()
     }
 }
 </script>
@@ -299,7 +306,11 @@ export default {
         padding: 20px;
         padding-top: 80px;
         color: white;
-        background: rgb(128, 126, 126);
+        background: linear-gradient(288deg, rgba(85, 85, 87, 0.945) 50%, rgba(137, 138, 139, 0.822) 100%),url("../assets/poing.jpg");
+        background-attachment: fixed;
+        background-size: cover;
+        background-position: center;
+        min-height: 100vh;
         text-align: center;
     }
     .colInput{
@@ -330,20 +341,26 @@ export default {
         font-size: 1.2rem;
         width: 120px;
         padding: 10px 10px;
-        background: rgb(24, 168, 36);
+        background: rgba(24, 168, 36, 0.658);
         color: white;
         border-radius: 10px;
         margin: 20px 0;
         cursor: pointer;
     }
+    .button:hover{
+        transform: scale(1.1);
+    }
     .supprimer{
-        background: red;
+        background: rgb(196, 83, 83);
         width: 100%;
         margin-top: 20px;
         font-size: 1.3rem;
         color: white;
         padding: 20px 0;
         cursor: pointer;
+    }
+      .supprimer:hover{
+        transform: scale(1.02);
     }
     .photoProfil{
         position: absolute;
@@ -354,12 +371,13 @@ export default {
         object-fit: cover;
     }
     .modifPassword{
-        color: red;
+        color: rgb(182, 45, 45);
         text-align: left;
         margin-left: 30px;
         text-decoration: underline;
-        font-size: 0.9rem;
+        font-size: 1.2rem;
         cursor: pointer;
+        font-weight: bold;
     }
     .password{
         font-size: 0.8rem;
@@ -416,7 +434,7 @@ export default {
     .title{
         padding: 20px 0 0 0 ;
         font-size: 1.2rem;
-        color: green;
+        color: rgba(196, 96, 96);
         font-weight: bold;
     }
     .information{
