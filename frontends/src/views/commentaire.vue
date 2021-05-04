@@ -6,13 +6,13 @@
             <h2>Message poster par :</h2>
             <img class="photoUser" :src="photo" alt="photo profil du message">
             <div class="user">{{ pseudoUser}}</div>
-                <article class="cardMessageBase" v-for="mess in card" :key="mess.name">
+                <article class="cardMessageBase">
                     <div class="boxNom">
-                            <img class="photoProfil" :src="mess.photo" alt="">
-                            <span class="nomUser"> {{ mess.pseudoUser }} </span>
+                            <img class="photoProfil" :src="photo" alt="">
+                            <span class="nomUser"> {{ pseudoUser }} </span>
                         </div>
-                    <img v-if="mess.image"  class="image" :src="mess.image" alt="image du post de base">
-                    <div class="boxMessages" > {{mess.message}}</div>
+                    <img v-if="image"  class="image" :src="image" alt="image du post de base">
+                    <div v-if="message" class="boxMessages" > {{message}}</div>
                 </article>
                 <div class="dates"> message poster le {{ date }}</div>
                 <div class="separateur"></div>
@@ -103,6 +103,8 @@ export default {
             oldCommentaire : "",
             afficheBoxImage : false,
             photo : "",
+            image : "",
+            message : "",
             erreur : "",
             allowed : false,
         }
@@ -128,10 +130,13 @@ export default {
             .then(response => response.json()) 
             .then( result =>{ 
                 this.card = result 
+                console.log(result)
                 this.photo = result[0].photo    
                 this.pseudoUser = result[0].pseudoUser    
                 this.date = result[0].date
                 this.photoProfil = result[0].photoProfil
+                this.image = result[0].image
+                this.message = result[0].message
 
             });
         },
